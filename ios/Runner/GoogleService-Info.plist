@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>975534544910-e04oq3e1v877p55a8ms020d0mk8tb0kh.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.975534544910-e04oq3e1v877p55a8ms020d0mk8tb0kh</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCZyO4szCSBn3gkz0BNga3UP2ENemqdQJ0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>975534544910</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>me.bhavuk.unscroll</string>
+	<key>PROJECT_ID</key>
+	<string>unscroll</string>
+	<key>STORAGE_BUCKET</key>
+	<string>unscroll.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:975534544910:ios:36c6c7d5bf13b1d924445f</string>
+</dict>
+</plist>

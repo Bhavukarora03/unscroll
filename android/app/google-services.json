@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "975534544910",
+    "project_id": "unscroll",
+    "storage_bucket": "unscroll.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975534544910:android:8094d25f070c1a4624445f",
+        "android_client_info": {
+          "package_name": "me.bhavuk.unscroll"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "975534544910-lutnnqi2fuav8d9l6akrbo56ijsf9akq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKQ5NELAxsOpx0mbDnNAbL1OUUtC9ap5U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975534544910-lutnnqi2fuav8d9l6akrbo56ijsf9akq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "975534544910-b271se7m7hics0br4uagm3vfiq0bf546.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "me.bhavuk.unscroll.unscroll"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
