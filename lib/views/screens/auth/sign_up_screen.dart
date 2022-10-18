@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../constants.dart';
 import '../../widgets/widgets.dart';
@@ -42,7 +43,7 @@ class SignUpScreen extends StatelessWidget {
                                 backgroundColor: Colors.blueAccent,
                                 radius: 15,
                                 child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () => authController.pickImage(ImageSource.gallery),
                                     icon: const Icon(
                                       Icons.edit,
                                       size: 15,
@@ -72,7 +73,10 @@ class SignUpScreen extends StatelessWidget {
                         keyboardType: TextInputType.visiblePassword),
                     height40,
                     ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+authController.registerUser(_emailController.text, _nameController.text, _passwordController.text, authController.);
+                        },
+                        },
                         child: const Text(
                           "Continue",
                         )),
