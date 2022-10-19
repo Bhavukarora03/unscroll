@@ -31,12 +31,14 @@ class LoginScreen extends StatelessWidget {
                     ),
                     height50,
                     TextInputField(
+                      autofillHints: AutofillHints.name,
                         controller: _emailController,
                         labelText: "mail",
                         prefixIcon: Icons.mail,
                         keyboardType: TextInputType.emailAddress),
                     height20,
                     TextInputField(
+                      autofillHints: AutofillHints.password,
                         controller: _passwprdController,
                         labelText: "password",
                         prefixIcon: Icons.key,
@@ -44,7 +46,7 @@ class LoginScreen extends StatelessWidget {
                         keyboardType: TextInputType.visiblePassword),
                     height40,
                     ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () => authController.loginUser(_emailController.text, _passwprdController.text),
                         child: const Text(
                           "Continue",
                         )),

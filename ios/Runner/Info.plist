@@ -47,5 +47,14 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Unscroll needs access to your camera to scan QR codes.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Unscroll needs access to your microphone to record audio.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Unscroll needs access to your photo library to save photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Unscroll needs access to your photo library to save photos.</string>
+
 </dict>
 </plist>

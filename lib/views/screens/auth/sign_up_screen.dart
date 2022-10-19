@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -29,53 +28,66 @@ class SignUpScreen extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 100.0),
-                      child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                        // Text("Unscroll",
-                        //     style: Theme.of(context).textTheme.headline1),
-                        // const Spacer(),
-                        Stack(children: [
-                         const  UserProfileImage(),
-                          Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.blueAccent,
-                                radius: 15,
-                                child: IconButton(
-                                    onPressed: () => authController.pickImage(ImageSource.gallery),
-                                    icon: const Icon(
-                                      Icons.edit,
-                                      size: 15,
-                                    )),
-                              ))
-                        ]),
-                      ]),
+                            // Text("Unscroll",
+                            //     style: Theme.of(context).textTheme.headline1),
+                            // const Spacer(),
+                            Stack(children: [
+                              const UserProfileImage(),
+                              Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.blueAccent,
+                                    radius: 15,
+                                    child: IconButton(
+                                       onPressed: ()=> authController
+                                           .pickImage(
+                                           ImageSource
+                                               .gallery),
+                                        icon: const Icon(
+                                          Icons.edit,
+                                          size: 15,
+                                        )),
+                                  ))
+                            ]),
+                          ]),
                     ),
                     height50,
                     TextInputField(
+                      autofillHints: AutofillHints.name,
                         controller: _nameController,
                         labelText: "name",
                         prefixIcon: Icons.person,
                         keyboardType: TextInputType.name),
                     height20,
                     TextInputField(
+                      autofillHints: AutofillHints.email,
                         controller: _emailController,
-                        labelText: "mail",
+                        labelText: "email",
                         prefixIcon: Icons.mail,
                         keyboardType: TextInputType.emailAddress),
                     height20,
                     TextInputField(
+                      autofillHints: AutofillHints.password,
+
                         controller: _passwordController,
                         labelText: "password",
                         prefixIcon: Icons.key,
                         obscureText: true,
-                        keyboardType: TextInputType.visiblePassword),
+                        keyboardType: TextInputType.visiblePassword,
+                        textInputAction: TextInputAction.done,
+                    ),
                     height40,
                     ElevatedButton(
                         onPressed: () {
-authController.registerUser(_emailController.text, _nameController.text, _passwordController.text, authController.);
-                        },
+                          authController.registerUser(
+                              _emailController.text,
+                              _nameController.text,
+                              _passwordController.text,
+                              authController.pickedImage);
                         },
                         child: const Text(
                           "Continue",
