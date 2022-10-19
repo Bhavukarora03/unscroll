@@ -43,10 +43,24 @@ class SignUpScreen extends StatelessWidget {
                                     backgroundColor: Colors.blueAccent,
                                     radius: 15,
                                     child: IconButton(
-                                       onPressed: ()=> authController
-                                           .pickImage(
-                                           ImageSource
-                                               .gallery),
+                                       onPressed: ()=> showModalBottomSheet<void>(
+                                         constraints: const BoxConstraints(
+                                             maxHeight: 200,),
+                                           context: context, builder: (context)=>  Column(
+                                         children: [
+                                           ListTile(
+                                              leading: const Icon(Icons.camera),
+                                              title: const Text("Camera"),
+                                              onTap: () => authController.pickImage(ImageSource.camera),
+                                            ),
+                                            ListTile(
+                                              leading: const Icon(Icons.image),
+                                              title: const Text("Gallery"),
+                                              onTap: () => authController.pickImage(ImageSource.gallery),
+                                            ),
+
+                                         ],
+                                       )),
                                         icon: const Icon(
                                           Icons.edit,
                                           size: 15,

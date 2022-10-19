@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'screens.dart';
+import "package:unscroll/views/pages/pages.dart";
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({Key? key}) : super(key: key);
@@ -58,7 +58,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   Widget _bottomNavigationBar() {
     return SalomonBottomBar(
       currentIndex: _currentIndex.value,
-      onTap: (int) => setState(() => _onNavItemsSelected(int)),
+      onTap: (i) => setState(() => _onNavItemsSelected(i)),
       items: [
         /// Home
         SalomonBottomBarItem(
