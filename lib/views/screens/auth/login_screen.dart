@@ -19,17 +19,15 @@ class LoginScreen extends StatelessWidget {
         body: SafeArea(
           child: Center(
             child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(30.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 100.0),
-                      child: Text("Unscroll",
-                          style: Theme.of(context).textTheme.headline1),
-                    ),
-                    height50,
+                      padding: const EdgeInsets.only(top: 100.0, ),
+                      child: Center(child: Image.asset("assets/icon/logo.png")),),
+
                     TextInputField(
                       autofillHints: AutofillHints.name,
                         controller: _emailController,
@@ -54,10 +52,11 @@ class LoginScreen extends StatelessWidget {
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       const Text("Don't have an account?"),
                       TextButton(
+
                           onPressed: () {
 
                             HapticFeedback.heavyImpact();
-                            Get.to(()=> SignUpScreen());
+                            Get.to(()=> SignUpScreen(), transition: Transition.rightToLeft);
                           },
                           child: const Text("Sign up"))
                     ])

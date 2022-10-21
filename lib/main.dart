@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
             textTheme: const TextTheme(
-              headline1: TextStyle(
+              displayLarge: TextStyle(
                 fontSize: 50,
                 fontWeight: FontWeight.w600,
               ),

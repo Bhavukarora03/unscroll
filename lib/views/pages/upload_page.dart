@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,7 +11,11 @@ class UploadPage extends StatelessWidget {
  uploadVideo(ImageSource src, BuildContext ctx) async {
     final vid = await ImagePicker().pickVideo(source: src);
     if (vid != null) {
-      Get.off(() => const ConfirmVideo());
+      Get.off(() =>  ConfirmVideo(
+            videoFile: File(vid.path),
+            videoPath: vid.path,
+
+      ));
     }
   }
 
