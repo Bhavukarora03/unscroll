@@ -75,10 +75,10 @@ class HomePage extends StatelessWidget {
                   data.profilePic,
                 ),
                 InkWell(
-                  onTap: () {},
-                  child: const Icon(
-                    Icons.favorite_border,
-                    color: Colors.white,
+                  onTap: () => videoController.likeVideo(data.id),
+                  child:  Icon(
+                    data.likes.contains(authController.user.uid) ?  Icons.favorite : Icons.favorite_border ,
+                    color: data.likes.contains(authController.user.uid) ? Colors.red :Colors.white,
                     size: 30,
                   ),
                 ),
@@ -108,7 +108,7 @@ class HomePage extends StatelessWidget {
                 ),
                 CircleAnimation(
                     child: buildMusicAlbumImage(
-                        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")),
+                        data.thumbnail)),
               ],
             ),
           )

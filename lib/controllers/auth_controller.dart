@@ -13,6 +13,8 @@ class AuthController extends GetxController {
 
   late Rx<User?> _user;
 
+  User get user => _user.value!;
+
   late Rx<File?> _pickedImage;
 
   File? get pickedImage => _pickedImage.value;
