@@ -1,8 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../../constants.dart';
 import '../../widgets/widgets.dart';
 
@@ -13,10 +13,11 @@ class SignUpScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //nice
+
         resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Center(
@@ -35,7 +36,7 @@ class SignUpScreen extends StatelessWidget {
                             //     style: Theme.of(context).textTheme.headline1),
                             // const Spacer(),
                             Stack(children: [
-                              const UserProfileImage(),
+                             const UserProfileImage(imageUrl: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",) ,
                               Positioned(
                                   bottom: 0,
                                   right: 0,
@@ -43,24 +44,25 @@ class SignUpScreen extends StatelessWidget {
                                     backgroundColor: Colors.blueAccent,
                                     radius: 15,
                                     child: IconButton(
-                                       onPressed: ()=> showModalBottomSheet<void>(
-                                         constraints: const BoxConstraints(
-                                             maxHeight: 200,),
-                                           context: context, builder: (context)=>  Column(
-                                         children: [
-                                           ListTile(
-                                              leading: const Icon(Icons.camera),
-                                              title: const Text("Camera"),
-                                              onTap: () => authController.pickImage(ImageSource.camera),
-                                            ),
-                                            ListTile(
-                                              leading: const Icon(Icons.image),
-                                              title: const Text("Gallery"),
-                                              onTap: () => authController.pickImage(ImageSource.gallery),
-                                            ),
+                                       onPressed: ()=> showDialog(
+                                           context: context, builder: (_)=>  SimpleDialog(
+                                             children: [
 
-                                         ],
-                                       )),
+
+                                             ListTile(
+                                                leading: const Icon(Icons.camera),
+                                                title: const Text("Camera"),
+                                                onTap: () => authController.pickImage(ImageSource.camera),
+                                              ),
+                                              ListTile(
+                                                leading: const Icon(Icons.image),
+                                                title: const Text("Gallery"),
+                                                onTap: () => authController.pickImage(ImageSource.gallery),
+                                              ),
+
+                                  ]
+
+                                           )),
                                         icon: const Icon(
                                           Icons.edit,
                                           size: 15,

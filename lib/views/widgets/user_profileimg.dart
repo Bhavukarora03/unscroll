@@ -2,13 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class UserProfileImage extends StatelessWidget {
-  const UserProfileImage({Key? key}) : super(key: key);
+  final String imageUrl;
+  const UserProfileImage({Key? key, required this.imageUrl}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
-      imageUrl:
-      "https://i.kinja-img.com/gawker-media/image/upload/t_original/ijsi5fzb1nbkbhxa2gc1.png",
+      imageUrl: imageUrl,
       imageBuilder: (context, imageProvider) =>
           CircleAvatar(
             backgroundImage: imageProvider,

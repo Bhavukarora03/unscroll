@@ -1,9 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/widgets/text_input_fields.dart';
 import 'package:video_player/video_player.dart';
+
+import '../../controllers/video_controller.dart';
 
 class ConfirmVideo extends StatefulWidget {
   const ConfirmVideo(
@@ -22,6 +24,8 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
 
   TextEditingController songNameController = TextEditingController();
   TextEditingController captionController = TextEditingController();
+
+  final videoController = Get.put(UploadVideoController());
   @override
   void initState() {
     // TODO: implement initState
@@ -38,14 +42,21 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-      child: SingleChildScrollView(
-          child: Column(children: [
+            child: SingleChildScrollView(
+      child: Column(children: [
         Stack(children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.8,
             child: VideoPlayer(controller),
           ),
           Positioned(
@@ -71,11 +82,8 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
             left: 80,
             top: 80,
             right: 80,
-
             child: IconButton(
-
               onPressed: () {
-
                 if (controller.value.isPlaying) {
                   controller.pause();
                 } else {
@@ -105,24 +113,35 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Text("Add a song to your video", style:TextStyle(fontSize: 15)),
+              const Text("Add a song to your video",
+                  style: TextStyle(fontSize: 15)),
               height30,
               TextInputField(
-                controller: songNameController, labelText: 'Song Name', prefixIcon: Icons.music_note, autofillHints: AutofillHints.name,
-
+                controller: songNameController,
+                labelText: 'Song Name',
+                prefixIcon: Icons.music_note,
+                autofillHints: AutofillHints.name,
               ),
               height20,
               TextInputField(
                 controller: captionController,
-                labelText: "Add a caption", prefixIcon: Icons.closed_caption, autofillHints: 'caption',
+                labelText: "Add a caption",
+                prefixIcon: Icons.closed_caption,
+                autofillHints: 'caption',
               ),
               height20,
-              ElevatedButton.icon(onPressed: (){}, icon: const Icon(Icons.upload), label: const Text("Upload"), )
+              ElevatedButton.icon(
+                onPressed: () => videoController.uploadVideo(
+                    songNameController.text,
+                    captionController.text,
+                    widget.videoPath),
+                icon: const Icon(Icons.upload),
+                label: const Text("Upload"),
+              )
             ],
           ),
         ),
-
-      ],),),
-    ),);
+      ]),
+    )));
   }
 }

@@ -27,11 +27,13 @@ class AuthController extends GetxController {
 
   }
 
+
+  ///persisting user state using ever
   _initialScreen(User? user ){
     if(user == null){
       Get.off(()=> LoginScreen());
     }else{
-      Get.offAll(()=> const NavigationScreen());
+      Get.off(()=> const NavigationScreen());
     }
 
   }
@@ -39,6 +41,7 @@ class AuthController extends GetxController {
 
 
 
+  ///pickimage from ImageSource
   void  pickImage(ImageSource imageSource)async{
     final pickedImage = await ImagePicker().pickImage(source: imageSource);
     if (pickedImage != null) {
@@ -46,6 +49,9 @@ class AuthController extends GetxController {
     }
     _pickedImage = Rx<File?>(File(pickedImage!.path));
   }
+
+
+  ///Uploads the image to firebase storage and returns the url
   Future<String> _uploadImageToStorage(File image) async {
     Reference reference = firebaseStorage
         .ref()
@@ -57,12 +63,12 @@ class AuthController extends GetxController {
     return downloadUrl;
   }
 
-  //register users
+  ///register users with email and password
   void registerUser(
-      String email, String name, String password, File? image) async {
+      String email, String username, String password, File? image) async {
     try {
       if (email.isNotEmpty &&
-          name.isNotEmpty &&
+          username.isNotEmpty &&
           password.isNotEmpty &&
           image != null) {
         UserCredential userCredential = await firebaseAuth
@@ -70,14 +76,15 @@ class AuthController extends GetxController {
 
         String downloadURl = await _uploadImageToStorage(image);
         model.User user = model.User(
-            name: name,
+            username: username,
             email: email,
-            profileImg: downloadURl,
+            profilePic: downloadURl,
             uid: userCredential.user!.uid);
         await firebaseFirestore
             .collection("users")
             .doc(userCredential.user!.uid)
             .set(user.toJson());
+
       } else {
         Get.snackbar("success", "Successfully selected image");
       }
@@ -86,11 +93,14 @@ class AuthController extends GetxController {
     }
   }
 
+  ///login users with email and password
   void loginUser(String email, String password) async {
     try {
       if (email.isNotEmpty && password.isNotEmpty) {
         await firebaseAuth.signInWithEmailAndPassword(
             email: email, password: password);
+        Get.snackbar("Success", "Logged in with mail and password");
+
       } else {
         Get.snackbar("Error", "Please fill all the fields");
       }
