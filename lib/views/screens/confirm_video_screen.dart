@@ -5,7 +5,7 @@ import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/widgets/text_input_fields.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../controllers/video_controller.dart';
+import '../../controllers/upload_video_controller.dart';
 
 class ConfirmVideo extends StatefulWidget {
   const ConfirmVideo(

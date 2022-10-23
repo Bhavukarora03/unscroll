@@ -15,9 +15,8 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
   void initState() {
     controller = VideoPlayerController.network(widget.videoUrl)
       ..initialize().then((_) {
-       controller.play();
-       controller.setVolume(1);
-
+        controller.play();
+        controller.setVolume(1);
       });
     super.initState();
   }
@@ -38,12 +37,15 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
       decoration: BoxDecoration(
         color: Colors.black,
       ),
-      child: Stack(
-        children: [
-          VideoPlayerItem(videoUrl: widget.videoUrl),
-
-        ],
-      ),
+      child: Stack(children: [
+        VideoPlayer(controller),
+        Positioned(
+            child: IconButton(
+                onPressed: () {
+                  controller.setVolume(0);
+                },
+                icon: Icon(Icons.volume_mute))),
+      ]),
     );
   }
 }

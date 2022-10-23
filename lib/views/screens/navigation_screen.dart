@@ -13,7 +13,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   final ValueNotifier<String> title = ValueNotifier<String>('Home');
   final ValueNotifier<int> _currentIndex = ValueNotifier<int>(0);
 
-  final pages = const [
+  final pages =  [
     HomePage(),
     SearchPage(),
     UploadPage(),
@@ -39,6 +39,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     return Scaffold(
       bottomNavigationBar: _bottomNavigationBar(),
       appBar: AppBar(
+
         title: ValueListenableBuilder(
           valueListenable: title,
           builder: (BuildContext context, String value, _) {
@@ -46,11 +47,13 @@ class _NavigationScreenState extends State<NavigationScreen> {
           },
         ),
       ),
-      body: ValueListenableBuilder(
-        valueListenable: _currentIndex,
-        builder: (BuildContext context, int value, _) {
-          return pages[value];
-        },
+      body: SafeArea(
+        child: ValueListenableBuilder(
+          valueListenable: _currentIndex,
+          builder: (BuildContext context, int value, _) {
+            return pages[value];
+          },
+        ),
       ),
     );
   }
