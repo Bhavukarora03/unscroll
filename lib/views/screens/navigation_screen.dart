@@ -48,11 +48,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
         ),
       ),
       body: SafeArea(
-        child: ValueListenableBuilder(
-          valueListenable: _currentIndex,
-          builder: (BuildContext context, int value, _) {
-            return pages[value];
-          },
+
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+         body: ValueListenableBuilder(
+            valueListenable: _currentIndex,
+            builder: (BuildContext context, int value, _) {
+              return pages[value];
+            },
+          ),
         ),
       ),
     );
