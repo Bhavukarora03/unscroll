@@ -30,6 +30,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   ];
 
   void _onNavItemsSelected(i) {
+
     title.value = titles[i];
     _currentIndex.value = i;
   }

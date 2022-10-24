@@ -63,41 +63,59 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return  Container(
-        width: size.width,
-        height: size.height,
-        decoration: BoxDecoration(
-          color: Colors.black,
-        ),
-        child: Stack(children: [
-          VideoPlayer(controller),
-          Positioned.fill(
-            child: Align(
-                alignment: Alignment.center,
-                child: GestureDetector(
-                  onTap: isPlayingVideo,
-                  child: AnimatedIcon(
-                    color: Colors.white24,
-                    size: 80,
-                    icon: AnimatedIcons.pause_play,
-                    progress: animationController,
-                  ),
-                )),
+    return  Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Container(
+          width: size.width,
+          height: size.height,
+          decoration: BoxDecoration(
+
+            color: Colors.black,
           ),
-          Positioned(
-              child: Align(
-            alignment: Alignment.topRight,
-            child: GestureDetector(
-              onTap: isMuteVideo,
-              child: Icon(
-                _isPlaying ? Icons.volume_up : Icons.volume_off,
-                color: Colors.white24,
-                size: 35,
+          child: Stack(children: [
+            VideoPlayer(controller),
+            Visibility(
+              visible:true,
+              maintainState: true,
+              maintainAnimation: true,
+              maintainSize: true,
+              replacement: const SizedBox.shrink(),
+
+              child: Positioned.fill(
+                child: Align(
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      onTap: isPlayingVideo,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: AnimatedIcon(
+                          color: Colors.white24,
+                          size: 50,
+                          icon: AnimatedIcons.pause_play,
+                          progress: animationController,
+                        ),
+                      ),
+                    )),
               ),
             ),
-          ))
-        ]),
+            Positioned(
+                child: Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                onTap: isMuteVideo,
+                child: Icon(
+                  _isPlaying ? Icons.volume_up : Icons.volume_off,
+                  color: Colors.white24,
+                  size: 35,
+                ),
+              ),
+            ))
+          ]),
 
+      ),
     );
   }
 }
