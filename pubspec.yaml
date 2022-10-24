@@ -33,6 +33,8 @@ dependencies:
   video_compress: ^3.1.1
   modal_bottom_sheet: ^2.1.2
   timeago: ^3.3.0
+  share_plus: ^6.0.1
+  file_saver: ^0.1.1
 
 
 

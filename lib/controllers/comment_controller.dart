@@ -18,7 +18,8 @@ class CommentController extends GetxController {
   getComment() async {
     _comments.bindStream(firebaseFirestore
         .collection('videos')
-        .doc(_postId).collection('comments')
+        .doc(_postId)
+        .collection('comments')
         .snapshots()
         .map((QuerySnapshot querySnapshot) {
       List<com_model.Comment> temp = [];
@@ -62,14 +63,44 @@ class CommentController extends GetxController {
             .doc('comment $length')
             .set(comments.toJson());
 
-         DocumentSnapshot snapshot = await firebaseFirestore.collection('videos').doc(_postId).get();
+        DocumentSnapshot snapshot =
+            await firebaseFirestore.collection('videos').doc(_postId).get();
         await firebaseFirestore.collection('videos').doc(_postId).update({
           'commentCount': (snapshot.data()! as dynamic)['commentCount'] + 1,
-        }
-        );
+        });
       }
     } catch (e) {
       Get.snackbar('error', e.toString());
+    }
+  }
+
+  likeComment(String id) async {
+    String uid = authController.user.uid;
+    DocumentSnapshot snapshot = await firebaseFirestore
+        .collection('videos')
+        .doc(_postId)
+        .collection('comments')
+        .doc(id)
+        .get();
+
+    if ((snapshot.data()! as dynamic)['likes'].contains(uid)) {
+      await firebaseFirestore
+          .collection('videos')
+          .doc(_postId)
+          .collection('comments')
+          .doc(id)
+          .update({
+        'likes': FieldValue.arrayRemove([uid])
+      });
+    } else {
+      await firebaseFirestore
+          .collection('videos')
+          .doc(_postId)
+          .collection('comments')
+          .doc(id)
+          .update({
+        'likes': FieldValue.arrayUnion([uid])
+      });
     }
   }
 }

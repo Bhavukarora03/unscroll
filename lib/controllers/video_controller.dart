@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
@@ -38,4 +40,6 @@ class VideoController extends GetxController {
       });
     }
   }
+
+
 }

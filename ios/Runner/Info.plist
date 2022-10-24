@@ -55,6 +55,12 @@
 	<string>Unscroll needs access to your photo library to save photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Unscroll needs access to your photo library to save photos.</string>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
+    <key>UIFileSharingEnabled</key>
+    <true/>
+
+
 
 </dict>
 </plist>

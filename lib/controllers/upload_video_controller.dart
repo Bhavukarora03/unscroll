@@ -1,12 +1,17 @@
+import 'dart:ffi';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/models/video_model.dart';
 import 'package:video_compress/video_compress.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UploadVideoController extends GetxController {
-
   ///compress video and return the compressed video
   _compressVideo(String videoPath) async {
     final compressedVideo = await VideoCompress.compressVideo(
@@ -70,11 +75,25 @@ class UploadVideoController extends GetxController {
         id: "Video $docCount",
         videoUrl: videoUrl,
         thumbnail: thumbnail,
-       profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
+        profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
       );
 
-      await firebaseFirestore.collection('videos').doc("Video $docCount").set(video.toJson());
+      await firebaseFirestore
+          .collection('videos')
+          .doc("Video $docCount")
+          .set(video.toJson());
       Get.back();
+    } catch (e) {
+      Get.snackbar("error", e.toString());
+    }
+  }
+
+  ///Save Video to phone Storage
+  saveVideo(String videoPath) async {
+    try {
+      Uint8List bytes = await File(videoPath).readAsBytes();
+      await FileSaver.instance.saveFile(videoPath, bytes, 'video.mp4');
+      Get.snackbar("success", "Video saved to phone storage");
     } catch (e) {
       Get.snackbar("error", e.toString());
     }

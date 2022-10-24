@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:unscroll/constants.dart';
 import "package:unscroll/views/pages/pages.dart";
+import 'package:unscroll/views/screens/profile_screen.dart';
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({Key? key}) : super(key: key);
@@ -11,6 +13,7 @@ class NavigationScreen extends StatefulWidget {
 
 class _NavigationScreenState extends State<NavigationScreen> {
   final ValueNotifier<String> title = ValueNotifier<String>('Home');
+  final ValueNotifier<double> toolBarHeight = ValueNotifier<double>(0.0);
   final ValueNotifier<int> _currentIndex = ValueNotifier<int>(0);
 
   final pages =  [
@@ -18,15 +21,23 @@ class _NavigationScreenState extends State<NavigationScreen> {
     SearchPage(),
     UploadPage(),
     MessagePage(),
-    ProfilePage(),
+    ProfileScreen(uid: authController.user.uid),
   ];
 
   final titles = [
     "Home",
-    "Search",
+    "",
     "Upload",
     "Messages",
     "Profile",
+  ];
+
+  final radius = [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
   ];
 
   void _onNavItemsSelected(i) {
@@ -39,25 +50,27 @@ class _NavigationScreenState extends State<NavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: _bottomNavigationBar(),
-      appBar: AppBar(
-
-        title: ValueListenableBuilder(
-          valueListenable: title,
-          builder: (BuildContext context, String value, _) {
-            return Text(value);
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   toolbarHeight: ValueListenableBuilder(valueListenable: toolBarHeight, builder: (BuildContext context, double value, _) {
+      //    return value.toDouble();
+      //   }
+      //   ),
+      //
+      //   title: ValueListenableBuilder(
+      //     valueListenable: title,
+      //     builder: (BuildContext context, String value, _) {
+      //       return Text(value);
+      //     },
+      //   ),
+      // ),
+      body: Scaffold(
+        resizeToAvoidBottomInset: false,
+       body: ValueListenableBuilder(
+          valueListenable: _currentIndex,
+          builder: (BuildContext context, int value, _) {
+            return pages[value];
           },
-        ),
-      ),
-      body: SafeArea(
-
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-         body: ValueListenableBuilder(
-            valueListenable: _currentIndex,
-            builder: (BuildContext context, int value, _) {
-              return pages[value];
-            },
-          ),
         ),
       ),
     );
@@ -86,7 +99,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         SalomonBottomBarItem(
           icon: const Icon(Icons.add),
           title: const Text("add"),
-          selectedColor: Colors.pink,
+          selectedColor: Color(0xff04A547),
         ),
 
         /// Messages

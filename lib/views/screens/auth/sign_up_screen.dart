@@ -36,7 +36,7 @@ class SignUpScreen extends StatelessWidget {
                             //     style: Theme.of(context).textTheme.headline1),
                             // const Spacer(),
                             Stack(children: [
-                             const UserProfileImage.small(imageUrl: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",) ,
+                             const UserProfileImage.medium(imageUrl: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",) ,
                               Positioned(
                                   bottom: 0,
                                   right: 0,
