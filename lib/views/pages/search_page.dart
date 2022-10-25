@@ -22,6 +22,9 @@ class SearchPage extends StatelessWidget {
               hintText: 'Search',
               suffixIcon: Icon(Icons.search),
             ),
+            onChanged: (value) {
+              searchController.searchProfiles(value);
+            },
             onSubmitted: (value) {
               searchController.searchProfiles(value);
             },
@@ -31,6 +34,7 @@ class SearchPage extends StatelessWidget {
           padding: EdgeInsets.only(
               top: MediaQuery.of(context).viewInsets.top, left: 20, right: 20),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               searchController.searchUsers.isEmpty
                   ? const Align(

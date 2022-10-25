@@ -1,11 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/screens.dart';
-import 'package:unscroll/views/widgets/user_profileimg.dart';
+
 
 class UploadPage extends StatelessWidget {
   const UploadPage({Key? key}) : super(key: key);
@@ -17,6 +17,9 @@ class UploadPage extends StatelessWidget {
             videoFile: File(vid.path),
             videoPath: vid.path,
           ));
+    }
+    else{
+      Get.snackbar("Error", "No Video Selected");
     }
   }
 
@@ -33,37 +36,41 @@ class UploadPage extends StatelessWidget {
           ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xff04A547)),
-              onPressed: () => showModalBottomSheet(
+              onPressed: () => showCupertinoModalBottomSheet(
+                topRadius: const Radius.circular(20),
+                    barrierColor: Colors.black.withOpacity(0.5),
                     context: context,
-                    builder: (context) => GridView(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2, crossAxisSpacing: 5),
-                      children: [
-                        Card(
-                          child: ElevatedButton.icon(
-                            onPressed: () =>
-                                uploadVideo(ImageSource.camera, context),
-                            icon: const Icon(
-                              Icons.camera_alt,
-                              size: 50,
-                            ),
-                            label: Text("Upload from Camera"),
+                    builder: (context) => Material(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+
+                        children: [
+                          Icon(Icons.minimize, size: 30,),
+                          height20,
+                          ListTile(
+                            leading: const Icon(Icons.camera),
+                            title: const Text("Camera"),
+                            onTap: () => uploadVideo(ImageSource.camera, context),
                           ),
-                        ),
-                        Card(
-                          child: ElevatedButton.icon(
-                            onPressed: () =>
-                                uploadVideo(ImageSource.gallery, context),
-                            icon: const Icon(
-                              Icons.photo_library,
-                              size: 50,
-                            ),
-                            label: Text("Upload from Gallery"),
+                        const  Divider(
+                            height: 1,
+                            thickness: 1,
+                            indent: 20,
+                            endIndent: 20,
                           ),
-                        ),
-                      ],
-                    ),
+                          ListTile(
+                            leading: const Icon(Icons.image),
+                            title: const Text("Gallery"),
+                            onTap: () => uploadVideo(ImageSource.gallery, context),
+                          ),
+                          height60,
+
+
+
+                        ],
+                      ),
+                    )
                   ),
               icon: const Icon(Icons.video_call),
               label: const Text("Upload a video"))

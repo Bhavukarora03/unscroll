@@ -77,45 +77,48 @@ class _NavigationScreenState extends State<NavigationScreen> {
   }
 
   Widget _bottomNavigationBar() {
-    return SalomonBottomBar(
-      currentIndex: _currentIndex.value,
-      onTap: (i) => setState(() => _onNavItemsSelected(i)),
-      items: [
-        /// Home
-        SalomonBottomBarItem(
-          icon: const Icon(Icons.home),
-          title: const Text("Home"),
-          selectedColor: Colors.purple,
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: SalomonBottomBar(
+        currentIndex: _currentIndex.value,
+        onTap: (i) => setState(() => _onNavItemsSelected(i)),
+        items: [
+          /// Home
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.home),
+            title: const Text("Home"),
+            selectedColor: Colors.purple,
+          ),
 
-        /// Search
-        SalomonBottomBarItem(
-          icon: const Icon(Icons.search),
-          title: const Text("Search"),
-          selectedColor: Colors.white70,
-        ),
+          /// Search
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.search),
+            title: const Text("Search"),
+            selectedColor: Colors.white70,
+          ),
 
-        /// Likes
-        SalomonBottomBarItem(
-          icon: const Icon(Icons.add),
-          title: const Text("add"),
-          selectedColor: Color(0xff04A547),
-        ),
+          /// Likes
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.add),
+            title: const Text("add"),
+            selectedColor: Color(0xff04A547),
+          ),
 
-        /// Messages
-        SalomonBottomBarItem(
-          icon: const Icon(Icons.message_outlined),
-          title: const Text("Message"),
-          selectedColor: Colors.orange,
-        ),
+          /// Messages
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.message_outlined),
+            title: const Text("Message"),
+            selectedColor: Colors.orange,
+          ),
 
-        /// Profile
-        SalomonBottomBarItem(
-          icon: const Icon(Icons.person),
-          title: const Text("Profile"),
-          selectedColor: Colors.teal,
-        ),
-      ],
+          /// Profile
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.person),
+            title: const Text("Profile"),
+            selectedColor: Colors.teal,
+          ),
+        ],
+      ),
     );
   }
 }
