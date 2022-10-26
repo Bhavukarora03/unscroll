@@ -1,3 +1,4 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:unscroll/constants.dart';
@@ -115,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Text(
                             widget.uid == authController.user.uid
                                 ? 'Sign Out'
-                                : controller.user['isFollowing']
+                                : profileController.user['isFollowing']
                                     ? 'Unfollow'
                                     : 'Follow',
                             style: const TextStyle(

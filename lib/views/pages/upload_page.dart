@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/screens.dart';
+import 'package:unscroll/views/widgets/user_profileimg.dart';
 
 
 class UploadPage extends StatelessWidget {
@@ -32,10 +34,10 @@ class UploadPage extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-         Image.asset('assets/images/upload.png'),
+        CachedNetworkImage(imageUrl: "https://cdni.iconscout.com/illustration/premium/thumb/upload-image-4358254-3618850.png"),
           ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff04A547)),
+                  backgroundColor: const Color(0xff94CBED)),
               onPressed: () => showCupertinoModalBottomSheet(
                 topRadius: const Radius.circular(20),
                     barrierColor: Colors.black.withOpacity(0.5),

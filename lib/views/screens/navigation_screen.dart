@@ -20,7 +20,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
     HomePage(),
     SearchPage(),
     const UploadPage(),
-    const MessagePage(),
     ProfileScreen(uid: authController.user.uid),
   ];
 
@@ -28,17 +27,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
     "Home",
     "",
     "Upload",
-    "Messages",
     "Profile",
   ];
 
-  final radius = [
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-  ];
+
 
   void _onNavItemsSelected(i) {
     title.value = titles[i];
@@ -49,20 +41,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: _bottomNavigationBar(),
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   toolbarHeight: ValueListenableBuilder(valueListenable: toolBarHeight, builder: (BuildContext context, double value, _) {
-      //    return value.toDouble();
-      //   }
-      //   ),
-      //
-      //   title: ValueListenableBuilder(
-      //     valueListenable: title,
-      //     builder: (BuildContext context, String value, _) {
-      //       return Text(value);
-      //     },
-      //   ),
-      // ),
+
       body: Scaffold(
         resizeToAvoidBottomInset: false,
         body: ValueListenableBuilder(
@@ -100,15 +79,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
           SalomonBottomBarItem(
             icon: const Icon(Icons.add),
             title: const Text("add"),
-            selectedColor: const Color(0xff04A547),
+            selectedColor: const Color(0xff94CBED),
           ),
 
           /// Messages
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.message_outlined),
-            title: const Text("Message"),
-            selectedColor: Colors.orange,
-          ),
+          // SalomonBottomBarItem(
+          //   icon: const Icon(Icons.message_outlined),
+          //   title: const Text("Message"),
+          //   selectedColor: Colors.orange,
+          // ),
 
           /// Profile
           SalomonBottomBarItem(

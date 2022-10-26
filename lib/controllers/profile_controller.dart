@@ -102,7 +102,7 @@ class ProfileController extends GetxController {
           .set({});
 
       _user.value
-          .update('followers', (value) => int.parse(value.toString()) + 1);
+          .update('followers', (value) => (int.parse(value) + 1).toString());
     } else {
       await firebaseFirestore
           .collection('users')
@@ -117,7 +117,7 @@ class ProfileController extends GetxController {
           .doc(_uid.value)
           .delete();
       _user.value
-          .update('followers', (value) => int.parse(value.toString()) - 1);
+          .update('following', (value) => (int.parse(value) - 1).toString());
     }
     _user.value.update('isFollowing', (value) => !value);
   }
