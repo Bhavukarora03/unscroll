@@ -16,11 +16,11 @@ class _NavigationScreenState extends State<NavigationScreen> {
   final ValueNotifier<double> toolBarHeight = ValueNotifier<double>(0.0);
   final ValueNotifier<int> _currentIndex = ValueNotifier<int>(0);
 
-  final pages =  [
+  final pages = [
     HomePage(),
     SearchPage(),
-    UploadPage(),
-    MessagePage(),
+    const UploadPage(),
+    const MessagePage(),
     ProfileScreen(uid: authController.user.uid),
   ];
 
@@ -41,7 +41,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
   ];
 
   void _onNavItemsSelected(i) {
-
     title.value = titles[i];
     _currentIndex.value = i;
   }
@@ -66,7 +65,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       // ),
       body: Scaffold(
         resizeToAvoidBottomInset: false,
-       body: ValueListenableBuilder(
+        body: ValueListenableBuilder(
           valueListenable: _currentIndex,
           builder: (BuildContext context, int value, _) {
             return pages[value];
@@ -101,7 +100,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
           SalomonBottomBarItem(
             icon: const Icon(Icons.add),
             title: const Text("add"),
-            selectedColor: Color(0xff04A547),
+            selectedColor: const Color(0xff04A547),
           ),
 
           /// Messages

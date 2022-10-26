@@ -15,9 +15,9 @@ class AuthController extends GetxController {
 
   User get user => _user.value!;
 
-  late Rx<File?> _pickedImage;
+  Rx<File> _pickedImage = Rx<File>(File(''));
 
-  File? get pickedImage => _pickedImage.value;
+  File get pickedImage => _pickedImage.value;
 
   @override
   void onReady() {
@@ -49,7 +49,7 @@ class AuthController extends GetxController {
     if (pickedImage != null) {
    Get.snackbar('success', "ez pz");
     }
-    _pickedImage = Rx<File?>(File(pickedImage!.path));
+    _pickedImage = Rx<File>(File(pickedImage!.path));
   }
 
 
@@ -109,5 +109,9 @@ class AuthController extends GetxController {
     } catch (e) {
       Get.snackbar("Error", e.toString());
     }
+  }
+
+  void signOut() async{
+    await firebaseAuth.signOut();
   }
 }

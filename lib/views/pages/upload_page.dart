@@ -46,7 +46,7 @@ class UploadPage extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
 
                         children: [
-                          Icon(Icons.minimize, size: 30,),
+                          const Icon(Icons.minimize, size: 30,),
                           height20,
                           ListTile(
                             leading: const Icon(Icons.camera),

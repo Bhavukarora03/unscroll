@@ -45,7 +45,9 @@ class HomePage extends StatelessWidget {
               width: size.width,
               child: Stack(
                 children: [
-                  VideoPlayerItem(videoUrl: data.videoUrl),
+                  VideoPlayerItem(videoUrl: data.videoUrl, onDoubleTap: () {
+                    videoController.likeVideo(data.id);
+                  },),
                   Column(
                     children: [
                       Expanded(
@@ -203,6 +205,7 @@ class HomePage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.remove,
@@ -248,7 +251,7 @@ class HomePage extends StatelessWidget {
                           Expanded(
                               child: Text(
                             comment.likes.length.toString(),
-                            style: TextStyle(fontSize: 8),
+                            style: const TextStyle(fontSize: 8),
                           ))
                         ],
                       ),

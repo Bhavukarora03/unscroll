@@ -1,10 +1,16 @@
+import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:unscroll/constants.dart';
 
-import 'package:video_player/video_player.dart';
 
 class VideoPlayerItem extends StatefulWidget {
   final String videoUrl;
-  const VideoPlayerItem({Key? key, required this.videoUrl}) : super(key: key);
+  final VoidCallback onDoubleTap;
+  const VideoPlayerItem(
+      {Key? key, required this.videoUrl, required this.onDoubleTap})
+      : super(key: key);
 
   @override
   State<VideoPlayerItem> createState() => _VideoPlayerItemState();
@@ -12,20 +18,20 @@ class VideoPlayerItem extends StatefulWidget {
 
 class _VideoPlayerItemState extends State<VideoPlayerItem>
     with TickerProviderStateMixin {
-  late VideoPlayerController controller;
+  late CachedVideoPlayerController videoController;
   late AnimationController animationController;
 
-  bool _isPlaying = false;
+  bool _isPlaying = true;
   bool _isMuted = false;
-
 
   @override
   void initState() {
-    controller = VideoPlayerController.network(widget.videoUrl)
+    videoController = CachedVideoPlayerController.network(widget.videoUrl)
       ..initialize().then((_) {
-        controller.play();
-        controller.setVolume(1);
-        controller.setLooping(true);
+
+        videoController.play();
+        videoController.setVolume(1);
+        videoController.setLooping(true);
       });
 
     animationController = AnimationController(
@@ -38,7 +44,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
   @override
   void dispose() {
     // TODO: implement dispose
-    controller.dispose();
+    videoController.dispose();
     animationController.dispose();
     super.dispose();
   }
@@ -49,64 +55,91 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
       _isPlaying
           ? animationController.forward()
           : animationController.reverse();
-      _isPlaying ? controller.pause() : controller.play();
+      _isPlaying ? videoController.pause() : videoController.play();
     });
   }
 
   isMuteVideo() {
     setState(() {
       _isMuted = !_isMuted;
-      _isMuted ? controller.setVolume(0) : controller.setVolume(1);
+      _isMuted ? videoController.setVolume(0) : videoController.setVolume(1);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return  Scaffold(
+    return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-          width: size.width,
-          height: size.height,
-          decoration: BoxDecoration(
-
-            color: Colors.black,
+        width: size.width,
+        height: size.height,
+        decoration: const BoxDecoration(
+          color: Colors.black,
+        ),
+        child: Stack(children: [
+          GestureDetector(
+            onLongPress: () {
+              isPlayingVideo();
+              HapticFeedback.heavyImpact();
+              showCupertinoModalBottomSheet(
+                barrierColor: Colors.black.withOpacity(0.5),
+                context: context,
+                builder: (context) => Material(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.linear_scale),
+                      ListTile(
+                        leading: const Icon(Icons.share),
+                        title: const Text("Share"),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.save),
+                        title: const Text("Save"),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.delete),
+                        title: const Text("Delete"),
+                        onTap: () {},
+                      ),
+                      height50
+                    ],
+                  ),
+                ),
+              );
+            },
+            onTap: () {
+              isMuteVideo();
+            },
+            onDoubleTap: widget.onDoubleTap,
+            child: CachedVideoPlayer(videoController),
           ),
-          child: Stack(children: [
-            VideoPlayer(controller),
-            Positioned.fill(
-              child: Align(
-                  alignment: Alignment.center,
-                  child: GestureDetector(
-                    onTap: isPlayingVideo,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: AnimatedIcon(
-                        color: Colors.white24,
-                        size: 50,
-                        icon: AnimatedIcons.pause_play,
-                        progress: animationController,
-                      ),
-                    ),
-                  )),
-            ),
-            Positioned(
-                child: Align(
-              alignment: Alignment.topRight,
+          Visibility(
+            visible: _isMuted,
+            child: Align(
+              alignment: Alignment.center,
               child: GestureDetector(
                 onTap: isMuteVideo,
-                child: Icon(
-                  _isPlaying ? Icons.volume_up : Icons.volume_off,
-                  color: Colors.white24,
-                  size: 35,
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: Icon(
+                    _isPlaying ? Icons.volume_up : Icons.volume_off,
+                    color: Colors.white24,
+                    size: 35,
+                  ),
                 ),
               ),
-            ))
-          ]),
-
+            ),
+          )
+        ]),
       ),
     );
   }
