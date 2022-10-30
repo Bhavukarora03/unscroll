@@ -33,3 +33,32 @@ class UserProfileImage extends StatelessWidget {
     );
   }
 }
+
+
+class UserPostsImages extends StatelessWidget {
+
+  final String imageUrl;
+
+  const UserPostsImages({Key? key, required this.imageUrl,}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
+      imageBuilder: (context, imageProvider) => Container(
+        height: 400,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(10),
+          image: DecorationImage(
+            image: imageProvider,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+      placeholder: (context, url) => const CircularProgressIndicator(),
+      errorWidget: (context, url, error) => const Icon(Icons.error),
+    );
+  }
+}

@@ -22,6 +22,20 @@ const height80 = SizedBox(height: 80);
 const height90 = SizedBox(height: 90);
 const height100 = SizedBox(height: 100);
 
+
+//Sizedbox width
+const width10 = SizedBox(width: 10);
+const width20 = SizedBox(width: 20);
+const width30 = SizedBox(width: 30);
+const width40 = SizedBox(width: 40);
+const width50 = SizedBox(width: 50);
+const width60 = SizedBox(width: 60);
+const width70 = SizedBox(width: 70);
+const width80 = SizedBox(width: 80);
+const width90 = SizedBox(width: 90);
+const width100 = SizedBox(width: 100);
+
+
 //firebase
 var firebaseAuth = FirebaseAuth.instance;
 var firebaseFirestore = FirebaseFirestore.instance;

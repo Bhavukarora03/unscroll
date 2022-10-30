@@ -17,6 +17,7 @@ class ConfirmPost extends StatefulWidget {
 
 class _ConfirmPostState extends State<ConfirmPost> {
   final TextEditingController _captionController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
 
   final UploadPostsController _postController =
       Get.put(UploadPostsController());
@@ -43,6 +44,13 @@ class _ConfirmPostState extends State<ConfirmPost> {
                     child: Image.file(widget.postImage)),
                 height50,
                 TextField(
+                  controller: _locationController,
+                  decoration: const InputDecoration(
+                    hintText: 'Add location',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                TextField(
                   controller: _captionController,
                   decoration: const InputDecoration(
                       hintText: 'Add a caption',
@@ -55,7 +63,7 @@ class _ConfirmPostState extends State<ConfirmPost> {
                 ElevatedButton(
                     onPressed: () {
                       _postController.uploadPost(_captionController.text,
-                          widget.imgPath);
+                          _locationController.text, widget.imgPath);
                     },
                     child: const Text('Confirm Post'))
               ],

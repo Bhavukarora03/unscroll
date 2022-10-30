@@ -1,99 +1,175 @@
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/post_controller.dart';
 import 'package:unscroll/views/widgets/user_profileimg.dart';
 import 'package:get/get.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class PostsPage extends StatelessWidget {
   PostsPage({Key? key}) : super(key: key);
 
   final PostController postController = Get.put(PostController());
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: const Text('Posts'),
-        ),
-        body: Obx(() {
-          return GridView.builder(
-
-
-            itemCount: postController.postsLists.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1,
-              mainAxisSpacing: 50,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: const Text('Posts'),
+      ),
+      body: Obx(
+        () {
+          return CustomScrollView(controller: _scrollController, slivers: [
+           // stories(),
+            const SliverToBoxAdapter(
+              child: Divider(
+                color: Colors.grey,
+                thickness: 0.5,
+              ),
             ),
-            itemBuilder: (BuildContext context, int index) {
-              final data = postController.postsLists[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    Row(
-                      children:  [
-                        UserProfileImage(
-                          imageUrl: data.profilePic,
-                          radius: 20,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(data.username),
-                      ],
-                    ),
-                    height20,
-                    SizedBox(
-                      height: 300,
-                      width: double.infinity,
-                      child:  CachedNetworkImage(imageUrl: data.postURL),
+            posts(),
+          ]);
+        },
+      ),
+    );
+  }
 
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              postController.likePost(data.id);
-                            },
-                            icon:  Icon(
+  Widget stories() {
+    return SliverList(
+      delegate: SliverChildListDelegate(
+        [
+          SizedBox(
+            height: 100,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 1,
+              itemBuilder: (context, index) {
+                final data = postController.postsLists[index];
+                return SizedBox(
+                  width: 100,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      UserProfileImage(
+                        imageUrl: data.profilePic,
+                        radius: 30,
+                      ),
+                      Text(data.username)
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget posts() {
+    return SliverList(
+        delegate: SliverChildBuilderDelegate(
+      (context, index) {
+        final data = postController.postsLists[index];
+        if(postController.postsLists.isEmpty){
+          return const Center(child: Text("No posts yet"));
+        }
+        return Container(
+          margin: const EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      UserProfileImage(
+                        imageUrl: data.profilePic,
+                        radius: 15,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(data.username),
+                          Text('Location'),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const Icon(Icons.more_vert)
+                ],
+              ),
+              height10,
+              UserPostsImages(imageUrl: data.postURL),
+              height10,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                          icon: Icon(
                               data.likes.contains(authController.user.uid)
                                   ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: data.likes.contains(authController.user.uid) ? Colors.red : Colors.white,
-                            )
-                        ),
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.comment,
-                            )),
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.send,
-                            )),
-                      ],
-                    ),
-                    Row(
-                      children:  [
-                        Text(data.likes.length.toString(),
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        const Text('likes'),
-                        SizedBox(
-                          width: 10,
-                        ),
+                                  : Icons.favorite_border),
+                          color: data.likes.contains(authController.user.uid)
+                              ? Colors.red
+                              : Colors.white,
+                          onPressed: () {
+                            postController.likePost(data.id);
+                          }),
+                      width20,
+                      IconButton(
+                        icon: const Icon(Icons.comment_outlined),
+                        onPressed: () {},
+                      ),
+                      width20,
+                      IconButton(
+                        icon: const Icon(Icons.send_outlined),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                  const Icon(Icons.bookmark_border),
+                ],
+              ),
+              height10,
+              Row(
+                children: [
+                  Text(
+                    '${data.likes.length} likes',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              height10,
+              Row(
+                children:  [
+                  Text("* ${data.caption}", style: TextStyle(
+                    color: Colors.white,
+                   fontSize: 15
+                  ),),
 
-                        Text(data.caption),
-
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        }));
+                ],
+              ),
+              height10,
+              Row(
+                children:  [
+                  Text(
+                    timeago.format(data.createdAt.toLocal())
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+      childCount: postController.postsLists.length,
+    ));
   }
 }

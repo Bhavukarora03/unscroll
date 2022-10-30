@@ -37,7 +37,7 @@ class UploadPostsController extends GetxController {
     return downloadUrl;
   }
 
-  uploadPost(String caption, String postImage) async {
+  uploadPost(String caption, String postImage, String location) async {
     try {
 
       if (caption.isNotEmpty && postImage.isNotEmpty){
@@ -58,8 +58,12 @@ class UploadPostsController extends GetxController {
           uid: uid,
           likes: [],
           commentCount: 0,
+          createdAt: DateTime.now(),
+          location: location,
+          );
 
-      );
+
+
 
       await firebaseFirestore
           .collection('posts')
@@ -73,7 +77,7 @@ class UploadPostsController extends GetxController {
       }
     } catch (e) {
       ScaffoldMessenger.of(Get.context!).showSnackBar(
-          SnackBar(content: Text("Error uploading post" + e.toString())));
+          SnackBar(content: Text("Error uploading post$e")));
     }
   }
 }

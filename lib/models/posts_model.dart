@@ -9,6 +9,8 @@ class PostsModel {
   String uid;
   List likes;
   int commentCount;
+  String location;
+  final DateTime createdAt;
 
   PostsModel(
       {required this.username,
@@ -18,7 +20,9 @@ class PostsModel {
       required this.id,
       required this.uid,
       required this.likes,
-      required this.commentCount});
+      required this.commentCount,
+      required this.location,
+      required this.createdAt});
 
   Map<String, dynamic> toJson() {
     return {
@@ -30,8 +34,11 @@ class PostsModel {
       'uid': uid,
       'likes': likes,
       'commentCount': commentCount,
+      'location': location,
+      'createdAt': createdAt,
     };
   }
+
   static PostsModel fromSnap(DocumentSnapshot snapshot) {
     var snap = snapshot.data() as Map<String, dynamic>;
     return PostsModel(
@@ -43,6 +50,8 @@ class PostsModel {
       uid: snap['uid'],
       likes: snap['likes'],
       commentCount: snap['commentCount'],
+      location: snap['location'],
+      createdAt: snap['createdAt'].toDate(),
     );
   }
 }
