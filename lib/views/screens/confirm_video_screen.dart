@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/widgets/text_input_fields.dart';
 import '../../controllers/upload_video_controller.dart';
@@ -143,11 +142,6 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
                 label: const Text("Upload"),
               ),
 
-              ElevatedButton(onPressed: (){
-
-
-
-              }, child: const Text("Upload"))
             ],
           ),
         ),

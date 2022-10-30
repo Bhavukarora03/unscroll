@@ -44,10 +44,10 @@ class AuthController extends GetxController {
 
   ///persisting user state using ever
   _initialScreen(User? user) {
-    if (user == null) {
-      Get.offAll(() => LoginScreen());
-    } else {
+    if (user != null) {
       Get.offAll(() => const NavigationScreen());
+    } else {
+      Get.offAll(() => LoginScreen());
     }
   }
 
