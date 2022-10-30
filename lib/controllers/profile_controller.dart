@@ -93,13 +93,19 @@ class ProfileController extends GetxController {
           .doc(_uid.value)
           .collection('followers')
           .doc(authController.user.uid)
-          .set({});
+          .set({
+      });
       await firebaseFirestore
           .collection('users')
           .doc(authController.user.uid)
           .collection('following')
           .doc(_uid.value)
-          .set({});
+          .set({
+        'email': authController.user.email,
+        'uid': _uid.value,
+        'username': _user.value['username'],
+        'profilePic': _user.value['profilePic']
+      });
 
       _user.value
           .update('followers', (value) => (int.parse(value) + 1).toString());

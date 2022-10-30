@@ -1,10 +1,10 @@
 import 'dart:io';
+import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/widgets/text_input_fields.dart';
-import 'package:video_player/video_player.dart';
-
 import '../../controllers/upload_video_controller.dart';
 
 class ConfirmVideo extends StatefulWidget {
@@ -20,7 +20,7 @@ class ConfirmVideo extends StatefulWidget {
 }
 
 class _ConfirmVideoState extends State<ConfirmVideo> {
-  late VideoPlayerController controller;
+  late CachedVideoPlayerController controller;
 
   TextEditingController songNameController = TextEditingController();
   TextEditingController captionController = TextEditingController();
@@ -30,7 +30,7 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
   void initState() {
     // TODO: implement initState
     setState(() {
-      controller = VideoPlayerController.file(widget.videoFile);
+      controller = CachedVideoPlayerController.file(widget.videoFile);
     });
     controller.initialize();
     controller.play();
@@ -45,7 +45,6 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
   void dispose() {
     controller.dispose();
     super.dispose();
-
   }
 
   @override
@@ -57,7 +56,7 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
         Stack(children: [
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.8,
-            child: VideoPlayer(controller),
+            child: CachedVideoPlayer(controller),
           ),
           Positioned(
             top: 10,
@@ -131,13 +130,24 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
               ),
               height20,
               ElevatedButton.icon(
-                onPressed: () => videoController.uploadVideo(
-                    songNameController.text,
-                    captionController.text,
-                    widget.videoPath),
+                onPressed: () {
+                  videoController.uploadVideo(songNameController.text,
+                      captionController.text, widget.videoPath);
+
+                  const CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                    color: Colors.blueAccent,
+                  );
+                },
                 icon: const Icon(Icons.upload),
                 label: const Text("Upload"),
-              )
+              ),
+
+              ElevatedButton(onPressed: (){
+
+
+
+              }, child: const Text("Upload"))
             ],
           ),
         ),

@@ -81,6 +81,8 @@ class UploadVideoController extends GetxController {
           .collection('videos')
           .doc("Video $docCount")
           .set(video.toJson());
+
+
       Get.back();
     } catch (e) {
       Get.snackbar("error", e.toString());

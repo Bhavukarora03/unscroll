@@ -43,12 +43,31 @@ class LoginScreen extends StatelessWidget {
                         obscureText: true,
                         keyboardType: TextInputType.visiblePassword),
                     height40,
+
+
                     ElevatedButton(
                         onPressed: () => authController.loginUser(_emailController.text, _passwprdController.text),
                         child: const Text(
                           "Continue",
                         )),
-                    height20,
+                    height50,
+
+
+                    const Align(alignment: Alignment.center, child: Text("or")),
+
+                    height50,
+
+                   ElevatedButton.icon(
+
+
+                        onPressed: () => authController.loginWithGoogle(),
+                        icon:  Image.asset("assets/images/google.png", height: 20,),
+                        label: const Text("Continue with Google")),
+
+                    height50,
+
+
+
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       const Text("Don't have an account?"),
                       TextButton(
@@ -60,6 +79,8 @@ class LoginScreen extends StatelessWidget {
                           },
                           child: const Text("Sign up"))
                     ])
+
+
                   ],
                 )),
           ),

@@ -1,8 +1,10 @@
-
+import 'package:auto_animated/auto_animated.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/profile_controller.dart';
+import 'package:unscroll/views/screens/followers_count.dart';
+import 'package:unscroll/views/screens/following_count.dart';
 import 'package:unscroll/views/widgets/widgets.dart';
 import 'package:get/get.dart';
 
@@ -18,9 +20,24 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final ProfileController profileController = Get.put(ProfileController());
 
+  String uid = "";
+
+  getUserids() async {
+    uid = widget.uid;
+  }
+
+  final options = const LiveOptions(
+    delay: Duration(milliseconds: 100),
+    showItemInterval: Duration(milliseconds: 500),
+    showItemDuration: Duration(seconds: 1),
+    visibleFraction: 0.05,
+    reAnimateOnVisibility: false,
+  );
+
   @override
   void initState() {
     profileController.updateUSerId(widget.uid);
+
     super.initState();
   }
 
@@ -42,9 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               actions: [
                 IconButton(
-                  onPressed: () {
-
-                  },
+                  onPressed: () {},
                   icon: const Icon(Icons.more_vert),
                 ),
               ],
@@ -63,29 +78,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             radius: 50)),
                     height40,
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Text(profileController.user['likes']),
-                              const Text('likes'),
-                            ],
+                        InkWell(
+                          child: Expanded(
+                            child: Column(
+                              children: [
+                                Text(profileController.user['likes']),
+                                const Text('likes'),
+                              ],
+                            ),
                           ),
                         ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Text(profileController.user['followers']),
-                              const Text('Followers'),
-                            ],
+                        InkWell(
+                          onTap: () => Get.to(() => FollowersCount()),
+                          child: Expanded(
+                            child: Column(
+                              children: [
+                                Text(profileController.user['followers']),
+                                const Text('Followers'),
+                              ],
+                            ),
                           ),
                         ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Text(profileController.user['following']),
-                              const Text('Following'),
-                            ],
+                        InkWell(
+                          onTap: () => Get.to(() => FollowingCount()),
+                          child: Expanded(
+                            child: Column(
+                              children: [
+                                Text(profileController.user['following']),
+                                const Text('Following'),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -130,22 +154,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(
                       height: 25,
                     ),
-                    GridView.builder(
+                    LiveGrid.options(
+                      options: options,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: profileController.user['thumbnails'].length,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                              mainAxisExtent: 250,
+                                mainAxisExtent: 250,
                                 crossAxisCount: 3,
                                 crossAxisSpacing: 5,
                                 mainAxisSpacing: 5),
-                        itemBuilder: (context, index) {
-                          return SizedBox(
-                            child: CachedNetworkImage( imageUrl: profileController.user['thumbnails'][index],),
-
-                          );
-                        })
+                        itemBuilder: buildAnimatedItem
+                        )
                   ],
                 ),
               ),
@@ -153,4 +174,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         });
   }
+
+  Widget buildAnimatedItem(
+    BuildContext context,
+    int index,
+    Animation<double> animation,
+  ) =>
+      // For example wrap with fade transition
+      FadeTransition(
+        opacity: Tween<double>(
+          begin: 0,
+          end: 1,
+        ).animate(animation),
+        // And slide transition
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, -0.1),
+            end: Offset.zero,
+          ).animate(animation),
+          // Paste you Widget
+          child: SizedBox(
+            width: 100,
+            height: 100,
+            child: CachedNetworkImage(
+              imageUrl: profileController.user['thumbnails'][index],
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
 }

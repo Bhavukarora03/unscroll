@@ -1,3 +1,6 @@
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -12,6 +15,8 @@ class SignUpScreen extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +37,14 @@ class SignUpScreen extends StatelessWidget {
                       children: [
                         Stack(
                           children: [
-                            const UserProfileImage.medium(
-                              imageUrl:
-                                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                            ),
+                           GetBuilder(
+                               init: authController,
+                               builder: (controller) => CircleAvatar(
+                              radius: 50,
+                              backgroundImage: authController.pickedImage == null
+                                  ? const AssetImage("assets/images/google.png")
+                                  : FileImage(File(authController.pickedImage.path)) as ImageProvider,
+                            )),
                             Positioned(
                               bottom: 0,
                               right: 0,
@@ -45,47 +54,42 @@ class SignUpScreen extends StatelessWidget {
                                 child: IconButton(
                                   onPressed: () {
                                     showCupertinoModalBottomSheet(
-                                        barrierColor:
-                                            Colors.black.withOpacity(0.5),
-                                        context: context,
-                                        builder: (_) => Material(
-                                              child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    height10,
-                                                    const Icon(
-                                                        Icons.linear_scale),
-                                                    height20,
-                                                    ListTile(
-                                                      leading: const Icon(
-                                                          Icons.camera),
-                                                      title:
-                                                          const Text("Camera"),
-                                                      onTap: () {
-                                                          authController
-                                                              .pickImage(
-                                                                  ImageSource
-                                                                      .camera);
-                                                          Get.back();
-                                                      }
-                                                    ),
-                                                    ListTile(
-                                                        leading: const Icon(
-                                                            Icons.image),
-                                                        title: const Text(
-                                                            "Gallery"),
-                                                        onTap: () {
-                                                          authController
-                                                              .pickImage(
-                                                                  ImageSource
-                                                                      .gallery);
+                                      barrierColor:
+                                          Colors.black.withOpacity(0.5),
+                                      context: context,
+                                      builder: (_) => Material(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            height10,
+                                            const Icon(Icons.linear_scale),
+                                            height20,
+                                            ListTile(
+                                                leading:
+                                                    const Icon(Icons.camera),
+                                                title: const Text("Camera"),
+                                                onTap: () {
+                                                  authController.pickImage(
+                                                      ImageSource.camera);
+                                                  Get.back();
+                                                }),
+                                            ListTile(
+                                                leading:
+                                                    const Icon(Icons.image),
+                                                title: const Text("Gallery"),
+                                                onTap: () {
+                                                  authController.pickImage(
+                                                      ImageSource.gallery);
 
-                                                          Get.back();
-                                                        }),
-                                                    height80
-                                                  ]),
-                                            ));
+
+
+                                                  Get.back();
+                                                }),
+                                            height80
+                                          ],
+                                        ),
+                                      ),
+                                    );
                                   },
                                   icon: const Icon(
                                     Icons.edit,

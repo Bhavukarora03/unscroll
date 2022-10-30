@@ -21,7 +21,7 @@ class SearchPage extends StatelessWidget {
           title: TextField(
             controller: searchUserController,
             decoration: const InputDecoration(
-            filled: true,
+              filled: true,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
                 borderSide: BorderSide.none,
@@ -31,8 +31,7 @@ class SearchPage extends StatelessWidget {
               prefixIcon: Icon(Icons.search),
               prefixIconColor: Colors.white,
             ),
-
-           onEditingComplete: () {
+            onEditingComplete: () {
               searchController.searchProfiles(searchUserController.text);
             },
             onChanged: (value) {
@@ -52,7 +51,8 @@ class SearchPage extends StatelessWidget {
             children: [
               searchController.searchUsers.isEmpty
                   ? const Align(
-                  alignment: Alignment.bottomCenter, child: Text('No results'))
+                      alignment: Alignment.bottomCenter,
+                      child: Text('No results'))
                   : Expanded(
                       child: ListView.builder(
                         itemCount: searchController.searchUsers.length,
@@ -61,21 +61,19 @@ class SearchPage extends StatelessWidget {
 
                           return InkWell(
                             onTap: () {
-                              Get.to(() => ProfileScreen(uid: user.uid), transition: Transition.cupertinoDialog);
+                              Get.to(() => ProfileScreen(uid: user.uid),
+                                  transition: Transition.cupertinoDialog);
                             },
                             child: ListTile(
                               leading: UserProfileImage(
                                   imageUrl: user.profilePic, radius: 20),
                               title: Text(user.username),
-                              trailing:  IconButton(icon: const Icon(Icons.close), onPressed: (){
-                                 searchController.removeSearchUsers(searchUserController.text);
-
-
-
-
-
-                              }),
-
+                              trailing: IconButton(
+                                  icon: const Icon(Icons.close),
+                                  onPressed: () {
+                                    searchController.removeSearchUsers(
+                                        searchUserController.text);
+                                  }),
                             ),
                           );
                         },

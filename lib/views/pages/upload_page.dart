@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/screens.dart';
-import 'package:unscroll/views/widgets/user_profileimg.dart';
+
 
 
 class UploadPage extends StatelessWidget {
@@ -75,7 +76,8 @@ class UploadPage extends StatelessWidget {
                     )
                   ),
               icon: const Icon(Icons.video_call),
-              label: const Text("Upload a video"))
+              label: const Text("Upload a video")),
+
         ],
       ),
     );
