@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:unscroll/constants.dart';
 import "package:unscroll/views/pages/pages.dart";
+import 'package:unscroll/views/pages/posts_page.dart';
 import 'package:unscroll/views/screens/profile_screen.dart';
 
 class NavigationScreen extends StatefulWidget {
@@ -13,36 +14,20 @@ class NavigationScreen extends StatefulWidget {
 
 class _NavigationScreenState extends State<NavigationScreen> {
   final ValueNotifier<String> title = ValueNotifier<String>('Home');
-  final ValueNotifier<double> toolBarHeight = ValueNotifier<double>(0.0);
   final ValueNotifier<int> _currentIndex = ValueNotifier<int>(0);
 
-  final pages =  [
+  final pages = [
+   PostsPage(),
     HomePage(),
     SearchPage(),
-    UploadPage(),
-    MessagePage(),
+    const UploadPage(),
     ProfileScreen(uid: authController.user.uid),
   ];
 
-  final titles = [
-    "Home",
-    "",
-    "Upload",
-    "Messages",
-    "Profile",
-  ];
 
-  final radius = [
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-  ];
+
 
   void _onNavItemsSelected(i) {
-
-    title.value = titles[i];
     _currentIndex.value = i;
   }
 
@@ -50,23 +35,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: _bottomNavigationBar(),
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   toolbarHeight: ValueListenableBuilder(valueListenable: toolBarHeight, builder: (BuildContext context, double value, _) {
-      //    return value.toDouble();
-      //   }
-      //   ),
-      //
-      //   title: ValueListenableBuilder(
-      //     valueListenable: title,
-      //     builder: (BuildContext context, String value, _) {
-      //       return Text(value);
-      //     },
-      //   ),
-      // ),
+
       body: Scaffold(
         resizeToAvoidBottomInset: false,
-       body: ValueListenableBuilder(
+        body: ValueListenableBuilder(
           valueListenable: _currentIndex,
           builder: (BuildContext context, int value, _) {
             return pages[value];
@@ -77,45 +49,49 @@ class _NavigationScreenState extends State<NavigationScreen> {
   }
 
   Widget _bottomNavigationBar() {
-    return SalomonBottomBar(
-      currentIndex: _currentIndex.value,
-      onTap: (i) => setState(() => _onNavItemsSelected(i)),
-      items: [
-        /// Home
-        SalomonBottomBarItem(
-          icon: const Icon(Icons.home),
-          title: const Text("Home"),
-          selectedColor: Colors.purple,
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: SalomonBottomBar(
+        currentIndex: _currentIndex.value,
+        onTap: (i) => setState(() => _onNavItemsSelected(i)),
+        items: [
 
-        /// Search
-        SalomonBottomBarItem(
-          icon: const Icon(Icons.search),
-          title: const Text("Search"),
-          selectedColor: Colors.white70,
-        ),
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.home ),
+            title: const Text("Home"),
+            selectedColor: Colors.green,
+          ),
 
-        /// Likes
-        SalomonBottomBarItem(
-          icon: const Icon(Icons.add),
-          title: const Text("add"),
-          selectedColor: Color(0xff04A547),
-        ),
+          /// Home
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.video_collection_outlined),
+            title: const Text("Unscroll"),
+            selectedColor: Colors.purple,
+          ),
 
-        /// Messages
-        SalomonBottomBarItem(
-          icon: const Icon(Icons.message_outlined),
-          title: const Text("Message"),
-          selectedColor: Colors.orange,
-        ),
+          /// Search
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.search),
+            title: const Text("Search"),
+            selectedColor: Colors.white70,
+          ),
 
-        /// Profile
-        SalomonBottomBarItem(
-          icon: const Icon(Icons.person),
-          title: const Text("Profile"),
-          selectedColor: Colors.teal,
-        ),
-      ],
+          /// Likes
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.add),
+            title: const Text("add"),
+            selectedColor: const Color(0xff94CBED),
+          ),
+
+
+          /// Profile
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.person),
+            title: const Text("Profile"),
+            selectedColor: Colors.teal,
+          ),
+        ],
+      ),
     );
   }
 }

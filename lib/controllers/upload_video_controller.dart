@@ -1,7 +1,6 @@
-import 'dart:ffi';
+
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/models/video_model.dart';
 import 'package:video_compress/video_compress.dart';
-import 'package:image_picker/image_picker.dart';
+
 
 class UploadVideoController extends GetxController {
   ///compress video and return the compressed video
@@ -82,6 +81,8 @@ class UploadVideoController extends GetxController {
           .collection('videos')
           .doc("Video $docCount")
           .set(video.toJson());
+
+
       Get.back();
     } catch (e) {
       Get.snackbar("error", e.toString());

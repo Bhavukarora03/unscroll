@@ -28,13 +28,24 @@ dependencies:
   cloud_firestore: ^3.5.1
   image_picker: ^0.8.6
   salomon_bottom_bar: ^3.3.1
-  video_player: ^2.4.7
   flutter_launcher_icons: ^0.10.0
   video_compress: ^3.1.1
   modal_bottom_sheet: ^2.1.2
   timeago: ^3.3.0
   share_plus: ^6.0.1
   file_saver: ^0.1.1
+  shimmer: ^2.0.0
+  cached_video_player: ^2.0.3
+  internet_connection_checker: ^1.0.0+1
+  form_field_validator: ^1.1.0
+  fluttertoast: ^8.1.1
+  google_sign_in: ^5.4.2
+  auto_animated: ^3.1.0
+  font_awesome_flutter: ^10.2.1
+  step_progress_indicator: ^1.0.2
+
+
+
 
 
 

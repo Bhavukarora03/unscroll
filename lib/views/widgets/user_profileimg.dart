@@ -16,6 +16,9 @@ class UserProfileImage extends StatelessWidget {
   const UserProfileImage.large(
       {Key? key, required this.imageUrl, this.radius = 80})
       : super(key: key);
+  const UserProfileImage.none(
+      {Key? key, required this.imageUrl, this.radius = 0})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

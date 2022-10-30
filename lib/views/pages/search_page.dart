@@ -9,6 +9,7 @@ class SearchPage extends StatelessWidget {
   SearchPage({Key? key}) : super(key: key);
 
   final SearchController searchController = Get.put(SearchController());
+  final TextEditingController searchUserController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +19,27 @@ class SearchPage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           toolbarHeight: 100,
           title: TextField(
+            controller: searchUserController,
             decoration: const InputDecoration(
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                borderSide: BorderSide.none,
+              ),
+              fillColor: Colors.black38,
               hintText: 'Search',
-              suffixIcon: Icon(Icons.search),
+              prefixIcon: Icon(Icons.search),
+              prefixIconColor: Colors.white,
             ),
+            onEditingComplete: () {
+              searchController.searchProfiles(searchUserController.text);
+            },
+            onChanged: (value) {
+              searchController.searchProfiles(value);
+            },
             onSubmitted: (value) {
               searchController.searchProfiles(value);
+              searchUserController.clear();
             },
           ),
         ),
@@ -31,26 +47,33 @@ class SearchPage extends StatelessWidget {
           padding: EdgeInsets.only(
               top: MediaQuery.of(context).viewInsets.top, left: 20, right: 20),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               searchController.searchUsers.isEmpty
                   ? const Align(
-                  alignment: Alignment.bottomCenter, child: Text('No results'))
+                      alignment: Alignment.bottomCenter,
+                      child: Text('No results'))
                   : Expanded(
                       child: ListView.builder(
                         itemCount: searchController.searchUsers.length,
                         itemBuilder: (context, index) {
                           User user = searchController.searchUsers[index];
+
                           return InkWell(
                             onTap: () {
-                              Get.to(() => ProfileScreen(uid: user.uid), transition: Transition.cupertinoDialog);
+                              Get.to(() => ProfileScreen(uid: user.uid),
+                                  transition: Transition.cupertinoDialog);
                             },
-                            child: Card(
-                              child: ListTile(
-                                leading: UserProfileImage(
-                                    imageUrl: user.profilePic, radius: 20),
-                                title: Text(user.username),
-                                subtitle: Text(user.email),
-                              ),
+                            child: ListTile(
+                              leading: UserProfileImage(
+                                  imageUrl: user.profilePic, radius: 20),
+                              title: Text(user.username),
+                              trailing: IconButton(
+                                  icon: const Icon(Icons.close),
+                                  onPressed: () {
+                                    searchController.removeSearchUsers(
+                                        searchUserController.text);
+                                  }),
                             ),
                           );
                         },
