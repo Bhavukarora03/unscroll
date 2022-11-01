@@ -10,7 +10,7 @@ class PostsModel {
   List likes;
   int commentCount;
   String location;
-  final DateTime createdAt;
+  DateTime createdAt;
 
   PostsModel(
       {required this.username,

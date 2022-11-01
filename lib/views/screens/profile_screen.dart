@@ -17,26 +17,21 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen>
+    with SingleTickerProviderStateMixin {
   final ProfileController profileController = Get.put(ProfileController());
 
   String uid = "";
+  late TabController _tabController;
 
   getUserids() async {
     uid = widget.uid;
   }
 
-  final options = const LiveOptions(
-    delay: Duration(milliseconds: 100),
-    showItemInterval: Duration(milliseconds: 500),
-    showItemDuration: Duration(seconds: 1),
-    visibleFraction: 0.05,
-    reAnimateOnVisibility: false,
-  );
-
   @override
   void initState() {
     profileController.updateUSerId(widget.uid);
+    _tabController = TabController(length: 2, vsync: this);
 
     super.initState();
   }
@@ -44,163 +39,192 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProfileController>(
-        init: ProfileController(),
-        builder: (controller) {
-          if (controller.user.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      init: ProfileController(),
+      builder: (controller) {
+        if (controller.user.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              leading: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.person_add),
-              ),
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.more_vert),
-                ),
-              ],
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            leading: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.person_add),
             ),
-            body: SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.more_vert),
+              ),
+            ],
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                height20,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    height20,
-                    Align(
-                        alignment: Alignment.center,
-                        child: UserProfileImage.medium(
-                            imageUrl: profileController.user['profilePic'],
-                            radius: 50)),
-                    height40,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    Column(
                       children: [
-                        InkWell(
-                          child: Expanded(
-                            child: Column(
-                              children: [
-                                Text(profileController.user['likes']),
-                                const Text('likes'),
-                              ],
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () => Get.to(() => FollowersCount()),
-                          child: Expanded(
-                            child: Column(
-                              children: [
-                                Text(profileController.user['followers']),
-                                const Text('Followers'),
-                              ],
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () => Get.to(() => FollowingCount()),
-                          child: Expanded(
-                            child: Column(
-                              children: [
-                                Text(profileController.user['following']),
-                                const Text('Following'),
-                              ],
-                            ),
-                          ),
+                        UserProfileImage.medium(
+                            imageUrl: profileController.user['profilePic'],
+                            radius: 40),
+                        height10,
+                        Text(
+                          profileController.user['username'],
+                          style: const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                    height40,
-                    const Divider(
-                      thickness: 1,
-                      indent: 20,
-                      endIndent: 20,
-                    ),
-                    Container(
-                      width: 140,
-                      height: 47,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.black12,
+                    Column(
+                      children: [
+                        Text(
+                          profileController.user['likes'],
                         ),
-                      ),
-                      child: Center(
-                        child: InkWell(
-                          onTap: () {
-                            if (widget.uid == authController.user.uid) {
-                              authController.signOut();
-                            } else {
-                              profileController.followerUser();
-                            }
-                          },
-                          child: Text(
-                            widget.uid == authController.user.uid
-                                ? 'Sign Out'
-                                : profileController.user['isFollowing']
-                                    ? 'Unfollow'
-                                    : 'Follow',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        const Text('Posts')
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(() => FollowersCount());
+                      },
+                      child: Column(
+                        children: [
+                          Text(
+                            profileController.user['followers'].toString(),
                           ),
-                        ),
+                          const Text('Followers')
+                        ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 25,
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(() => FollowingCount());
+                      },
+                      child: Column(
+                        children: [
+                          Text(
+                            profileController.user['following'],
+                          ),
+                          const Text('Following')
+                        ],
+                      ),
                     ),
-                    LiveGrid.options(
-                      options: options,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: profileController.user['thumbnails'].length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                mainAxisExtent: 250,
-                                crossAxisCount: 3,
-                                crossAxisSpacing: 5,
-                                mainAxisSpacing: 5),
-                        itemBuilder: buildAnimatedItem
-                        )
                   ],
                 ),
-              ),
-            ),
-          );
-        });
-  }
-
-  Widget buildAnimatedItem(
-    BuildContext context,
-    int index,
-    Animation<double> animation,
-  ) =>
-      // For example wrap with fade transition
-      FadeTransition(
-        opacity: Tween<double>(
-          begin: 0,
-          end: 1,
-        ).animate(animation),
-        // And slide transition
-        child: SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, -0.1),
-            end: Offset.zero,
-          ).animate(animation),
-          // Paste you Widget
-          child: SizedBox(
-            width: 100,
-            height: 100,
-            child: CachedNetworkImage(
-              imageUrl: profileController.user['thumbnails'][index],
-              fit: BoxFit.cover,
+                height20,
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                   padding: const EdgeInsets.symmetric(horizontal: 20),
+                   
+                  ),
+                  label: Text(
+                    widget.uid == authController.user.uid
+                        ? 'Sign Out'
+                        : profileController.user['isFollowing']
+                            ? 'Unfollow'
+                            : 'Follow',
+                  ),
+                  icon: widget.uid == authController.user.uid
+                      ? const Icon(Icons.logout_sharp)
+                      : const Icon(Icons.person_add),
+                  onPressed: () {
+                    if (widget.uid == authController.user.uid) {
+                      authController.signOut();
+                    } else {
+                      profileController.followerUser();
+                    }
+                  },
+                ),
+                height20,
+                TabBar(
+                  controller: _tabController,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  tabs: const [
+                    Tab(
+                      text: 'Posts',
+                    ),
+                    Tab(
+                      text: 'Unscrolls',
+                    ),
+                  ],
+                ),
+                TabBarLibrary(tabController: _tabController),
+              ],
             ),
           ),
-        ),
-      );
+        );
+      },
+    );
+  }
+}
+
+class TabBarLibrary extends StatefulWidget {
+  const TabBarLibrary({
+    Key? key,
+    required TabController tabController,
+  })  : _tabController = tabController,
+        super(key: key);
+
+  final TabController _tabController;
+
+  @override
+  State<TabBarLibrary> createState() => _TabBarLibraryState();
+}
+
+class _TabBarLibraryState extends State<TabBarLibrary> {
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: TabBarView(
+        controller: widget._tabController,
+        children: [
+          GridView.builder(
+              itemCount: Get.find<ProfileController>().user['PostUrl'].length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  mainAxisExtent: 180,
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5),
+              itemBuilder: (context, index) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(
+                        Get.find<ProfileController>().user['PostUrl'][index],
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              }),
+          GridView.builder(
+            itemCount: Get.find<ProfileController>().user['thumbnails'].length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisExtent: 250,
+                crossAxisCount: 3,
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5),
+            itemBuilder: (context, index) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(
+                      Get.find<ProfileController>().user['thumbnails'][index],
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }

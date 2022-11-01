@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:unscroll/constants.dart';
@@ -27,8 +29,8 @@ class AuthController extends GetxController {
 
   bool get hasInternet => _hasInternet.value;
 
-  RxString _imagePath = RxString('');
-  String get imagePath => _imagePath.value;
+
+
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -51,6 +53,32 @@ class AuthController extends GetxController {
     }
   }
 
+//cropimage
+  cropImage(String imgPath) async {
+    CroppedFile? file = await ImageCropper().cropImage(
+      sourcePath: imgPath,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+      ],
+    );
+    return file;
+  }
+
   ///pickimage from ImageSource
   Future<Rx<File>> pickImage(ImageSource imageSource) async {
     final pickedImage = await ImagePicker().pickImage(source: imageSource);
@@ -58,7 +86,22 @@ class AuthController extends GetxController {
       Get.snackbar('success', "ez pz");
     }
     _pickedImage = Rx<File>(File(pickedImage!.path));
-    _imagePath = pickedImage.path.obs;
+
+
+    await ImageCropper().cropImage(sourcePath: pickedImage.path, aspectRatioPresets: [
+      CropAspectRatioPreset.square,
+      CropAspectRatioPreset.ratio3x2,
+      CropAspectRatioPreset.original,
+      CropAspectRatioPreset.ratio4x3,
+      CropAspectRatioPreset.ratio16x9
+    ], uiSettings: [
+      AndroidUiSettings(
+          toolbarTitle: 'Cropper',
+          toolbarColor: Colors.deepOrange,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false),
+    ]);
 
     update();
 
@@ -125,8 +168,6 @@ class AuthController extends GetxController {
     await firebaseAuth.signOut();
   }
 
-
-
   ///Sign in with Google
   loginWithGoogle() async {
     try {
@@ -142,17 +183,10 @@ class AuthController extends GetxController {
 
       final User? user = authResult.user;
 
-
-
-      File image = File(user!.photoURL!).absolute.existsSync() ? File(user.photoURL!) : File('assets/images/upload.png') ;
-      String downloadURl = await _uploadImageToStorage(image);
-
-
-
       model.User googleUser = model.User(
-          username: user.displayName!,
+          username: user!.displayName!,
           email: user.email!,
-          profilePic: downloadURl,
+          profilePic: user.photoURL!,
           uid: user.uid);
       await firebaseFirestore
           .collection("users")

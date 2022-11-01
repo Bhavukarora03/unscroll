@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:unscroll/constants.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/controllers/upload_posts_controller.dart';
@@ -41,7 +42,10 @@ class _ConfirmPostState extends State<ConfirmPost> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Image.file(widget.postImage)),
+                    child: Image.file(
+                      File(widget.imgPath),
+                      fit: BoxFit.cover,
+                    )),
                 height50,
                 TextField(
                   controller: _locationController,
@@ -62,8 +66,11 @@ class _ConfirmPostState extends State<ConfirmPost> {
                 height50,
                 ElevatedButton(
                     onPressed: () {
-                      _postController.uploadPost(_captionController.text,
-                          _locationController.text, widget.imgPath);
+                      _postController.uploadPost(
+                        _captionController.text,
+                        widget.imgPath,
+                        _locationController.text,
+                      );
                     },
                     child: const Text('Confirm Post'))
               ],

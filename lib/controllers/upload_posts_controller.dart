@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:unscroll/models/posts_model.dart';
 
@@ -12,6 +13,34 @@ import '../constants.dart';
 class UploadPostsController extends GetxController {
   Rx<File> _pickedPostImage = Rx<File>(File(''));
   File get pickedPostImage => _pickedPostImage.value;
+
+  ///crop image
+
+  cropImage(String imgPath) async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imgPath,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+
+      ],
+    );
+    return croppedFile;
+  }
 
   ///picks posts image from ImageSource
   Future<Rx<File>> pickImage(ImageSource imageSource) async {
@@ -26,6 +55,22 @@ class UploadPostsController extends GetxController {
           const SnackBar(content: Text("Picked Image successfully")));
     }
     _pickedPostImage = Rx<File>(File(pickedImage!.path));
+
+
+    await ImageCropper().cropImage(sourcePath: pickedImage.path, aspectRatioPresets: [
+      CropAspectRatioPreset.square,
+      CropAspectRatioPreset.ratio3x2,
+      CropAspectRatioPreset.original,
+      CropAspectRatioPreset.ratio4x3,
+      CropAspectRatioPreset.ratio16x9
+    ], uiSettings: [
+      AndroidUiSettings(
+          toolbarTitle: 'Cropper',
+          toolbarColor: Colors.deepOrange,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false),
+    ]);
     return _pickedPostImage;
   }
 
@@ -39,17 +84,16 @@ class UploadPostsController extends GetxController {
 
   uploadPost(String caption, String postImage, String location) async {
     try {
+      if (caption.isNotEmpty && postImage.isNotEmpty && location.isNotEmpty) {
+        String uid = firebaseAuth.currentUser!.uid;
+        DocumentSnapshot doc =
+            await firebaseFirestore.collection('users').doc(uid).get();
+        var allDocs = await firebaseFirestore.collection('posts').get();
+        int docCount = allDocs.docs.length;
+        String id = docCount.toString();
+        String postUrl = await _uploadPostToStorage("posts $id", postImage);
 
-      if (caption.isNotEmpty && postImage.isNotEmpty){
-      String uid = firebaseAuth.currentUser!.uid;
-      DocumentSnapshot doc =
-          await firebaseFirestore.collection('users').doc(uid).get();
-      var allDocs = await firebaseFirestore.collection('posts').get();
-      int docCount = allDocs.docs.length;
-      String id = docCount.toString();
-      String postUrl = await _uploadPostToStorage("posts $id", postImage);
-
-      PostsModel postsModel = PostsModel(
+        PostsModel postsModel = PostsModel(
           username: (doc.data()! as Map<String, dynamic>)['username'],
           profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
           postURL: postUrl,
@@ -60,24 +104,21 @@ class UploadPostsController extends GetxController {
           commentCount: 0,
           createdAt: DateTime.now(),
           location: location,
-          );
+        );
 
+        await firebaseFirestore
+            .collection('posts')
+            .doc("posts $docCount")
+            .set(postsModel.toJson());
 
-
-
-      await firebaseFirestore
-          .collection('posts')
-          .doc("posts $docCount")
-          .set(postsModel.toJson());
-
-      Get.back();
+        Get.back();
       } else {
         ScaffoldMessenger.of(Get.context!).showSnackBar(
-          const SnackBar(content: Text("Please fill all the fields")));
+            const SnackBar(content: Text("Please fill all the fields")));
       }
     } catch (e) {
-      ScaffoldMessenger.of(Get.context!).showSnackBar(
-          SnackBar(content: Text("Error uploading post$e")));
+      ScaffoldMessenger.of(Get.context!)
+          .showSnackBar(SnackBar(content: Text("Error uploading post$e")));
     }
   }
 }

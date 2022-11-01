@@ -30,7 +30,7 @@ class UploadPage extends StatelessWidget {
             imgPath: post.path,
           ));
     } else {
-      Get.snackbar("Error", "No Post Selected");
+      Get.snackbar("Error", "No Image Selected");
     }
   }
 
@@ -48,16 +48,19 @@ class UploadPage extends StatelessWidget {
                   "https://cdni.iconscout.com/illustration/premium/thumb/upload-image-4358254-3618850.png"),
           height80,
           ModelBottomSheetForCamera(
-              titleText: "upload a unscroll",
-              onPressedCamera: ()=> uploadVideo(ImageSource.camera, context),
-              onPressedGallery: ()=> uploadVideo(ImageSource.gallery, context),
-              icon: Icons.video_call, iconColor: Colors.blueAccent.shade100,),
+            titleText: "upload a unscroll",
+            onPressedCamera: () => uploadVideo(ImageSource.camera, context),
+            onPressedGallery: () => uploadVideo(ImageSource.gallery, context),
+            icon: Icons.video_call,
+            iconColor: Colors.blueAccent.shade100,
+          ),
           height20,
           ModelBottomSheetForCamera(
             titleText: "Upload a post",
             onPressedCamera: () => uploadPost(ImageSource.camera, context),
             onPressedGallery: () => uploadPost(ImageSource.gallery, context),
-            icon: Icons.image, iconColor: Colors.black38,
+            icon: Icons.image,
+            iconColor: Colors.black38,
           ),
         ],
       ),

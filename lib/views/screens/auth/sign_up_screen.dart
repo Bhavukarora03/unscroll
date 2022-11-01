@@ -82,7 +82,6 @@ class SignUpScreen extends StatelessWidget {
                                                       ImageSource.gallery);
 
 
-
                                                   Get.back();
                                                 }),
                                             height80

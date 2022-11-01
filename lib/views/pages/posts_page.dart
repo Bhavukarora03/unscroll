@@ -22,7 +22,7 @@ class PostsPage extends StatelessWidget {
       body: Obx(
         () {
           return CustomScrollView(controller: _scrollController, slivers: [
-           // stories(),
+           stories(),
             const SliverToBoxAdapter(
               child: Divider(
                 color: Colors.grey,
@@ -96,7 +96,7 @@ class PostsPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(data.username),
-                          Text('Location'),
+                          const Text('Location'),
                         ],
                       ),
                     ],
