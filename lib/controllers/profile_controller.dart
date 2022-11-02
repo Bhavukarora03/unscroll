@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
 
 class ProfileController extends GetxController {
+
+  static ProfileController get instance => Get.find();
   final Rx<Map<String, dynamic>> _user = Rx<Map<String, dynamic>>({});
   Map<String, dynamic> get user => _user.value;
 

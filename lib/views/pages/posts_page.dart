@@ -1,7 +1,8 @@
-
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/post_controller.dart';
+import 'package:unscroll/views/screens/nscroll_stories.dart';
 import 'package:unscroll/views/widgets/user_profileimg.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -11,6 +12,7 @@ class PostsPage extends StatelessWidget {
 
   final PostController postController = Get.put(PostController());
   final ScrollController _scrollController = ScrollController();
+  bool _enabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class PostsPage extends StatelessWidget {
       body: Obx(
         () {
           return CustomScrollView(controller: _scrollController, slivers: [
-           stories(),
+            stories(),
             const SliverToBoxAdapter(
               child: Divider(
                 color: Colors.grey,
@@ -46,17 +48,19 @@ class PostsPage extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: 1,
               itemBuilder: (context, index) {
-                final data = postController.postsLists[index];
+
                 return SizedBox(
                   width: 100,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      UserProfileImage(
-                        imageUrl: data.profilePic,
-                        radius: 30,
+                      GestureDetector(
+                        onTap: () => Get.to(() => const UnscrollStories()),
+                        child: const UserProfileImage(
+                          imageUrl: 'https://picsum.photos/200',
+                          radius: 30,
+                        ),
                       ),
-                      Text(data.username)
                     ],
                   ),
                 );
@@ -73,7 +77,7 @@ class PostsPage extends StatelessWidget {
         delegate: SliverChildBuilderDelegate(
       (context, index) {
         final data = postController.postsLists[index];
-        if(postController.postsLists.isEmpty){
+        if (postController.postsLists.isEmpty) {
           return const Center(child: Text("No posts yet"));
         }
         return Container(
@@ -149,20 +153,17 @@ class PostsPage extends StatelessWidget {
               ),
               height10,
               Row(
-                children:  [
-                  Text("* ${data.caption}", style: TextStyle(
-                    color: Colors.white,
-                   fontSize: 15
-                  ),),
-
+                children: [
+                  Text(
+                    "* ${data.caption}",
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
+                  ),
                 ],
               ),
               height10,
               Row(
-                children:  [
-                  Text(
-                    timeago.format(data.createdAt.toLocal())
-                  ),
+                children: [
+                  Text(timeago.format(data.createdAt.toLocal())),
                 ],
               ),
             ],

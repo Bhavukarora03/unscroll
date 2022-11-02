@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/screens.dart';
@@ -24,10 +25,28 @@ class UploadPage extends StatelessWidget {
 
   uploadPost(ImageSource src, BuildContext ctx) async {
     final post = await ImagePicker().pickImage(source: src);
-    if (post != null) {
+
+    CroppedFile? croppedFile = await ImageCropper()
+        .cropImage(sourcePath: post!.path, aspectRatioPresets: [
+      CropAspectRatioPreset.square,
+      CropAspectRatioPreset.ratio3x2,
+      CropAspectRatioPreset.original,
+      CropAspectRatioPreset.ratio4x3,
+      CropAspectRatioPreset.ratio16x9
+    ], uiSettings: [
+      AndroidUiSettings(
+          activeControlsWidgetColor: Colors.blueAccent,
+          toolbarTitle: 'Crop your unscroll',
+          toolbarColor: Colors.blueAccent.shade100,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false),
+    ]);
+
+    if (croppedFile != null) {
       Get.off(() => ConfirmPost(
-            postImage: File(post.path),
-            imgPath: post.path,
+            postImage: File(croppedFile.path),
+            imgPath: croppedFile.path,
           ));
     } else {
       Get.snackbar("Error", "No Image Selected");
@@ -47,6 +66,7 @@ class UploadPage extends StatelessWidget {
               imageUrl:
                   "https://cdni.iconscout.com/illustration/premium/thumb/upload-image-4358254-3618850.png"),
           height80,
+
           ModelBottomSheetForCamera(
             titleText: "upload a unscroll",
             onPressedCamera: () => uploadVideo(ImageSource.camera, context),
@@ -62,6 +82,7 @@ class UploadPage extends StatelessWidget {
             icon: Icons.image,
             iconColor: Colors.black38,
           ),
+
         ],
       ),
     );

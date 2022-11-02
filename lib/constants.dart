@@ -4,6 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'controllers/auth_controller.dart';
+import 'controllers/location_controller.dart';
+import 'controllers/profile_controller.dart';
 
 //colors
 const backgroundColor = Colors.black;
@@ -43,3 +45,5 @@ var firebaseStorage = FirebaseStorage.instance;
 
 //Controller
 var authController = AuthController.instance;
+var locationController = LocationController.instance;
+var profileController = ProfileController.instance;
