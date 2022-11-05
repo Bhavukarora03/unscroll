@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/post_controller.dart';
 import 'package:unscroll/views/screens/nscroll_stories.dart';
@@ -10,9 +9,9 @@ import 'package:timeago/timeago.dart' as timeago;
 class PostsPage extends StatelessWidget {
   PostsPage({Key? key}) : super(key: key);
 
-  final PostController postController = Get.put(PostController());
+  final  postController = Get.put(PostController());
   final ScrollController _scrollController = ScrollController();
-  bool _enabled = true;
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +76,7 @@ class PostsPage extends StatelessWidget {
         delegate: SliverChildBuilderDelegate(
       (context, index) {
         final data = postController.postsLists[index];
-        if (postController.postsLists.isEmpty) {
-          return const Center(child: Text("No posts yet"));
-        }
+
         return Container(
           margin: const EdgeInsets.all(10),
           child: Column(

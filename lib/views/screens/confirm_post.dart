@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:unscroll/constants.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/controllers/upload_posts_controller.dart';

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unscroll/views/screens/splashScreen.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/bindings/bindings.dart';
 import 'firebase_options.dart';
@@ -44,6 +45,6 @@ class MyApp extends StatelessWidget {
               ),
             )),
         // scaffoldBackgroundColor: ),
-        home: LoginScreen());
+        home:  const SplashScreen());
   }
 }

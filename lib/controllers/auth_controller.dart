@@ -2,22 +2,27 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/models/users.dart' as model;
+
 import 'package:unscroll/views/screens/screens.dart';
 
 enum AuthState { login, register }
 
-class AuthController extends GetxController {
+class AuthController extends GetxController with CacheManager{
   static AuthController instance = Get.find();
 
   late Rx<User?> _user;
+
+  final isLogged = false.obs;
 
   User get user => _user.value!;
 
@@ -29,30 +34,47 @@ class AuthController extends GetxController {
 
   bool get hasInternet => _hasInternet.value;
 
-
-
+  final secureStorage = const FlutterSecureStorage();
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  @override
-  void onReady() {
-    // TODO: implement onReady
-    super.onReady();
-    _user = Rx<User?>(firebaseAuth.currentUser); //getting the current user
-    _user.bindStream(firebaseAuth
-        .authStateChanges()); //checking auth state if it changes it will update the user and it binds to the stream
-    ever(_user, _initialScreen); // when user value changes call _initialScreen
+
+  void logOut() {
+    isLogged.value = false;
+    removeToken();
   }
 
-  ///persisting user state using ever
-  _initialScreen(User? user) {
-    if (user != null) {
-      Get.offAll(() => const NavigationScreen());
-    } else {
-      Get.offAll(() => LoginScreen());
+  void login(String? token) async {
+    isLogged.value = true;
+    //Token is cached
+    await saveToken(token);
+  }
+
+  void checkLoginStatus() {
+    final token = getToken();
+    if (token != null) {
+      isLogged.value = true;
     }
   }
 
+  @override
+  void onReady() {
+    super.onReady();
+    _user = Rx<User?>(firebaseAuth.currentUser);
+    _user.bindStream(firebaseAuth.authStateChanges());
+    ever(_user, _setInitialScreen);
+  }
+
+  _setInitialScreen(User? user) {
+    if (user == null) {
+      Get.offAll(() => LoginScreen());
+    } else {
+
+
+      Get.offAll(() => const NavigationScreen());
+      secureStorage.write(key: 'user', value: user.uid);
+    }
+  }
 
   ///pickimage from ImageSource
   Future<Rx<File>> pickImage(ImageSource imageSource) async {
@@ -61,7 +83,8 @@ class AuthController extends GetxController {
       Get.snackbar('success', "ez pz");
     }
     _pickedImage = Rx<File>(File(pickedImage!.path));
-    await ImageCropper().cropImage(sourcePath: pickedImage.path, aspectRatioPresets: [
+    await ImageCropper()
+        .cropImage(sourcePath: pickedImage.path, aspectRatioPresets: [
       CropAspectRatioPreset.square,
       CropAspectRatioPreset.ratio3x2,
       CropAspectRatioPreset.original,
@@ -139,6 +162,7 @@ class AuthController extends GetxController {
 
   void signOut() async {
     await firebaseAuth.signOut();
+    Get.offAll(() => LoginScreen());
   }
 
   ///Sign in with Google
@@ -155,6 +179,10 @@ class AuthController extends GetxController {
       final authResult = await firebaseAuth.signInWithCredential(credential);
 
       final User? user = authResult.user;
+      await secureStorage.write(
+        key: 'user',
+        value: user?.uid,
+      );
 
       model.User googleUser = model.User(
           username: user!.displayName!,
@@ -172,3 +200,23 @@ class AuthController extends GetxController {
     }
   }
 }
+
+mixin CacheManager {
+  Future<bool> saveToken(String? token) async {
+    final box = GetStorage();
+    await box.write(CacheManagerKey.TOKEN.toString(), token);
+    return true;
+  }
+
+  String? getToken() {
+    final box = GetStorage();
+    return box.read(CacheManagerKey.TOKEN.toString());
+  }
+
+  Future<void> removeToken() async {
+    final box = GetStorage();
+    await box.remove(CacheManagerKey.TOKEN.toString());
+  }
+}
+
+enum CacheManagerKey { TOKEN }

@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:unscroll/models/posts_model.dart';
 
 import '../constants.dart';
+import '../models/user_stories.dart';
 
 class UploadPostsController extends GetxController {
   Rx<File> _pickedPostImage = Rx<File>(File(''));
@@ -36,7 +37,6 @@ class UploadPostsController extends GetxController {
         IOSUiSettings(
           title: 'Cropper',
         ),
-
       ],
     );
     return croppedFile;
@@ -56,8 +56,8 @@ class UploadPostsController extends GetxController {
     }
     _pickedPostImage = Rx<File>(File(pickedImage!.path));
 
-
-    await ImageCropper().cropImage(sourcePath: pickedImage.path, aspectRatioPresets: [
+    await ImageCropper()
+        .cropImage(sourcePath: pickedImage.path, aspectRatioPresets: [
       CropAspectRatioPreset.square,
       CropAspectRatioPreset.ratio3x2,
       CropAspectRatioPreset.original,
@@ -76,6 +76,14 @@ class UploadPostsController extends GetxController {
 
   Future<String> _uploadPostToStorage(String id, String postPath) async {
     Reference ref = firebaseStorage.ref().child('posts/$id').child(id);
+    UploadTask uploadTask = ref.putFile(File(postPath));
+    TaskSnapshot taskSnapshot = await uploadTask;
+    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  Future<String> _uploadStories(String id, String postPath) async {
+    Reference ref = firebaseStorage.ref().child('stories/$id').child(id);
     UploadTask uploadTask = ref.putFile(File(postPath));
     TaskSnapshot taskSnapshot = await uploadTask;
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
@@ -119,6 +127,36 @@ class UploadPostsController extends GetxController {
     } catch (e) {
       ScaffoldMessenger.of(Get.context!)
           .showSnackBar(SnackBar(content: Text("Error uploading post$e")));
+    }
+  }
+
+  uploadStories(String imagePath) async {
+    try {
+      if (imagePath.isNotEmpty) {
+        String uid = firebaseAuth.currentUser!.uid;
+        DocumentSnapshot doc =
+            await firebaseFirestore.collection('users').doc(uid).get();
+        var docs = firebaseFirestore.collection('stories').get();
+        int docCount = (await docs).docs.length;
+        String id = docCount.toString();
+        String storyUrl = await _uploadStories("stories $id", imagePath);
+        StoriesModel storyModel = StoriesModel(
+            uid: uid,
+            username: (doc.data()! as Map<String, dynamic>)['username'],
+            id: id,
+            profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
+            likes: [],
+            storyUrl: storyUrl,
+            createdAt: DateTime.now());
+
+        await firebaseFirestore
+            .collection('stories')
+            .doc("stories $docCount")
+            .set(storyModel.toJson());
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(Get.context!)
+          .showSnackBar(SnackBar(content: Text("Error uploading story$e")));
     }
   }
 }
