@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/comment_controller.dart';
 import 'package:unscroll/controllers/upload_video_controller.dart';
@@ -19,10 +18,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
-      SystemUiOverlay.top,
 
-    ]);
     final size = MediaQuery.of(context).size;
 
 

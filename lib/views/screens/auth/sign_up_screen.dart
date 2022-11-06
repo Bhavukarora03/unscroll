@@ -41,9 +41,7 @@ class SignUpScreen extends StatelessWidget {
                                init: authController,
                                builder: (controller) => CircleAvatar(
                               radius: 50,
-                              backgroundImage: authController.pickedImage == null
-                                  ? const AssetImage("assets/images/google.png")
-                                  : FileImage(File(authController.pickedImage.path)) as ImageProvider,
+                              backgroundImage: FileImage(File(authController.pickedImage.path)),
                             )),
                             Positioned(
                               bottom: 0,
@@ -80,7 +78,6 @@ class SignUpScreen extends StatelessWidget {
                                                 onTap: () {
                                                   authController.pickImage(
                                                       ImageSource.gallery);
-
 
 
                                                   Get.back();

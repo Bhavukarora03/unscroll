@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:unscroll/constants.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/controllers/upload_posts_controller.dart';
@@ -17,51 +18,115 @@ class ConfirmPost extends StatefulWidget {
 
 class _ConfirmPostState extends State<ConfirmPost> {
   final TextEditingController _captionController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+
+  final PageController _pageController = PageController(
+    initialPage: 0,
+  );
 
   final UploadPostsController _postController =
       Get.put(UploadPostsController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: const Text('Confirm Post'),
+        actions: [
+          OutlinedButton(
+            onPressed: () async{
+              EasyLoading.show(status: 'Uploading...');
+
+              await _postController.uploadPost(
+                _captionController.text,
+                widget.imgPath,
+                _locationController.text,
+              );
+
+            },
+            child: const Text('Confirm Post'),
+          ),
+        ],
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                    height: MediaQuery.of(context).size.height * 0.5,
-                    width: MediaQuery.of(context).size.width * 0.5,
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: InteractiveViewer(
+                              child: Image.file(widget.postImage)),
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.12,
+                    width: MediaQuery.of(context).size.width * 0.25,
                     decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: FileImage(widget.postImage),
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.high,
+                        colorFilter: const ColorFilter.mode(
+                            Colors.black54, BlendMode.darken),
+                      ),
+                      shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Image.file(widget.postImage)),
-                height50,
-                TextField(
-                  controller: _captionController,
-                  decoration: const InputDecoration(
-                      hintText: 'Add a caption',
-                      hintStyle: TextStyle(color: Colors.white),
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                          borderRadius: BorderRadius.all(Radius.circular(10)))),
+                  ),
                 ),
-                height50,
-                ElevatedButton(
-                    onPressed: () {
-                      _postController.uploadPost(_captionController.text,
-                          widget.imgPath);
-                    },
-                    child: const Text('Confirm Post'))
+                width20,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      maxLines: 4,
+                      controller: _captionController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Add a caption...',
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-        ),
+          const Divider(
+            color: Colors.grey,
+            thickness: 0.5,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              autofillHints: const [AutofillHints.location],
+              controller: _locationController,
+              decoration: InputDecoration(
+                prefixIcon: IconButton(
+                    onPressed: () {
+                      locationController.determinePosition();
+                    },
+                    icon: const Icon(Icons.location_on)),
+                border: InputBorder.none,
+                labelText: 'Add a location...',
+                // hintText:
+                //     "${locationController.placeMark[0].street!}, ${locationController.placeMark[0].locality!}, ${locationController.placeMark[0].country!}",
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

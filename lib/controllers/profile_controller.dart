@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
 
 class ProfileController extends GetxController {
+
+  static ProfileController get instance => Get.find();
   final Rx<Map<String, dynamic>> _user = Rx<Map<String, dynamic>>({});
   Map<String, dynamic> get user => _user.value;
 
@@ -15,6 +17,8 @@ class ProfileController extends GetxController {
 
   getUserData() async {
     List<String> thumbnails = [];
+    List<String> posts = [];
+    List<String> stories = [];
     var querySnapshot = await firebaseFirestore
         .collection('videos')
         .where('uid', isEqualTo: _uid.value)
@@ -22,6 +26,24 @@ class ProfileController extends GetxController {
 
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       thumbnails.add((querySnapshot.docs[i].data() as dynamic)['thumbnail']);
+    }
+
+    var querySnapshot2 = await firebaseFirestore
+        .collection('posts')
+        .where('uid', isEqualTo: _uid.value)
+        .get();
+
+    for (int i = 0; i < querySnapshot2.docs.length; i++) {
+      posts.add((querySnapshot2.docs[i].data() as dynamic)['PostUrl']);
+    }
+
+    var querySnapshot3 = await firebaseFirestore
+        .collection('stories')
+        .where('uid', isEqualTo: _uid.value)
+        .get();
+
+    for (int i = 0; i < querySnapshot3.docs.length; i++) {
+      stories.add((querySnapshot3.docs[i].data() as dynamic)['storyUrl']);
     }
 
     DocumentSnapshot documentSnapshot =
@@ -74,7 +96,9 @@ class ProfileController extends GetxController {
       'followers': followers.toString(),
       'following': following.toString(),
       'isFollowing': isFollowing,
-      'thumbnails': thumbnails
+      'thumbnails': thumbnails,
+      'PostUrl': posts,
+      'storyUrl': stories
     };
     update();
   }
