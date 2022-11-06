@@ -42,10 +42,13 @@ class _SplashScreenState extends State<SplashScreen> {
               return AnimatedSplashScreen(
                 animationDuration: const Duration(milliseconds: 5000),
                 backgroundColor: Colors.black,
-                splash: Image.asset(
-                  'assets/images/acelogo.png',
-                  height: 100,
-                  width: 100,
+                splash: const Text(
+                  'Unscroll',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 nextScreen: authController.isLogged.value
                     ? const NavigationScreen()

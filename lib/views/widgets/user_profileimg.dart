@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class UserProfileImage extends StatelessWidget {
   final String imageUrl;
@@ -28,18 +29,24 @@ class UserProfileImage extends StatelessWidget {
         backgroundImage: imageProvider,
         radius: radius,
       ),
-      placeholder: (context, url) => const CircularProgressIndicator(),
+      placeholder: (context, url) => Shimmer.fromColors(
+          child: CircleAvatar(
+            radius: radius,
+          ),
+          baseColor: Colors.black,
+          highlightColor: Colors.transparent),
       errorWidget: (context, url, error) => const Icon(Icons.error),
     );
   }
 }
 
-
 class UserPostsImages extends StatelessWidget {
-
   final String imageUrl;
 
-  const UserPostsImages({Key? key, required this.imageUrl,}) : super(key: key);
+  const UserPostsImages({
+    Key? key,
+    required this.imageUrl,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +64,17 @@ class UserPostsImages extends StatelessWidget {
           ),
         ),
       ),
-      placeholder: (context, url) => const CircularProgressIndicator(),
+      placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: Colors.black38,
+          highlightColor: Colors.white,
+          child: Container(
+            height: 400,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          )),
       errorWidget: (context, url, error) => const Icon(Icons.error),
     );
   }

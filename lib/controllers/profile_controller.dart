@@ -18,6 +18,7 @@ class ProfileController extends GetxController {
   getUserData() async {
     List<String> thumbnails = [];
     List<String> posts = [];
+    List<String> stories = [];
     var querySnapshot = await firebaseFirestore
         .collection('videos')
         .where('uid', isEqualTo: _uid.value)
@@ -34,6 +35,15 @@ class ProfileController extends GetxController {
 
     for (int i = 0; i < querySnapshot2.docs.length; i++) {
       posts.add((querySnapshot2.docs[i].data() as dynamic)['PostUrl']);
+    }
+
+    var querySnapshot3 = await firebaseFirestore
+        .collection('stories')
+        .where('uid', isEqualTo: _uid.value)
+        .get();
+
+    for (int i = 0; i < querySnapshot3.docs.length; i++) {
+      stories.add((querySnapshot3.docs[i].data() as dynamic)['storyUrl']);
     }
 
     DocumentSnapshot documentSnapshot =
@@ -87,7 +97,8 @@ class ProfileController extends GetxController {
       'following': following.toString(),
       'isFollowing': isFollowing,
       'thumbnails': thumbnails,
-      'PostUrl': posts
+      'PostUrl': posts,
+      'storyUrl': stories
     };
     update();
   }

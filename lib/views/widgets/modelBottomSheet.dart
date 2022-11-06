@@ -9,7 +9,8 @@ class ModelBottomSheetForCamera extends StatelessWidget {
   final VoidCallback onPressedGallery;
   final IconData icon;
   final Color iconColor;
-
+  final double topRadius;
+  final double bottomRadius;
   const ModelBottomSheetForCamera({
     Key? key,
     required this.titleText,
@@ -17,13 +18,22 @@ class ModelBottomSheetForCamera extends StatelessWidget {
     required this.onPressedGallery,
     required this.icon,
     required this.iconColor,
+    required this.topRadius,
+    required this.bottomRadius,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-        style:
-            ElevatedButton.styleFrom(backgroundColor: iconColor, elevation: 00),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: iconColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(topRadius),
+              bottom: Radius.circular(bottomRadius),
+            ),
+          ),
+        ),
         onPressed: () {
           showCupertinoModalBottomSheet(
               topRadius: const Radius.circular(20),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -119,7 +120,10 @@ class UploadPostsController extends GetxController {
             .doc("posts $docCount")
             .set(postsModel.toJson());
 
-        Get.back();
+        Navigator.of(Get.context!).pop();
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+            const SnackBar(content: Text("Post uploaded successfully")));
+        EasyLoading.dismiss();
       } else {
         ScaffoldMessenger.of(Get.context!).showSnackBar(
             const SnackBar(content: Text("Please fill all the fields")));
@@ -143,7 +147,7 @@ class UploadPostsController extends GetxController {
         StoriesModel storyModel = StoriesModel(
             uid: uid,
             username: (doc.data()! as Map<String, dynamic>)['username'],
-            id: id,
+            id: "Posts $id",
             profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
             likes: [],
             storyUrl: storyUrl,
@@ -153,6 +157,11 @@ class UploadPostsController extends GetxController {
             .collection('stories')
             .doc("stories $docCount")
             .set(storyModel.toJson());
+
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+            const SnackBar(content: Text("Successfully uploaded")));
+        Get.back();
+        EasyLoading.dismiss();
       }
     } catch (e) {
       ScaffoldMessenger.of(Get.context!)

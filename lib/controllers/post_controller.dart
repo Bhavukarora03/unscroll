@@ -40,4 +40,14 @@ class PostController extends GetxController {
       });
     }
   }
+
+  deletePost(String id) async {
+    await firebaseFirestore.collection('posts').doc(id).delete();
+  }
+
+  updatePost(String id, String caption) async {
+    await firebaseFirestore.collection('posts').doc(id).update({
+      'caption': caption,
+    });
+  }
 }

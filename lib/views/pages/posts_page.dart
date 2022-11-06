@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/post_controller.dart';
-import 'package:unscroll/views/screens/nscroll_stories.dart';
+import 'package:unscroll/views/screens/unscroll_stories.dart';
+import 'package:unscroll/views/widgets/like_animatiob.dart';
 import 'package:unscroll/views/widgets/user_profileimg.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -9,9 +11,8 @@ import 'package:timeago/timeago.dart' as timeago;
 class PostsPage extends StatelessWidget {
   PostsPage({Key? key}) : super(key: key);
 
-  final  postController = Get.put(PostController());
+  final postController = Get.put(PostController());
   final ScrollController _scrollController = ScrollController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +23,34 @@ class PostsPage extends StatelessWidget {
       ),
       body: Obx(
         () {
-          return CustomScrollView(controller: _scrollController, slivers: [
-            stories(),
-            const SliverToBoxAdapter(
-              child: Divider(
-                color: Colors.grey,
-                thickness: 0.5,
-              ),
-            ),
-            posts(),
-          ]);
+          return postController.initialized
+              ? CustomScrollView(controller: _scrollController, slivers: [
+                  stories(),
+                  const SliverToBoxAdapter(
+                    child: Divider(
+                      color: Colors.grey,
+                      thickness: 0.5,
+                    ),
+                  ),
+                  posts(),
+                ])
+              : Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      stories(),
+                      const SliverToBoxAdapter(
+                        child: Divider(
+                          color: Colors.grey,
+                          thickness: 0.5,
+                        ),
+                      ),
+                      posts(),
+                    ],
+                  ),
+                );
         },
       ),
     );
@@ -47,17 +66,22 @@ class PostsPage extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: 1,
               itemBuilder: (context, index) {
-
                 return SizedBox(
                   width: 100,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        onTap: () => Get.to(() => const UnscrollStories()),
-                        child: const UserProfileImage(
-                          imageUrl: 'https://picsum.photos/200',
+                        onTap: () => Get.to(() => UnscrollStories(), transition: Transition.fadeIn),
+                        child: UserProfileImage(
+                          imageUrl: authController.user.photoURL!,
                           radius: 30,
+                        ),
+                      ),
+                      const Text(
+                        'Your Story',
+                        style: TextStyle(
+                          fontSize: 12,
                         ),
                       ),
                     ],
@@ -76,7 +100,6 @@ class PostsPage extends StatelessWidget {
         delegate: SliverChildBuilderDelegate(
       (context, index) {
         final data = postController.postsLists[index];
-
         return Container(
           margin: const EdgeInsets.all(10),
           child: Column(
@@ -106,7 +129,15 @@ class PostsPage extends StatelessWidget {
                 ],
               ),
               height10,
-              UserPostsImages(imageUrl: data.postURL),
+              LikeAnimation(
+                smallLike: true,
+                isAnimating: data.likes.contains(authController.user.uid),
+                child: GestureDetector(
+                    onTap: () {
+                      postController.likePost(data.id);
+                    },
+                    child: UserPostsImages(imageUrl: data.postURL)),
+              ),
               height10,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -136,7 +167,32 @@ class PostsPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const Icon(Icons.bookmark_border),
+                  IconButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content: const Text(
+                                  'Do you want to Delete this post?'),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Cancel')),
+                                TextButton(
+                                    onPressed: () {
+                                      postController.deletePost(data.id);
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Delete')),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(Icons.delete_outline))
                 ],
               ),
               height10,
