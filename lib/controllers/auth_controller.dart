@@ -2,8 +2,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -34,7 +32,6 @@ class AuthController extends GetxController with CacheManager{
 
   bool get hasInternet => _hasInternet.value;
 
-  final secureStorage = const FlutterSecureStorage();
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -72,7 +69,7 @@ class AuthController extends GetxController with CacheManager{
 
 
       Get.offAll(() => const NavigationScreen());
-      secureStorage.write(key: 'user', value: user.uid);
+
     }
   }
 
@@ -179,11 +176,6 @@ class AuthController extends GetxController with CacheManager{
       final authResult = await firebaseAuth.signInWithCredential(credential);
 
       final User? user = authResult.user;
-      await secureStorage.write(
-        key: 'user',
-        value: user?.uid,
-      );
-
       model.User googleUser = model.User(
           username: user!.displayName!,
           email: user.email!,

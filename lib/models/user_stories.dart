@@ -6,7 +6,7 @@ class StoriesModel {
   String id;
   String profilePic;
   List likes;
-  String storyUrl;
+  List<Map<String, dynamic>> storyUrl;
    DateTime createdAt;
 
   StoriesModel({

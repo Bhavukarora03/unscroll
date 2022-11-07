@@ -137,6 +137,7 @@ class UploadPostsController extends GetxController {
   uploadStories(String imagePath) async {
     try {
       if (imagePath.isNotEmpty) {
+        List<Map<String, dynamic>> stories = [{}];
         String uid = firebaseAuth.currentUser!.uid;
         DocumentSnapshot doc =
             await firebaseFirestore.collection('users').doc(uid).get();
@@ -147,15 +148,20 @@ class UploadPostsController extends GetxController {
         StoriesModel storyModel = StoriesModel(
             uid: uid,
             username: (doc.data()! as Map<String, dynamic>)['username'],
-            id: "Posts $id",
+            id: "stories $id",
             profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
             likes: [],
-            storyUrl: storyUrl,
+            storyUrl: [
+              {
+                "url": storyUrl,
+                "createdAt": DateTime.now(),
+              }
+            ],
             createdAt: DateTime.now());
 
         await firebaseFirestore
             .collection('stories')
-            .doc("stories $docCount")
+            .doc(uid)
             .set(storyModel.toJson());
 
         ScaffoldMessenger.of(Get.context!).showSnackBar(

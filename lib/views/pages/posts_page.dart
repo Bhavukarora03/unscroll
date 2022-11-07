@@ -8,10 +8,14 @@ import 'package:unscroll/views/widgets/user_profileimg.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../controllers/profile_controller.dart';
+import '../../controllers/stories_controller.dart';
+
 class PostsPage extends StatelessWidget {
   PostsPage({Key? key}) : super(key: key);
 
   final postController = Get.put(PostController());
+  final storiesController = Get.put(StoriesController());
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -25,7 +29,7 @@ class PostsPage extends StatelessWidget {
         () {
           return postController.initialized
               ? CustomScrollView(controller: _scrollController, slivers: [
-                  stories(),
+                 // stories(),
                   const SliverToBoxAdapter(
                     child: Divider(
                       color: Colors.grey,
@@ -74,7 +78,7 @@ class PostsPage extends StatelessWidget {
                       GestureDetector(
                         onTap: () => Get.to(() => UnscrollStories(), transition: Transition.fadeIn),
                         child: UserProfileImage(
-                          imageUrl: authController.user.photoURL!,
+                          imageUrl: Get.find<ProfileController>().user['profilePic'],
                           radius: 30,
                         ),
                       ),
@@ -129,15 +133,11 @@ class PostsPage extends StatelessWidget {
                 ],
               ),
               height10,
-              LikeAnimation(
-                smallLike: true,
-                isAnimating: data.likes.contains(authController.user.uid),
-                child: GestureDetector(
-                    onTap: () {
-                      postController.likePost(data.id);
-                    },
-                    child: UserPostsImages(imageUrl: data.postURL)),
-              ),
+              GestureDetector(
+                  onDoubleTap: () {
+                    postController.likePost(data.id);
+                  },
+                  child: UserPostsImages(imageUrl: data.postURL)),
               height10,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

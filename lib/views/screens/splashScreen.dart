@@ -1,7 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'package:unscroll/views/screens/auth/login_screen.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
@@ -15,7 +13,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final storage = const FlutterSecureStorage();
+
 
   final authController = Get.put(AuthController());
 

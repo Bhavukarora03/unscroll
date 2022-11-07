@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ViewportOffset;
+import 'package:unscroll/controllers/stories_controller.dart';
 import 'package:unscroll/controllers/upload_posts_controller.dart';
 
 @immutable
@@ -58,9 +59,8 @@ class _ConfirmStoryState extends State<ConfirmStory> {
                       ),
                     ),
                     onPressed: () {
-                      uploadController.uploadStories(
-                        widget.storyPath,
-                      );
+                      uploadController.uploadStories(widget.storyPath);
+
                     },
                     icon: const Icon(Icons.arrow_forward_rounded),
                     label: const Text("Confirm"))),

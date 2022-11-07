@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/profile_controller.dart';
 import 'package:unscroll/views/screens/followers_count.dart';
@@ -41,7 +42,11 @@ class _ProfileScreenState extends State<ProfileScreen>
       init: ProfileController(),
       builder: (controller) {
         if (controller.user.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
+          return  Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
         }
 
         return Scaffold(

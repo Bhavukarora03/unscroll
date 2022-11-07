@@ -1,3 +1,5 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/models/user_stories.dart';
@@ -31,7 +33,7 @@ class StoriesController extends GetxController {
     var uid = authController.user.uid;
     if ((documentSnapshot.data() as dynamic)['likes'].contains(uid)) {
       await firebaseFirestore.collection('stories').doc().update({
-        'likes': FieldValue.arrayRemove([uid])
+        'likes': FieldValue.arrayRemove([uid]),
       });
     } else {
       await firebaseFirestore.collection('stories').doc().update({
@@ -39,4 +41,5 @@ class StoriesController extends GetxController {
       });
     }
   }
+
 }
