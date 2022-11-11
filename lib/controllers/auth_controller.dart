@@ -209,6 +209,13 @@ mixin CacheManager {
     final box = GetStorage();
     await box.remove(CacheManagerKey.TOKEN.toString());
   }
+
+  countDownTimer(){
+
+  }
 }
+
+
+
 
 enum CacheManagerKey { TOKEN }

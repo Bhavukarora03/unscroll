@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'dart:math' as math;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ViewportOffset;
 import 'package:unscroll/controllers/stories_controller.dart';
 import 'package:unscroll/controllers/upload_posts_controller.dart';
+
+import '../../constants.dart';
 
 @immutable
 class ConfirmStory extends StatefulWidget {
@@ -47,6 +50,7 @@ class _ConfirmStoryState extends State<ConfirmStory> {
             Positioned.fill(
               child: _buildPhotoWithFilter(),
             ),
+
             Positioned(
                 top: 50,
                 right: 20,
@@ -58,9 +62,8 @@ class _ConfirmStoryState extends State<ConfirmStory> {
                         borderRadius: BorderRadius.circular(50),
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       uploadController.uploadStories(widget.storyPath);
-
                     },
                     icon: const Icon(Icons.arrow_forward_rounded),
                     label: const Text("Confirm"))),

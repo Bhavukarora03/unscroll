@@ -65,8 +65,8 @@ class UserPostsImages extends StatelessWidget {
         ),
       ),
       placeholder: (context, url) => Shimmer.fromColors(
-          baseColor: Colors.black38,
-          highlightColor: Colors.white,
+          baseColor: Colors.grey.shade100,
+          highlightColor: Colors.grey,
           child: Container(
             height: 400,
             width: double.infinity,

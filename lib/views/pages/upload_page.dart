@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
+
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/confirm_stories.dart';
 import 'package:unscroll/views/screens/screens.dart';
@@ -74,40 +76,46 @@ class UploadPage extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-            height: 300,
-            width: double.infinity,
-            child: CachedNetworkImage(
-                imageUrl:
-                    "https://cdni.iconscout.com/illustration/premium/thumb/upload-image-4358254-3618850.png"),
-          ),
+           SizedBox(
+             height: 300,
+             width: double.infinity,
+             child: CachedNetworkImage(
+                 imageUrl:
+                     "https://cdni.iconscout.com/illustration/premium/thumb/upload-image-4358254-3618850.png"),
+           ),
           height80,
-          ModelBottomSheetForCamera(
-            titleText: "upload a unscroll",
-            onPressedCamera: () => uploadVideo(ImageSource.camera, context),
-            onPressedGallery: () => uploadVideo(ImageSource.gallery, context),
-            icon: Icons.video_call,
-            iconColor: Colors.grey.shade700, topRadius: 15, bottomRadius: 0,
-          ),
-          height20,
-          ModelBottomSheetForCamera(
-            titleText: "Upload a post",
-            onPressedCamera: () => uploadPost(ImageSource.camera, context),
-            onPressedGallery: () => uploadPost(ImageSource.gallery, context),
-            icon: Icons.image,
-            iconColor: Colors.grey.shade700, topRadius: 0, bottomRadius: 0,
-          ),
-          height20,
-          ModelBottomSheetForCamera(
-            titleText: "Upload a story",
-            onPressedCamera: () => uploadStories(ImageSource.camera, context),
-            onPressedGallery: () => uploadStories(ImageSource.gallery, context),
-            icon: Icons.image,
-            iconColor: Colors.grey.shade700, topRadius: 0, bottomRadius: 15,
-          ),
-
+           ModelBottomSheetForCamera(
+             titleText: "upload a unscroll",
+             onPressedCamera: () => uploadVideo(ImageSource.camera, context),
+             onPressedGallery: () => uploadVideo(ImageSource.gallery, context),
+             icon: Icons.video_call,
+             iconColor: Colors.grey.shade700,
+             topRadius: 15,
+             bottomRadius: 0,
+           ),
+           height20,
+           ModelBottomSheetForCamera(
+             titleText: "Upload a post",
+             onPressedCamera: () => uploadPost(ImageSource.camera, context),
+             onPressedGallery: () => uploadPost(ImageSource.gallery, context),
+             icon: Icons.image,
+             iconColor: Colors.grey.shade700,
+             topRadius: 0,
+             bottomRadius: 0,
+           ),
+           height20,
+           ModelBottomSheetForCamera(
+             titleText: "Upload a story",
+             onPressedCamera: () => uploadStories(ImageSource.camera, context),
+             onPressedGallery: () => uploadStories(ImageSource.gallery, context),
+             icon: Icons.image,
+             iconColor: Colors.grey.shade700,
+             topRadius: 0,
+             bottomRadius: 15,
+           ),
         ],
       ),
     );
   }
 }
+

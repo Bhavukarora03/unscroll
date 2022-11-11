@@ -1,28 +1,33 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/profile_controller.dart';
 import 'package:unscroll/views/screens/followers_count.dart';
 import 'package:unscroll/views/screens/following_count.dart';
+
 import 'package:unscroll/views/widgets/widgets.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
 
-  const ProfileScreen({Key? key, required this.uid}) : super(key: key);
+  const ProfileScreen({
+    Key? key,
+    required this.uid,
+  }) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final ProfileController profileController = Get.put(ProfileController());
 
   String uid = "";
   late TabController _tabController;
+  bool active = true;
 
   getUserids() async {
     uid = widget.uid;
@@ -32,8 +37,28 @@ class _ProfileScreenState extends State<ProfileScreen>
   void initState() {
     profileController.updateUSerId(widget.uid);
     _tabController = TabController(length: 2, vsync: this);
-
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      active = true;
+    } else if (state == AppLifecycleState.inactive) {
+      active = false;
+    } else if (state == AppLifecycleState.paused) {
+      active = false;
+    } else if (state == AppLifecycleState.detached) {
+      active = false;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -42,7 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       init: ProfileController(),
       builder: (controller) {
         if (controller.user.isEmpty) {
-          return  Scaffold(
+          return Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
             ),
@@ -50,19 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         }
 
         return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            leading: IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.person_add),
-            ),
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.more_vert),
-              ),
-            ],
-          ),
+
           body: SafeArea(
             child: Column(
               children: [
@@ -120,28 +133,34 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ],
                 ),
                 height20,
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                   
-                  ),
-                  label: Text(
-                    widget.uid == authController.user.uid
-                        ? 'Sign Out'
-                        : profileController.user['isFollowing']
-                            ? 'Unfollow'
-                            : 'Follow',
-                  ),
-                  icon: widget.uid == authController.user.uid
-                      ? const Icon(Icons.logout_sharp)
-                      : const Icon(Icons.person_add),
-                  onPressed: () {
-                    if (widget.uid == authController.user.uid) {
-                      authController.signOut();
-                    } else {
-                      profileController.followerUser();
-                    }
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+
+
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                      ),
+                      label: Text(
+                        widget.uid == authController.user.uid
+                            ? 'Sign Out'
+                            : profileController.user['isFollowing']
+                                ? 'Unfollow'
+                                : 'Follow',
+                      ),
+                      icon: widget.uid == authController.user.uid
+                          ? const Icon(Icons.logout_sharp)
+                          : const Icon(Icons.person_add),
+                      onPressed: () {
+                        if (widget.uid == authController.user.uid) {
+                          authController.signOut();
+                        } else {
+                          profileController.followerUser();
+                        }
+                      },
+                    ),
+                  ],
                 ),
                 height20,
                 TabBar(

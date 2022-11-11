@@ -37,14 +37,14 @@ class ProfileController extends GetxController {
       posts.add((querySnapshot2.docs[i].data() as dynamic)['PostUrl']);
     }
 
-    var querySnapshot3 = await firebaseFirestore
-        .collection('stories')
-        .where('uid', isEqualTo: _uid.value)
-        .get();
-
-    for (int i = 0; i < querySnapshot3.docs.length; i++) {
-      stories.add((querySnapshot3.docs[i].data() as dynamic)['storyUrl']);
-    }
+    // var querySnapshot3 = await firebaseFirestore
+    //     .collection('stories')
+    //     .where('uid', isEqualTo: _uid.value)
+    //     .get();
+    //
+    // for (int i = 0; i < querySnapshot3.docs.length; i++) {
+    //   stories.add((querySnapshot3.docs[i].data() as dynamic)['storyUrl']);
+    // }
 
     DocumentSnapshot documentSnapshot =
         await firebaseFirestore.collection('users').doc(_uid.value).get();
@@ -98,7 +98,7 @@ class ProfileController extends GetxController {
       'isFollowing': isFollowing,
       'thumbnails': thumbnails,
       'PostUrl': posts,
-      'storyUrl': stories
+      //'storyUrl': stories
     };
     update();
   }

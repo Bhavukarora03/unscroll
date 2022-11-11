@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unscroll/constants.dart';
@@ -21,40 +23,16 @@ class PostsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: const Text('Posts'),
-      ),
+
       body: Obx(
         () {
           return postController.initialized
               ? CustomScrollView(controller: _scrollController, slivers: [
                  // stories(),
-                  const SliverToBoxAdapter(
-                    child: Divider(
-                      color: Colors.grey,
-                      thickness: 0.5,
-                    ),
-                  ),
+
                   posts(),
                 ])
-              : Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: CustomScrollView(
-                    controller: _scrollController,
-                    slivers: [
-                      stories(),
-                      const SliverToBoxAdapter(
-                        child: Divider(
-                          color: Colors.grey,
-                          thickness: 0.5,
-                        ),
-                      ),
-                      posts(),
-                    ],
-                  ),
-                );
+              :const CircularProgressIndicator();
         },
       ),
     );

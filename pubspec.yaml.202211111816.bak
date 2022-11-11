@@ -1,10 +1,24 @@
 name: unscroll
 description: Minor project
-publish_to: none
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
 version: 1.0.0+1
-environment: {sdk: '>=2.18.2 <3.0.0'}
+
+environment:
+  sdk: '>=2.18.2 <3.0.0'
+
+
 dependencies:
-  flutter: {sdk: flutter}
+  flutter:
+    sdk: flutter
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   firebase_core: ^1.24.0
   get: ^4.6.5
@@ -40,18 +54,46 @@ dependencies:
   flutter_screen_lock: ^8.0.0
   local_auth: ^2.1.2
   stop_watch_timer: ^2.0.0
+
+
+
+
+
+
+
+
+
+
+
+
 dev_dependencies:
-  flutter_test: {sdk: flutter}
+  flutter_test:
+    sdk: flutter
   flutter_lints: ^2.0.0
-flutter_icons: {android: launcher_icon, android_round: launcher_icon_round, andriod: true,
-  ios: true, image_path: assets/icon/logo-us.png}
+flutter_icons:
+  android: "launcher_icon"
+  android_round: "launcher_icon_round"
+  andriod: true
+  ios: true
+  image_path: "assets/icon/logo-us.png"
+
 flutter:
+
+
   uses-material-design: true
-  assets: [assets/fonts/, assets/icon/, assets/images/]
+
+
+  assets:
+   - assets/images/
+   - assets/icon/
+
+
+
+
   fonts:
-  - fonts:
-    - {asset: assets/fonts/GTWalsheimPro-Bold.ttf}
-    family: GTWalsheimPro
-  - fonts:
-    - {asset: assets/fonts/GTWalsheimPro-Regular.ttf}
-    family: GTWalsheimPro
+   - family: GTWalsheim
+     fonts:
+       - asset: assets/fonts/GTWalsheimPro-Regular.ttf
+       - asset: assets/fonts/GTWalsheimPro-Bold.ttf
+         weight: 500
+

@@ -6,8 +6,8 @@ class StoriesModel {
   String id;
   String profilePic;
   List likes;
-  List<Map<String, dynamic>> storyUrl;
-   DateTime createdAt;
+  Map<String, dynamic> storyUrl;
+  final String createdAt;
 
   StoriesModel({
     required this.uid,
@@ -30,17 +30,16 @@ class StoriesModel {
       'createdAt': createdAt,
     };
   }
-
-  static StoriesModel fromSnap(DocumentSnapshot snapshot) {
-    var snap = snapshot.data() as Map<String, dynamic>;
+static StoriesModel fromSnap(DocumentSnapshot snapshot) {
+    var data = snapshot.data() as Map<String, dynamic>;
     return StoriesModel(
-      createdAt: snap['createdAt'].toDate(),
-      uid: snap['uid'],
-      username: snap['name'],
-      id: snap['id'],
-      profilePic: snap['profilePic'],
-      likes: snap['likes'],
-      storyUrl: snap['storyUrl'],
+      uid: data['uid'],
+      username: data['username'],
+      id: data['id'],
+      profilePic: data['profilePic'],
+      likes: data['likes'],
+      storyUrl: data['storyUrl'],
+      createdAt: data['createdAt'].toDate(),
     );
   }
 }

@@ -14,6 +14,7 @@ import '../models/user_stories.dart';
 
 class UploadPostsController extends GetxController {
   Rx<File> _pickedPostImage = Rx<File>(File(''));
+
   File get pickedPostImage => _pickedPostImage.value;
 
   ///crop image
@@ -137,32 +138,44 @@ class UploadPostsController extends GetxController {
   uploadStories(String imagePath) async {
     try {
       if (imagePath.isNotEmpty) {
-        List<Map<String, dynamic>> stories = [{}];
         String uid = firebaseAuth.currentUser!.uid;
+        List<dynamic> storiesUrl = [];
         DocumentSnapshot doc =
             await firebaseFirestore.collection('users').doc(uid).get();
         var docs = firebaseFirestore.collection('stories').get();
         int docCount = (await docs).docs.length;
         String id = docCount.toString();
         String storyUrl = await _uploadStories("stories $id", imagePath);
+
         StoriesModel storyModel = StoriesModel(
+            createdAt: "132",
             uid: uid,
             username: (doc.data()! as Map<String, dynamic>)['username'],
             id: "stories $id",
             profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
             likes: [],
-            storyUrl: [
-              {
-                "url": storyUrl,
-                "createdAt": DateTime.now(),
-              }
-            ],
-            createdAt: DateTime.now());
+            storyUrl:  ({
+              "url": storyUrl,
+            }));
 
-        await firebaseFirestore
-            .collection('stories')
-            .doc(uid)
-            .set(storyModel.toJson());
+        if((await docs).docs.isEmpty){
+          final data = storyModel.toJson();
+          await firebaseFirestore
+              .collection('stories')
+              .doc(uid)
+              .set(data);
+        }
+        else{
+          await firebaseFirestore.collection('stories').doc(uid).update({
+            'storyUrl': FieldValue.arrayUnion([{
+              'url': storyUrl,
+            }]),
+          });
+
+        }
+
+
+
 
         ScaffoldMessenger.of(Get.context!).showSnackBar(
             const SnackBar(content: Text("Successfully uploaded")));
@@ -174,4 +187,6 @@ class UploadPostsController extends GetxController {
           .showSnackBar(SnackBar(content: Text("Error uploading story$e")));
     }
   }
+
+
 }
