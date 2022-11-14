@@ -1,7 +1,6 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:unscroll/models/user_stories.dart';
 
 import '../constants.dart';
@@ -9,6 +8,12 @@ import '../constants.dart';
 class StoriesController extends GetxController {
   final Rx<List<StoriesModel>> _stories = Rx<List<StoriesModel>>([]);
   List<StoriesModel> get stories => _stories.value;
+  String uid = authController.user.uid;
+
+  final Rx<List<String>> _urls = Rx<List<String>>([]);
+  List<String> get urls => _urls.value;
+
+
 
   @override
   void onInit() {
@@ -25,6 +30,7 @@ class StoriesController extends GetxController {
         },
       ),
     );
+    getUserStories();
   }
 
   likeStories() async {
@@ -42,4 +48,19 @@ class StoriesController extends GetxController {
     }
   }
 
+  getUserStories() async {
+    String uid = authController.user.uid;
+    var snaps = await firebaseFirestore.collection('stories').doc(uid).get();
+
+    if(snaps.exists){
+      for (var i in snaps.data()!['storyUrl']) {
+        _urls.value.add(i['url']);
+        _urls.value.toSet().toList();
+      }
+      print(_urls.value);
+
+    }
+
+    return _urls.value;
+  }
 }

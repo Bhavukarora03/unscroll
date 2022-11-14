@@ -1,14 +1,11 @@
 import 'dart:io';
 import 'dart:math' as math;
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ViewportOffset;
-import 'package:unscroll/controllers/stories_controller.dart';
 import 'package:unscroll/controllers/upload_posts_controller.dart';
 
-import '../../constants.dart';
+
 
 @immutable
 class ConfirmStory extends StatefulWidget {

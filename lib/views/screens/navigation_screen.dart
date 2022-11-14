@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -33,14 +32,14 @@ class _NavigationScreenState extends State<NavigationScreen>
           context: Get.context!,
           builder: (_) {
             return AlertDialog(
-              title: Text("Time is up"),
-              content: Text("Time is up"),
+              title: const Text("Time is up"),
+              content: const Text("Time is up"),
               actions: [
                 TextButton(
                     onPressed: () {
                       Navigator.pop(Get.context!);
                     },
-                    child: Text("Ok"))
+                    child: const Text("Ok"))
               ],
             );
           });
@@ -203,7 +202,7 @@ class _NavigationScreenState extends State<NavigationScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.lock_clock),
+                    const Icon(Icons.lock_clock),
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: Text(

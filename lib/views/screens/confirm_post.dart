@@ -20,9 +20,6 @@ class _ConfirmPostState extends State<ConfirmPost> {
   final TextEditingController _captionController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
 
-  final PageController _pageController = PageController(
-    initialPage: 0,
-  );
 
   final UploadPostsController _postController =
       Get.put(UploadPostsController());

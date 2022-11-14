@@ -67,7 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       init: ProfileController(),
       builder: (controller) {
         if (controller.user.isEmpty) {
-          return Scaffold(
+          return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
             ),
@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         Text(
                           profileController.user['likes'],
                         ),
-                        const Text('Posts')
+                        const Text('likes')
                       ],
                     ),
                     GestureDetector(
@@ -206,19 +206,20 @@ class _TabBarLibraryState extends State<TabBarLibrary> {
         controller: widget._tabController,
         children: [
           GridView.builder(
-              itemCount: Get.find<ProfileController>().user['PostUrl'].length,
+              itemCount: profileController.user['PostUrl'].length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   mainAxisExtent: 180,
                   crossAxisCount: 3,
                   crossAxisSpacing: 5,
                   mainAxisSpacing: 5),
               itemBuilder: (context, index) {
+
                 return Container(
                   decoration: BoxDecoration(
                     color: Colors.black,
                     image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        Get.find<ProfileController>().user['PostUrl'][index],
+                      image: NetworkImage(
+                        profileController.user['PostUrl'][index],
                       ),
                       fit: BoxFit.cover,
                     ),

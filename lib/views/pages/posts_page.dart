@@ -1,16 +1,12 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/post_controller.dart';
 import 'package:unscroll/views/screens/unscroll_stories.dart';
-import 'package:unscroll/views/widgets/like_animatiob.dart';
 import 'package:unscroll/views/widgets/user_profileimg.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
-import '../../controllers/profile_controller.dart';
 import '../../controllers/stories_controller.dart';
 
 class PostsPage extends StatelessWidget {
@@ -26,13 +22,11 @@ class PostsPage extends StatelessWidget {
 
       body: Obx(
         () {
-          return postController.initialized
-              ? CustomScrollView(controller: _scrollController, slivers: [
-                 // stories(),
-
+          return CustomScrollView(controller: _scrollController, slivers: [
+                  stories(),
                   posts(),
-                ])
-              :const CircularProgressIndicator();
+                ]);
+
         },
       ),
     );
@@ -46,23 +40,24 @@ class PostsPage extends StatelessWidget {
             height: 100,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: 1,
+              itemCount: storiesController.stories.length,
               itemBuilder: (context, index) {
+                final data = storiesController.stories[index];
                 return SizedBox(
                   width: 100,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        onTap: () => Get.to(() => UnscrollStories(), transition: Transition.fadeIn),
+                        onTap: () => Get.to(() => UnscrollStories(), transition: Transition.downToUp),
                         child: UserProfileImage(
-                          imageUrl: Get.find<ProfileController>().user['profilePic'],
+                          imageUrl: data.profilePic,
                           radius: 30,
                         ),
                       ),
-                      const Text(
-                        'Your Story',
-                        style: TextStyle(
+                      Text(
+                        data.username,
+                        style: const TextStyle(
                           fontSize: 12,
                         ),
                       ),

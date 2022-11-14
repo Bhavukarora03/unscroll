@@ -6,8 +6,8 @@ class StoriesModel {
   String id;
   String profilePic;
   List likes;
-  Map<String, dynamic> storyUrl;
-  final String createdAt;
+  List<dynamic> storyUrl;
+  final DateTime createdAt;
 
   StoriesModel({
     required this.uid,
@@ -22,7 +22,7 @@ class StoriesModel {
   Map<String, dynamic> toJson() {
     return {
       'uid': uid,
-      'name': username,
+      'username': username,
       'id': id,
       'profilePic': profilePic,
       'likes': likes,
