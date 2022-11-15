@@ -28,7 +28,6 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
   void initState() {
     videoController = CachedVideoPlayerController.network(widget.videoUrl)
       ..initialize().then((_) {
-
         videoController.play();
         videoController.setVolume(1);
         videoController.setLooping(true);
@@ -68,16 +67,9 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        width: size.width,
-        height: size.height,
-        decoration: const BoxDecoration(
-          color: Colors.black,
-        ),
-        child: Stack(children: [
+        resizeToAvoidBottomInset: false,
+        body: Stack(children: [
           GestureDetector(
             onLongPress: () {
               isPlayingVideo();
@@ -139,8 +131,6 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
               ),
             ),
           )
-        ]),
-      ),
-    );
+        ]));
   }
 }

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:story_view/controller/story_controller.dart';
 import 'package:story_view/utils.dart';
 import 'package:story_view/widgets/story_view.dart';
-
 import '../../controllers/profile_controller.dart';
 import '../../controllers/stories_controller.dart';
 import "package:get/get.dart";
 
 class UnscrollStories extends StatefulWidget {
-  UnscrollStories({Key? key}) : super(key: key);
+  const UnscrollStories({Key? key,}) : super(key: key);
+
+
 
   @override
   State<UnscrollStories> createState() => _UnscrollStoriesState();
@@ -38,6 +38,7 @@ class _UnscrollStoriesState extends State<UnscrollStories> {
                       controller: controller,
                       imageFit: BoxFit.cover,
                     ),
+
                 ],
                 controller: controller,
                 onComplete: () {
@@ -52,7 +53,7 @@ class _UnscrollStoriesState extends State<UnscrollStories> {
                   }
                 }, //
                 onStoryShow: (s) {
-                  print("Showing a story");
+
                 },
               ),
       );

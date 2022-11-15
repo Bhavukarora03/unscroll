@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:unscroll/constants.dart';
@@ -19,14 +18,12 @@ class PostsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Obx(
         () {
           return CustomScrollView(controller: _scrollController, slivers: [
-                  stories(),
-                  posts(),
-                ]);
-
+            stories(),
+            posts(),
+          ]);
         },
       ),
     );
@@ -49,7 +46,9 @@ class PostsPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        onTap: () => Get.to(() => UnscrollStories(), transition: Transition.downToUp),
+                        onTap: () {
+                          Get.to(() => const UnscrollStories());
+                        },
                         child: UserProfileImage(
                           imageUrl: data.profilePic,
                           radius: 30,
@@ -97,7 +96,7 @@ class PostsPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(data.username),
-                          const Text('Location'),
+                          Text(data.location),
                         ],
                       ),
                     ],
@@ -110,7 +109,8 @@ class PostsPage extends StatelessWidget {
                   onDoubleTap: () {
                     postController.likePost(data.id);
                   },
-                  child: UserPostsImages(imageUrl: data.postURL)),
+                  child: InteractiveViewer(
+                      child: UserPostsImages(imageUrl: data.postURL))),
               height10,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -169,29 +169,38 @@ class PostsPage extends StatelessWidget {
                 ],
               ),
               height10,
-              Row(
-                children: [
-                  Text(
-                    '${data.likes.length} likes',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '${data.likes.length} likes',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "${data.username} - ${data.caption}",
+                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+
+                    Row(
+                      children: [
+                        Text(timeago.format(data.createdAt.toLocal())),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               height10,
-              Row(
-                children: [
-                  Text(
-                    "* ${data.caption}",
-                    style: const TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                ],
-              ),
-              height10,
-              Row(
-                children: [
-                  Text(timeago.format(data.createdAt.toLocal())),
-                ],
-              ),
+
             ],
           ),
         );

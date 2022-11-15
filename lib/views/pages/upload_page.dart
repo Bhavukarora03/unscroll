@@ -1,17 +1,14 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:unscroll/constants.dart';
-import 'package:unscroll/controllers/stories_controller.dart';
 import 'package:unscroll/views/screens/confirm_stories.dart';
 import 'package:unscroll/views/screens/screens.dart';
 import 'package:unscroll/views/widgets/modelBottomSheet.dart';
 
-import '../../controllers/auth_controller.dart';
 
 class UploadPage extends StatelessWidget {
   const UploadPage({Key? key}) : super(key: key);
@@ -110,11 +107,12 @@ class UploadPage extends StatelessWidget {
             titleText: "Upload a story",
             onPressedCamera: () => uploadStories(ImageSource.camera, context),
             onPressedGallery: () => uploadStories(ImageSource.gallery, context),
-            icon: Icons.image,
+            icon: Icons.shutter_speed,
             iconColor: Colors.grey.shade700,
             topRadius: 0,
             bottomRadius: 15,
           ),
+
 
         ],
       ),

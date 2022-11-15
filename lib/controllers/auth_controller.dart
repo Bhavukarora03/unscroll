@@ -57,6 +57,7 @@ class AuthController extends GetxController with CacheManager{
   @override
   void onReady() {
     super.onReady();
+    locationController.determinePosition();
     _user = Rx<User?>(firebaseAuth.currentUser);
     _user.bindStream(firebaseAuth.authStateChanges());
     ever(_user, _setInitialScreen);
@@ -196,18 +197,18 @@ class AuthController extends GetxController with CacheManager{
 mixin CacheManager {
   Future<bool> saveToken(String? token) async {
     final box = GetStorage();
-    await box.write(CacheManagerKey.TOKEN.toString(), token);
+    await box.write(CacheManagerKey.token.toString(), token);
     return true;
   }
 
   String? getToken() {
     final box = GetStorage();
-    return box.read(CacheManagerKey.TOKEN.toString());
+    return box.read(CacheManagerKey.token.toString());
   }
 
   Future<void> removeToken() async {
     final box = GetStorage();
-    await box.remove(CacheManagerKey.TOKEN.toString());
+    await box.remove(CacheManagerKey.token.toString());
   }
 
   countDownTimer(){
@@ -218,4 +219,4 @@ mixin CacheManager {
 
 
 
-enum CacheManagerKey { TOKEN }
+enum CacheManagerKey { token }

@@ -43,7 +43,7 @@ class ProfileController extends GetxController {
         .get();
 
     for (int i = 0; i < querySnapshot3.docs.length; i++) {
-      stories.add((querySnapshot3.docs[i].data() as dynamic)['storyUrl']);
+      stories.add((querySnapshot3.docs[i].data() as dynamic)['storyUrl'][0]['url']);
      }
 
 
@@ -157,5 +157,36 @@ class ProfileController extends GetxController {
           .update('following', (value) => (int.parse(value) - 1).toString());
     }
     _user.value.update('isFollowing', (value) => !value);
+  }
+
+  getfollowCount(){
+    firebaseFirestore
+        .collection('users')
+        .doc(_uid.value)
+        .collection('followers')
+        .doc(authController.user.uid)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        _user.value.update('isFollowing', (value) => true);
+      } else {
+        _user.value.update('isFollowing', (value) => false);
+      }
+    });
+  }
+  getFollowingCount(){
+    firebaseFirestore
+        .collection('users')
+        .doc(authController.user.uid)
+        .collection('following')
+        .doc(_uid.value)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        _user.value.update('isFollowing', (value) => true);
+      } else {
+        _user.value.update('isFollowing', (value) => false);
+      }
+    });
   }
 }

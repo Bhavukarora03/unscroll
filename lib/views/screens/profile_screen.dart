@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/profile_controller.dart';
 import 'package:unscroll/views/screens/followers_count.dart';
@@ -27,7 +28,6 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   String uid = "";
   late TabController _tabController;
-  bool active = true;
 
   getUserids() async {
     uid = widget.uid;
@@ -39,20 +39,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addObserver(this);
     super.initState();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      active = true;
-    } else if (state == AppLifecycleState.inactive) {
-      active = false;
-    } else if (state == AppLifecycleState.paused) {
-      active = false;
-    } else if (state == AppLifecycleState.detached) {
-      active = false;
-    }
-    super.didChangeAppLifecycleState(state);
   }
 
   @override
@@ -69,13 +55,15 @@ class _ProfileScreenState extends State<ProfileScreen>
         if (controller.user.isEmpty) {
           return const Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.white,
+                color: Colors.teal,
+              ),
             ),
           );
         }
 
         return Scaffold(
-
           body: SafeArea(
             child: Column(
               children: [
@@ -136,8 +124,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-
-
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -213,12 +199,11 @@ class _TabBarLibraryState extends State<TabBarLibrary> {
                   crossAxisSpacing: 5,
                   mainAxisSpacing: 5),
               itemBuilder: (context, index) {
-
                 return Container(
                   decoration: BoxDecoration(
                     color: Colors.black,
                     image: DecorationImage(
-                      image: NetworkImage(
+                      image: CachedNetworkImageProvider(
                         profileController.user['PostUrl'][index],
                       ),
                       fit: BoxFit.cover,

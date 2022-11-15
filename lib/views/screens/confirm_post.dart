@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:unscroll/constants.dart';
 import 'package:get/get.dart';
+import 'package:unscroll/controllers/location_controller.dart';
 import 'package:unscroll/controllers/upload_posts_controller.dart';
 
 class ConfirmPost extends StatefulWidget {
@@ -18,7 +19,10 @@ class ConfirmPost extends StatefulWidget {
 
 class _ConfirmPostState extends State<ConfirmPost> {
   final TextEditingController _captionController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
+  final location = Get.find<LocationController>();
+  final TextEditingController _locationController = TextEditingController(
+    text: "${locationController.placeMark[0].street!}, ${locationController.placeMark[0].locality!}, ${locationController.placeMark[0].country!}",
+  );
 
 
   final UploadPostsController _postController =
@@ -113,7 +117,7 @@ class _ConfirmPostState extends State<ConfirmPost> {
               decoration: InputDecoration(
                 prefixIcon: IconButton(
                     onPressed: () {
-                      locationController.determinePosition();
+
                     },
                     icon: const Icon(Icons.location_on)),
                 border: InputBorder.none,

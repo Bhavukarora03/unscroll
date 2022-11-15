@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:unscroll/models/user_stories.dart';
 
 import '../constants.dart';
@@ -57,7 +56,6 @@ class StoriesController extends GetxController {
         _urls.value.add(i['url']);
         _urls.value.toSet().toList();
       }
-      print(_urls.value);
 
     }
 

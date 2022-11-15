@@ -10,13 +10,20 @@ class VideoController extends GetxController {
 
   List<VideoModel> get videoList => _videosList.value;
 
+  final RxBool _isLoaded = false.obs;
+  bool get isLoaded => _isLoaded.value;
+
+
+
   @override
   void onInit() {
+    _isLoaded.value = true;
     super.onInit();
     _videosList.bindStream(
       firebaseFirestore.collection('videos').snapshots().map(
         (QuerySnapshot querySnapshot) {
           List<VideoModel> temp = [];
+
           for (var doc in querySnapshot.docs) {
             temp.add(VideoModel.fromSnap(doc));
           }

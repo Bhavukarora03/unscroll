@@ -123,6 +123,7 @@ class _NavigationScreenState extends State<NavigationScreen>
                 },
               ),
               centerTitle: true,
+              floating: false,
               elevation: 0,
             ),
             SliverFillRemaining(
