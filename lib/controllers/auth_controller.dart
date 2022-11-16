@@ -2,8 +2,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -34,7 +32,6 @@ class AuthController extends GetxController with CacheManager{
 
   bool get hasInternet => _hasInternet.value;
 
-  final secureStorage = const FlutterSecureStorage();
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -60,6 +57,7 @@ class AuthController extends GetxController with CacheManager{
   @override
   void onReady() {
     super.onReady();
+    locationController.determinePosition();
     _user = Rx<User?>(firebaseAuth.currentUser);
     _user.bindStream(firebaseAuth.authStateChanges());
     ever(_user, _setInitialScreen);
@@ -72,7 +70,7 @@ class AuthController extends GetxController with CacheManager{
 
 
       Get.offAll(() => const NavigationScreen());
-      secureStorage.write(key: 'user', value: user.uid);
+
     }
   }
 
@@ -179,11 +177,6 @@ class AuthController extends GetxController with CacheManager{
       final authResult = await firebaseAuth.signInWithCredential(credential);
 
       final User? user = authResult.user;
-      await secureStorage.write(
-        key: 'user',
-        value: user?.uid,
-      );
-
       model.User googleUser = model.User(
           username: user!.displayName!,
           email: user.email!,
@@ -204,19 +197,26 @@ class AuthController extends GetxController with CacheManager{
 mixin CacheManager {
   Future<bool> saveToken(String? token) async {
     final box = GetStorage();
-    await box.write(CacheManagerKey.TOKEN.toString(), token);
+    await box.write(CacheManagerKey.token.toString(), token);
     return true;
   }
 
   String? getToken() {
     final box = GetStorage();
-    return box.read(CacheManagerKey.TOKEN.toString());
+    return box.read(CacheManagerKey.token.toString());
   }
 
   Future<void> removeToken() async {
     final box = GetStorage();
-    await box.remove(CacheManagerKey.TOKEN.toString());
+    await box.remove(CacheManagerKey.token.toString());
+  }
+
+  countDownTimer(){
+
   }
 }
 
-enum CacheManagerKey { TOKEN }
+
+
+
+enum CacheManagerKey { token }

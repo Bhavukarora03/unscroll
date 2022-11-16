@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,6 +8,7 @@ import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/confirm_stories.dart';
 import 'package:unscroll/views/screens/screens.dart';
 import 'package:unscroll/views/widgets/modelBottomSheet.dart';
+
 
 class UploadPage extends StatelessWidget {
   const UploadPage({Key? key}) : super(key: key);
@@ -88,7 +88,9 @@ class UploadPage extends StatelessWidget {
             onPressedCamera: () => uploadVideo(ImageSource.camera, context),
             onPressedGallery: () => uploadVideo(ImageSource.gallery, context),
             icon: Icons.video_call,
-            iconColor: Colors.grey.shade700, topRadius: 15, bottomRadius: 0,
+            iconColor: Colors.grey.shade700,
+            topRadius: 15,
+            bottomRadius: 0,
           ),
           height20,
           ModelBottomSheetForCamera(
@@ -96,16 +98,21 @@ class UploadPage extends StatelessWidget {
             onPressedCamera: () => uploadPost(ImageSource.camera, context),
             onPressedGallery: () => uploadPost(ImageSource.gallery, context),
             icon: Icons.image,
-            iconColor: Colors.grey.shade700, topRadius: 0, bottomRadius: 0,
+            iconColor: Colors.grey.shade700,
+            topRadius: 0,
+            bottomRadius: 0,
           ),
           height20,
           ModelBottomSheetForCamera(
             titleText: "Upload a story",
             onPressedCamera: () => uploadStories(ImageSource.camera, context),
             onPressedGallery: () => uploadStories(ImageSource.gallery, context),
-            icon: Icons.image,
-            iconColor: Colors.grey.shade700, topRadius: 0, bottomRadius: 15,
+            icon: Icons.shutter_speed,
+            iconColor: Colors.grey.shade700,
+            topRadius: 0,
+            bottomRadius: 15,
           ),
+
 
         ],
       ),

@@ -1,56 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/post_controller.dart';
 import 'package:unscroll/views/screens/unscroll_stories.dart';
-import 'package:unscroll/views/widgets/like_animatiob.dart';
 import 'package:unscroll/views/widgets/user_profileimg.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import '../../controllers/stories_controller.dart';
 
 class PostsPage extends StatelessWidget {
   PostsPage({Key? key}) : super(key: key);
 
   final postController = Get.put(PostController());
+  final storiesController = Get.put(StoriesController());
   final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: const Text('Posts'),
-      ),
       body: Obx(
         () {
-          return postController.initialized
-              ? CustomScrollView(controller: _scrollController, slivers: [
-                  stories(),
-                  const SliverToBoxAdapter(
-                    child: Divider(
-                      color: Colors.grey,
-                      thickness: 0.5,
-                    ),
-                  ),
-                  posts(),
-                ])
-              : Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: CustomScrollView(
-                    controller: _scrollController,
-                    slivers: [
-                      stories(),
-                      const SliverToBoxAdapter(
-                        child: Divider(
-                          color: Colors.grey,
-                          thickness: 0.5,
-                        ),
-                      ),
-                      posts(),
-                    ],
-                  ),
-                );
+          return CustomScrollView(controller: _scrollController, slivers: [
+            stories(),
+            posts(),
+          ]);
         },
       ),
     );
@@ -64,23 +37,26 @@ class PostsPage extends StatelessWidget {
             height: 100,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: 1,
+              itemCount: storiesController.stories.length,
               itemBuilder: (context, index) {
+                final data = storiesController.stories[index];
                 return SizedBox(
                   width: 100,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        onTap: () => Get.to(() => UnscrollStories(), transition: Transition.fadeIn),
+                        onTap: () {
+                          Get.to(() => const UnscrollStories());
+                        },
                         child: UserProfileImage(
-                          imageUrl: authController.user.photoURL!,
+                          imageUrl: data.profilePic,
                           radius: 30,
                         ),
                       ),
-                      const Text(
-                        'Your Story',
-                        style: TextStyle(
+                      Text(
+                        data.username,
+                        style: const TextStyle(
                           fontSize: 12,
                         ),
                       ),
@@ -120,7 +96,7 @@ class PostsPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(data.username),
-                          const Text('Location'),
+                          Text(data.location),
                         ],
                       ),
                     ],
@@ -129,15 +105,12 @@ class PostsPage extends StatelessWidget {
                 ],
               ),
               height10,
-              LikeAnimation(
-                smallLike: true,
-                isAnimating: data.likes.contains(authController.user.uid),
-                child: GestureDetector(
-                    onTap: () {
-                      postController.likePost(data.id);
-                    },
-                    child: UserPostsImages(imageUrl: data.postURL)),
-              ),
+              GestureDetector(
+                  onDoubleTap: () {
+                    postController.likePost(data.id);
+                  },
+                  child: InteractiveViewer(
+                      child: UserPostsImages(imageUrl: data.postURL))),
               height10,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -196,29 +169,38 @@ class PostsPage extends StatelessWidget {
                 ],
               ),
               height10,
-              Row(
-                children: [
-                  Text(
-                    '${data.likes.length} likes',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '${data.likes.length} likes',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "${data.username} - ${data.caption}",
+                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+
+                    Row(
+                      children: [
+                        Text(timeago.format(data.createdAt.toLocal())),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               height10,
-              Row(
-                children: [
-                  Text(
-                    "* ${data.caption}",
-                    style: const TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                ],
-              ),
-              height10,
-              Row(
-                children: [
-                  Text(timeago.format(data.createdAt.toLocal())),
-                ],
-              ),
+
             ],
           ),
         );

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math' as math;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ViewportOffset;
 import 'package:unscroll/controllers/upload_posts_controller.dart';
@@ -57,10 +57,8 @@ class _ConfirmStoryState extends State<ConfirmStory> {
                         borderRadius: BorderRadius.circular(50),
                       ),
                     ),
-                    onPressed: () {
-                      uploadController.uploadStories(
-                        widget.storyPath,
-                      );
+                    onPressed: () async {
+                      uploadController.uploadStories(widget.storyPath);
                     },
                     icon: const Icon(Icons.arrow_forward_rounded),
                     label: const Text("Confirm"))),
@@ -347,10 +345,11 @@ class FilterItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ClipOval(
-            child: Image.network(
-              'https://docs.flutter.dev/cookbook/img-files/effects/instagram-buttons/millenial-texture.jpg',
+            child: CachedNetworkImage(
               color: color.withOpacity(0.5),
               colorBlendMode: BlendMode.hardLight,
+              imageUrl:
+                  'https://docs.flutter.dev/cookbook/img-files/effects/instagram-buttons/millenial-texture.jpg',
             ),
           ),
         ),

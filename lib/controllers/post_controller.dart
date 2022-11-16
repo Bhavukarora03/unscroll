@@ -12,7 +12,6 @@ class PostController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-
     _posts.bindStream(
       firebaseFirestore.collection('posts').snapshots().map(
         (QuerySnapshot querySnapshot) {

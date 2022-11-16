@@ -30,11 +30,11 @@ class UserProfileImage extends StatelessWidget {
         radius: radius,
       ),
       placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: Colors.black,
+          highlightColor: Colors.transparent,
           child: CircleAvatar(
             radius: radius,
-          ),
-          baseColor: Colors.black,
-          highlightColor: Colors.transparent),
+          )),
       errorWidget: (context, url, error) => const Icon(Icons.error),
     );
   }
@@ -65,8 +65,8 @@ class UserPostsImages extends StatelessWidget {
         ),
       ),
       placeholder: (context, url) => Shimmer.fromColors(
-          baseColor: Colors.black38,
-          highlightColor: Colors.white,
+          baseColor: Colors.grey.shade100,
+          highlightColor: Colors.grey,
           child: Container(
             height: 400,
             width: double.infinity,

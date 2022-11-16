@@ -8,6 +8,12 @@ class LocationController extends GetxController {
   late List<Placemark> _placeMark = <Placemark>[].obs;
    List<Placemark> get placeMark => _placeMark;
 
+   @override
+  void onInit() {
+    determinePosition();
+    super.onInit();
+  }
+
 
   late Position _currentPosition;
   Position? get currentPosition => _currentPosition;
@@ -43,6 +49,7 @@ class LocationController extends GetxController {
 
     _currentPosition = await Geolocator.getCurrentPosition();
     getUserLocationFromLatLong(_currentPosition);
+
 
 
     return _currentPosition;

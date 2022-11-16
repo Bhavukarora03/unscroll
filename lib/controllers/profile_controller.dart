@@ -18,7 +18,7 @@ class ProfileController extends GetxController {
   getUserData() async {
     List<String> thumbnails = [];
     List<String> posts = [];
-    List<String> stories = [];
+    List<dynamic> stories = [];
     var querySnapshot = await firebaseFirestore
         .collection('videos')
         .where('uid', isEqualTo: _uid.value)
@@ -36,15 +36,16 @@ class ProfileController extends GetxController {
     for (int i = 0; i < querySnapshot2.docs.length; i++) {
       posts.add((querySnapshot2.docs[i].data() as dynamic)['PostUrl']);
     }
-
+    //
     var querySnapshot3 = await firebaseFirestore
         .collection('stories')
         .where('uid', isEqualTo: _uid.value)
         .get();
 
     for (int i = 0; i < querySnapshot3.docs.length; i++) {
-      stories.add((querySnapshot3.docs[i].data() as dynamic)['storyUrl']);
-    }
+      stories.add((querySnapshot3.docs[i].data() as dynamic)['storyUrl'][0]['url']);
+     }
+
 
     DocumentSnapshot documentSnapshot =
         await firebaseFirestore.collection('users').doc(_uid.value).get();
@@ -53,6 +54,7 @@ class ProfileController extends GetxController {
     String name = userData['username'];
     String profilePic = userData['profilePic'];
     int likes = 0;
+    int storiesUrls = 0;
     int followers = 0;
     int following = 0;
     bool isFollowing = false;
@@ -60,6 +62,11 @@ class ProfileController extends GetxController {
     for (var items in querySnapshot.docs) {
       likes += (items.data()['likes'] as List).length;
     }
+
+    for(var items in querySnapshot3.docs){
+      storiesUrls += (items.data()['storyUrl'] as List<dynamic>).length;
+    }
+
 
     var followersSnapshot = await firebaseFirestore
         .collection('users')
@@ -98,7 +105,7 @@ class ProfileController extends GetxController {
       'isFollowing': isFollowing,
       'thumbnails': thumbnails,
       'PostUrl': posts,
-      'storyUrl': stories
+      'storyUrl': storiesUrls.toString(),
     };
     update();
   }
@@ -150,5 +157,36 @@ class ProfileController extends GetxController {
           .update('following', (value) => (int.parse(value) - 1).toString());
     }
     _user.value.update('isFollowing', (value) => !value);
+  }
+
+  getfollowCount(){
+    firebaseFirestore
+        .collection('users')
+        .doc(_uid.value)
+        .collection('followers')
+        .doc(authController.user.uid)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        _user.value.update('isFollowing', (value) => true);
+      } else {
+        _user.value.update('isFollowing', (value) => false);
+      }
+    });
+  }
+  getFollowingCount(){
+    firebaseFirestore
+        .collection('users')
+        .doc(authController.user.uid)
+        .collection('following')
+        .doc(_uid.value)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        _user.value.update('isFollowing', (value) => true);
+      } else {
+        _user.value.update('isFollowing', (value) => false);
+      }
+    });
   }
 }

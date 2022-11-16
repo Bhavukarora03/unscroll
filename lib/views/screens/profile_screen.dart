@@ -1,23 +1,29 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
+
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/profile_controller.dart';
 import 'package:unscroll/views/screens/followers_count.dart';
 import 'package:unscroll/views/screens/following_count.dart';
+
 import 'package:unscroll/views/widgets/widgets.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
 
-  const ProfileScreen({Key? key, required this.uid}) : super(key: key);
+  const ProfileScreen({
+    Key? key,
+    required this.uid,
+  }) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final ProfileController profileController = Get.put(ProfileController());
 
   String uid = "";
@@ -31,8 +37,14 @@ class _ProfileScreenState extends State<ProfileScreen>
   void initState() {
     profileController.updateUSerId(widget.uid);
     _tabController = TabController(length: 2, vsync: this);
-
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -41,23 +53,17 @@ class _ProfileScreenState extends State<ProfileScreen>
       init: ProfileController(),
       builder: (controller) {
         if (controller.user.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.white,
+                color: Colors.teal,
+              ),
+            ),
+          );
         }
 
         return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            leading: IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.person_add),
-            ),
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.more_vert),
-              ),
-            ],
-          ),
           body: SafeArea(
             child: Column(
               children: [
@@ -83,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         Text(
                           profileController.user['likes'],
                         ),
-                        const Text('Posts')
+                        const Text('likes')
                       ],
                     ),
                     GestureDetector(
@@ -115,28 +121,32 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ],
                 ),
                 height20,
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                   
-                  ),
-                  label: Text(
-                    widget.uid == authController.user.uid
-                        ? 'Sign Out'
-                        : profileController.user['isFollowing']
-                            ? 'Unfollow'
-                            : 'Follow',
-                  ),
-                  icon: widget.uid == authController.user.uid
-                      ? const Icon(Icons.logout_sharp)
-                      : const Icon(Icons.person_add),
-                  onPressed: () {
-                    if (widget.uid == authController.user.uid) {
-                      authController.signOut();
-                    } else {
-                      profileController.followerUser();
-                    }
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                      ),
+                      label: Text(
+                        widget.uid == authController.user.uid
+                            ? 'Sign Out'
+                            : profileController.user['isFollowing']
+                                ? 'Unfollow'
+                                : 'Follow',
+                      ),
+                      icon: widget.uid == authController.user.uid
+                          ? const Icon(Icons.logout_sharp)
+                          : const Icon(Icons.person_add),
+                      onPressed: () {
+                        if (widget.uid == authController.user.uid) {
+                          authController.signOut();
+                        } else {
+                          profileController.followerUser();
+                        }
+                      },
+                    ),
+                  ],
                 ),
                 height20,
                 TabBar(
@@ -182,7 +192,7 @@ class _TabBarLibraryState extends State<TabBarLibrary> {
         controller: widget._tabController,
         children: [
           GridView.builder(
-              itemCount: Get.find<ProfileController>().user['PostUrl'].length,
+              itemCount: profileController.user['PostUrl'].length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   mainAxisExtent: 180,
                   crossAxisCount: 3,
@@ -194,7 +204,7 @@ class _TabBarLibraryState extends State<TabBarLibrary> {
                     color: Colors.black,
                     image: DecorationImage(
                       image: CachedNetworkImageProvider(
-                        Get.find<ProfileController>().user['PostUrl'][index],
+                        profileController.user['PostUrl'][index],
                       ),
                       fit: BoxFit.cover,
                     ),

@@ -7,6 +7,12 @@ import '../constants.dart';
 class StoriesController extends GetxController {
   final Rx<List<StoriesModel>> _stories = Rx<List<StoriesModel>>([]);
   List<StoriesModel> get stories => _stories.value;
+  String uid = authController.user.uid;
+
+  final Rx<List<String>> _urls = Rx<List<String>>([]);
+  List<String> get urls => _urls.value;
+
+
 
   @override
   void onInit() {
@@ -23,6 +29,7 @@ class StoriesController extends GetxController {
         },
       ),
     );
+    getUserStories();
   }
 
   likeStories() async {
@@ -31,12 +38,27 @@ class StoriesController extends GetxController {
     var uid = authController.user.uid;
     if ((documentSnapshot.data() as dynamic)['likes'].contains(uid)) {
       await firebaseFirestore.collection('stories').doc().update({
-        'likes': FieldValue.arrayRemove([uid])
+        'likes': FieldValue.arrayRemove([uid]),
       });
     } else {
       await firebaseFirestore.collection('stories').doc().update({
         'likes': FieldValue.arrayUnion([uid])
       });
     }
+  }
+
+  getUserStories() async {
+    String uid = authController.user.uid;
+    var snaps = await firebaseFirestore.collection('stories').doc(uid).get();
+
+    if(snaps.exists){
+      for (var i in snaps.data()!['storyUrl']) {
+        _urls.value.add(i['url']);
+        _urls.value.toSet().toList();
+      }
+
+    }
+
+    return _urls.value;
   }
 }

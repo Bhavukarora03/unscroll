@@ -14,6 +14,7 @@ import '../models/user_stories.dart';
 
 class UploadPostsController extends GetxController {
   Rx<File> _pickedPostImage = Rx<File>(File(''));
+
   File get pickedPostImage => _pickedPostImage.value;
 
   ///crop image
@@ -138,25 +139,45 @@ class UploadPostsController extends GetxController {
     try {
       if (imagePath.isNotEmpty) {
         String uid = firebaseAuth.currentUser!.uid;
+
+
         DocumentSnapshot doc =
             await firebaseFirestore.collection('users').doc(uid).get();
         var docs = firebaseFirestore.collection('stories').get();
         int docCount = (await docs).docs.length;
         String id = docCount.toString();
         String storyUrl = await _uploadStories("stories $id", imagePath);
+
         StoriesModel storyModel = StoriesModel(
+            createdAt: DateTime.now(),
             uid: uid,
             username: (doc.data()! as Map<String, dynamic>)['username'],
-            id: "Posts $id",
+            id: "stories $id",
             profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
             likes: [],
-            storyUrl: storyUrl,
-            createdAt: DateTime.now());
-
-        await firebaseFirestore
-            .collection('stories')
-            .doc("stories $docCount")
-            .set(storyModel.toJson());
+            storyUrl: [
+              ({
+                "url": storyUrl,
+                "createdAt": DateTime.now(),
+              })
+            ]
+        );
+        var documents = firebaseFirestore.collection('stories').doc(uid).get();
+        if ((await documents).exists) {
+          await firebaseFirestore.collection('stories').doc(uid).set({
+            'storyUrl': FieldValue.arrayUnion([
+              {
+                "url": storyUrl,
+                'createdAt': DateTime.now(),
+              }
+            ])
+          }, SetOptions(merge: true));
+        } else {
+          await firebaseFirestore
+              .collection('stories')
+              .doc(uid)
+              .set(storyModel.toJson());
+        }
 
         ScaffoldMessenger.of(Get.context!).showSnackBar(
             const SnackBar(content: Text("Successfully uploaded")));
