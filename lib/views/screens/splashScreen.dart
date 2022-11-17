@@ -30,29 +30,27 @@ class _SplashScreenState extends State<SplashScreen> {
         future: initializeSettings(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return AnimatedSplashScreen(
+              animationDuration: const Duration(seconds: 5),
+              backgroundColor: Colors.black,
+              splash: const Text(
+                'Unscroll',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              nextScreen: authController.isLogged.value
+                  ? const NavigationScreen()
+                  : const LoginScreen(),
+              splashTransition: SplashTransition.slideTransition,
             );
           } else {
             if (snapshot.hasError) {
               return errorView(snapshot);
             } else {
-              return AnimatedSplashScreen(
-                animationDuration: const Duration(milliseconds: 5000),
-                backgroundColor: Colors.black,
-                splash: const Text(
-                  'Unscroll',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 50,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                nextScreen: authController.isLogged.value
-                    ? const NavigationScreen()
-                    : LoginScreen(),
-                splashTransition: SplashTransition.slideTransition,
-              );
+              return const CircularProgressIndicator();
             }
           }
         });

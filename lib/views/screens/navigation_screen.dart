@@ -94,7 +94,7 @@ class _NavigationScreenState extends State<NavigationScreen>
 
 
   final pages = [
-    PostsPage(),
+    const PostsPage(),
     HomePage(),
     SearchPage(),
     const UploadPage(),

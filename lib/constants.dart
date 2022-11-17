@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'controllers/auth_controller.dart';
@@ -26,7 +27,6 @@ const height80 = SizedBox(height: 80);
 const height90 = SizedBox(height: 90);
 const height100 = SizedBox(height: 100);
 
-
 //Sizedbox width
 const width10 = SizedBox(width: 10);
 const width20 = SizedBox(width: 20);
@@ -39,11 +39,11 @@ const width80 = SizedBox(width: 80);
 const width90 = SizedBox(width: 90);
 const width100 = SizedBox(width: 100);
 
-
 //firebase
 var firebaseAuth = FirebaseAuth.instance;
 var firebaseFirestore = FirebaseFirestore.instance;
 var firebaseStorage = FirebaseStorage.instance;
+var realTimeDataBase = FirebaseDatabase.instance;
 
 //Controller
 var authController = AuthController.instance;
@@ -52,3 +52,15 @@ var profileController = ProfileController.instance;
 var videoController = VideoController.instance;
 var storyController = StoriesController.instance;
 var commentController = CommentController.instance;
+
+extension KeyboardUnFocus on BuildContext {
+  void hideKeyboard() {
+    return WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScopeNode currentFocus = FocusScope.of(this);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+    });
+  }
+}
+

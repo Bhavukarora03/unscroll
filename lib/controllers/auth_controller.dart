@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -104,7 +105,7 @@ class AuthController extends GetxController with CacheManager {
   ///Check if user is logged in
   _setInitialScreen(User? user) {
     if (user == null) {
-      Get.offAll(() => LoginScreen());
+      Get.offAll(() => const LoginScreen());
     } else {
       Get.offAll(() => const NavigationScreen());
     }
@@ -125,8 +126,7 @@ class AuthController extends GetxController with CacheManager {
 
   ///init flutter local Notifications
   initLocalNotifications() {
-    var andriodInit =
-        const AndroidInitializationSettings('@mipmap-hdpi/ic_launcher');
+    var andriodInit = const AndroidInitializationSettings('ic_launcher');
     var iosInit = const DarwinInitializationSettings();
     var initSettings =
         InitializationSettings(android: andriodInit, iOS: iosInit);
@@ -135,7 +135,10 @@ class AuthController extends GetxController with CacheManager {
       try {
         if (response.payload != null) {
         } else {}
-      } catch (e) {}
+      } catch (e) {
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+            const SnackBar(content: Text('No Internet Connection')));
+      }
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -177,6 +180,20 @@ class AuthController extends GetxController with CacheManager {
       provisional: false,
       sound: true,
     );
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      if (kDebugMode) {
+        print('User granted permission');
+      }
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      if (kDebugMode) {
+        print('User granted provisional permission');
+      }
+    } else {
+      if (kDebugMode) {
+        print('User declined or has not accepted permission');
+      }
+    }
   }
 
   ///Get firebase messaging token
@@ -286,7 +303,7 @@ class AuthController extends GetxController with CacheManager {
   ///Sign out User
   void signOut() async {
     await firebaseAuth.signOut();
-    Get.offAll(() => LoginScreen());
+    Get.offAll(() => const LoginScreen());
   }
 
   ///Sign in with Google

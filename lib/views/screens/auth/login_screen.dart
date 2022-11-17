@@ -4,7 +4,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/auth/sign_up_screen.dart';
-import 'package:unscroll/views/widgets/widgets.dart';
+
 
 final _formKey = GlobalKey<FormState>();
 

@@ -175,7 +175,7 @@ class ProfileController extends GetxController {
         .get();
     for (int i = 0; i < snapshots.docs.length; i++) {
       _followers.value.add(snapshots.docs[i].data());
-      print(snapshots.docs[i].data());
+
     }
   }
 

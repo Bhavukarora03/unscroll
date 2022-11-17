@@ -113,7 +113,6 @@ class UploadPage extends StatelessWidget {
             bottomRadius: 15,
           ),
 
-          ElevatedButton(onPressed: (){storyController.getUserStories(authController.user.uid);}   , child: Text("Upload"))
 
 
         ],

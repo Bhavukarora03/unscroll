@@ -37,6 +37,12 @@ dependencies:
   firebase_messaging: ^13.1.0
   http: ^0.13.5
   connectivity_plus: ^3.0.2
+  firebase_database: ^9.1.7
+  image_downloader: ^0.31.0
+  google_fonts: ^3.0.1
+  uuid: ^3.0.7
+
+
 
 
 

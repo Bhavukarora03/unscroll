@@ -12,7 +12,7 @@ import '../../controllers/stories_controller.dart';
 import '../screens/profile_screen.dart';
 
 class PostsPage extends StatefulWidget {
-  PostsPage({Key? key}) : super(key: key);
+  const PostsPage({Key? key}) : super(key: key);
 
   @override
   State<PostsPage> createState() => _PostsPageState();
@@ -96,6 +96,7 @@ class _PostsPageState extends State<PostsPage> {
       (context, index) {
         final data = postController.postsLists[index];
         return Container(
+          key: ValueKey(data.id),
           margin: const EdgeInsets.all(10),
           child: Column(
             children: [
@@ -123,7 +124,7 @@ class _PostsPageState extends State<PostsPage> {
                             Text(data.username),
                             Text(
                               data.location,
-                              style: TextStyle(fontSize: 10),
+                              style: const TextStyle(fontSize: 10),
                             ),
                           ],
                         ),
@@ -152,10 +153,7 @@ class _PostsPageState extends State<PostsPage> {
                   Row(
                     children: [
                       likePost(data),
-                      IconButton(
-                        icon: const Icon(Icons.comment_outlined),
-                        onPressed: () {},
-                      ),
+                      saveImageToGallery(data),
                       sharePost(data),
                     ],
                   ),
@@ -180,6 +178,16 @@ class _PostsPageState extends State<PostsPage> {
       },
       childCount: postController.postsLists.length,
     ));
+  }
+
+  ///Save Image to Gallery
+  IconButton saveImageToGallery(PostsModel data) {
+    return IconButton(
+      icon: const Icon(Icons.comment_outlined),
+      onPressed: () {
+        postController.saveNetworkImage(data.postURL);
+      },
+    );
   }
 
   ///Share post

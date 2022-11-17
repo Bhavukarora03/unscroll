@@ -12,6 +12,7 @@ import 'package:unscroll/models/posts_model.dart';
 import 'package:http/http.dart' as http;
 import '../constants.dart';
 import '../models/user_stories.dart';
+import 'package:uuid/uuid.dart';
 
 class UploadPostsController extends GetxController {
   Rx<File> _pickedPostImage = Rx<File>(File(''));
@@ -103,14 +104,15 @@ class UploadPostsController extends GetxController {
         var allDocs = await firebaseFirestore.collection('posts').get();
         int docCount = allDocs.docs.length;
         String id = docCount.toString();
-        String postUrl = await _uploadPostToStorage("posts $id", postImage);
+        var uuid = const Uuid().v4();
+        String postUrl = await _uploadPostToStorage('posts $id', postImage);
 
         PostsModel postsModel = PostsModel(
           username: (doc.data()! as Map<String, dynamic>)['username'],
           profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
           postURL: postUrl,
           caption: caption,
-          id: "posts $docCount",
+          id: uuid,
           uid: uid,
           likes: [],
           commentCount: 0,
@@ -120,13 +122,15 @@ class UploadPostsController extends GetxController {
 
         await firebaseFirestore
             .collection('posts')
-            .doc("posts $docCount")
+            .doc(uuid)
             .set(postsModel.toJson());
 
-        var snapTokens = await firebaseFirestore.collection('usertokens').doc(uid).get();
+        var snapTokens =
+            await firebaseFirestore.collection('usertokens').doc(uid).get();
         String token = snapTokens.data()!['token'];
 
-        sendPushMessage(token, "Unscroll" , "$displayName posted a new unscroll, show them some love");
+        sendPushMessage(token, "Unscroll",
+            "$displayName posted a new unscroll, show them some love");
 
         Navigator.of(Get.context!).pop();
         ScaffoldMessenger.of(Get.context!).showSnackBar(
@@ -147,7 +151,8 @@ class UploadPostsController extends GetxController {
       if (imagePath.isNotEmpty) {
         String uid = firebaseAuth.currentUser!.uid;
 
-        DocumentSnapshot doc = await firebaseFirestore.collection('users').doc(uid).get();
+        DocumentSnapshot doc =
+            await firebaseFirestore.collection('users').doc(uid).get();
         var docs = firebaseFirestore.collection('stories').get();
         int docCount = (await docs).docs.length;
         String id = docCount.toString();
@@ -224,7 +229,8 @@ class UploadPostsController extends GetxController {
         ),
       );
     } catch (e) {
-
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+          SnackBar(content: Text("Error sending push message $e")));
     }
   }
 }

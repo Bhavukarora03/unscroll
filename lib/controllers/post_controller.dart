@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:image_downloader/image_downloader.dart';
+
 import 'package:unscroll/models/posts_model.dart';
 
 import '../constants.dart';
@@ -18,7 +22,9 @@ class PostController extends GetxController {
           List<PostsModel> temp = [];
           for (var doc in querySnapshot.docs) {
             temp.add(PostsModel.fromSnap(doc));
+            temp.sort((a, b) => b.createdAt.compareTo(a.createdAt));
           }
+
           return temp;
         },
       ),
@@ -41,12 +47,30 @@ class PostController extends GetxController {
   }
 
   deletePost(String id) async {
-    await firebaseFirestore.collection('posts').doc(id).delete();
+    await firebaseFirestore.collection('posts').doc().delete();
   }
 
   updatePost(String id, String caption) async {
     await firebaseFirestore.collection('posts').doc(id).update({
       'caption': caption,
     });
+  }
+
+  void saveNetworkImage(String pathProvided) async {
+    try {
+      // Saved with this method.
+      var imageId = await ImageDownloader.downloadImage(pathProvided,
+          destination: AndroidDestinationType.directoryDownloads);
+      if (imageId == null) {
+        ScaffoldMessenger.of(Get.context!)
+            .showSnackBar(const SnackBar(content: Text('Download Failed')));
+        return;
+      }
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+          const SnackBar(content: Text('Downloaded Image to Gallery')));
+    } on PlatformException catch (error) {
+      ScaffoldMessenger.of(Get.context!)
+          .showSnackBar(SnackBar(content: Text('Download Failed $error')));
+    }
   }
 }

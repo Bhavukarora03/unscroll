@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ViewportOffset;
+import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/upload_posts_controller.dart';
 
 @immutable
@@ -57,7 +58,9 @@ class _ConfirmStoryState extends State<ConfirmStory> {
                         borderRadius: BorderRadius.circular(50),
                       ),
                     ),
-                    onPressed: () async {
+                    onPressed: ()  {
+                      KeyboardUnFocus(context).hideKeyboard();
+
                       uploadController.uploadStories(widget.storyPath);
                     },
                     icon: const Icon(Icons.arrow_forward_rounded),

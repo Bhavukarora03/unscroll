@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:unscroll/constants.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/controllers/location_controller.dart';
@@ -39,7 +38,7 @@ class _ConfirmPostState extends State<ConfirmPost> {
           OutlinedButton(
             onPressed: () async{
 
-
+              KeyboardUnFocus(context).hideKeyboard();
               await _postController.uploadPost(
                 _captionController.text,
                 widget.imgPath,

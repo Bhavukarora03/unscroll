@@ -194,14 +194,15 @@ class _TabBarLibraryState extends State<TabBarLibrary> {
           GridView.builder(
               itemCount: profileController.user['PostUrl'].length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisExtent: 180,
+                  mainAxisExtent: 150,
                   crossAxisCount: 3,
-                  crossAxisSpacing: 5,
+                  crossAxisSpacing: 8,
                   mainAxisSpacing: 5),
               itemBuilder: (context, index) {
                 return Container(
                   decoration: BoxDecoration(
                     color: Colors.black,
+                    borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
                       image: CachedNetworkImageProvider(
                         profileController.user['PostUrl'][index],
@@ -221,6 +222,7 @@ class _TabBarLibraryState extends State<TabBarLibrary> {
             itemBuilder: (context, index) {
               return Container(
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
                   color: Colors.black,
                   image: DecorationImage(
                     image: CachedNetworkImageProvider(
