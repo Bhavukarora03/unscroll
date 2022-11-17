@@ -7,11 +7,9 @@ import '../../controllers/stories_controller.dart';
 import "package:get/get.dart";
 
 class UnscrollStories extends StatefulWidget {
-  const UnscrollStories({Key? key, required this.uid }) : super(key: key);
+  const UnscrollStories({Key? key, required this.uid}) : super(key: key);
 
- final String uid;
-
-
+  final String uid;
 
   @override
   State<UnscrollStories> createState() => _UnscrollStoriesState();
@@ -24,23 +22,17 @@ class _UnscrollStoriesState extends State<UnscrollStories> {
 
   final controller = StoryController();
 
+  String uid = "";
 
-
-String uid = "";
-
-getUserStory() {
-  uid = widget.uid;
-}
-
+  getUserStory() {
+    uid = widget.uid;
+  }
 
   @override
   void initState() {
     storiesController.getUserStories(widget.uid);
     super.initState();
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -52,15 +44,17 @@ getUserStory() {
               )
             : StoryView(
                 storyItems: [
-                  for (var i = 0; i < storiesController.urls.length; i++)
+                  for (var i = 0; i < storiesController.stories.length; i++)
                     StoryItem.pageImage(
                       url: storiesController.urls[i],
                       controller: controller,
+                      duration: const Duration(seconds: 5),
                       imageFit: BoxFit.cover,
-                    ),
+                      caption: storiesController.stories[i].username,
 
+                    ),
                 ],
-                controller: controller,
+
                 onComplete: () {
                   Get.back();
                 },
@@ -72,9 +66,7 @@ getUserStory() {
                     Navigator.pop(context);
                   }
                 }, //
-                onStoryShow: (s) {
-
-                },
+                onStoryShow: (s) {}, controller: controller,
               ),
       );
     });

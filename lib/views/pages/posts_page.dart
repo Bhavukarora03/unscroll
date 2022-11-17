@@ -144,30 +144,37 @@ class PostsPage extends StatelessWidget {
                   ),
                   IconButton(
                       onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              content: const Text(
-                                  'Do you want to Delete this post?'),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('Cancel')),
-                                TextButton(
-                                    onPressed: () {
-                                      postController.deletePost(data.id);
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('Delete')),
-                              ],
-                            );
-                          },
-                        );
+                        if(data.uid == authController.user.uid){
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content: const Text(
+                                    'Do you want to Delete this post?'),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Cancel')),
+                                  TextButton(
+                                      onPressed: () {
+                                        if(data.uid == authController.user.uid){
+                                          postController.deletePost(data.id);
+                                          Navigator.pop(context);
+                                        }
+
+                                      },
+                                      child: const Text('Delete')),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                        else{}
+
                       },
-                      icon: const Icon(Icons.delete_outline))
+                      icon: data.uid == authController.user.uid ?   const Icon(Icons.delete_outline) : const SizedBox()),
                 ],
               ),
               height10,
