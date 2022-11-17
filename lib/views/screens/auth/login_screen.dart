@@ -8,12 +8,25 @@ import 'package:unscroll/views/widgets/widgets.dart';
 
 final _formKey = GlobalKey<FormState>();
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
-  bool showPassword = false;
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool _obscureText = true;
+
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwprdController = TextEditingController();
+
+  final TextEditingController _passwordController = TextEditingController();
+
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,67 +53,9 @@ class LoginScreen extends StatelessWidget {
                       child: AutofillGroup(
                         child: Column(
                           children: [
-                            TextFormField(
-                              controller: _emailController,
-                              enableInteractiveSelection: true,
-                              enableSuggestions: true,
-                              autofillHints: const [AutofillHints.email],
-                              keyboardType: TextInputType.emailAddress,
-                              validator: EmailValidator(
-                                  errorText: "Enter a valid email"),
-                              decoration: const InputDecoration(
-                                labelText: "Email",
-                                labelStyle: TextStyle(color: Colors.white),
-                                hintText: "Enter your email",
-                                prefixIcon:
-                                    Icon(Icons.email, color: Colors.white),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
-                                ),
-                              ),
-                            ),
+                            buildEmailTextFormField(),
                             height20,
-                            TextFormField(
-                              controller: _passwprdController,
-                              keyboardType: TextInputType.visiblePassword,
-                              obscureText: true,
-                              enableInteractiveSelection: true,
-                              enableSuggestions: true,
-                              validator: MultiValidator([
-                                RequiredValidator(
-                                    errorText: "Enter a valid password"),
-                                MinLengthValidator(6,
-                                    errorText:
-                                        "Password must be at least 6 characters"),
-                                MaxLengthValidator(15,
-                                    errorText:
-                                        "Password must be at most 15 characters"),
-                              ]),
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
-                                ),
-                                suffix: IconButton(
-                                    onPressed: () {
-                                      if (showPassword) {
-                                       
-                                      }
-                                    },
-                                    icon: Icon(Icons.remove_red_eye)),
-                                labelText: "Password",
-                                hintText: "Enter your password",
-                                labelStyle:
-                                    const TextStyle(color: Colors.white),
-                                prefixIcon:
-                                    const Icon(Icons.lock, color: Colors.white),
-                              ),
-                            )
+                            buildPasswordTextFormField()
                           ],
                         ),
                       ),
@@ -108,9 +63,15 @@ class LoginScreen extends StatelessWidget {
                     height50,
                     ElevatedButton(
                         onPressed: () {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                          });
                           if (_formKey.currentState!.validate()) {
                             authController.loginUser(_emailController.text,
-                                _passwprdController.text);
+                                _passwordController.text);
                           }
                         },
                         child: const Text(
@@ -122,7 +83,7 @@ class LoginScreen extends StatelessWidget {
                     ElevatedButton.icon(
                         onPressed: () => authController.loginWithGoogle(),
                         icon: Image.asset(
-                          "assets/images/google.png",
+                          "assets/images/logo.png",
                           height: 20,
                         ),
                         label: const Text("Continue with Google")),
@@ -141,5 +102,65 @@ class LoginScreen extends StatelessWidget {
                 )),
           ),
         ));
+  }
+
+  /// Email Text Form Field
+  TextFormField buildEmailTextFormField() {
+    return TextFormField(
+      controller: _emailController,
+      enableInteractiveSelection: true,
+      enableSuggestions: true,
+      autofillHints: const [AutofillHints.email],
+      keyboardType: TextInputType.emailAddress,
+      validator: EmailValidator(errorText: "Enter a valid email"),
+      decoration: const InputDecoration(
+        labelText: "Email",
+        labelStyle: TextStyle(color: Colors.white),
+        hintText: "Enter your email",
+        prefixIcon: Icon(Icons.email, color: Colors.white),
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  ///Password TextForm Field
+  TextFormField buildPasswordTextFormField() {
+    return TextFormField(
+      controller: _passwordController,
+      keyboardType: TextInputType.visiblePassword,
+      obscureText: _obscureText,
+      enableInteractiveSelection: true,
+      enableSuggestions: true,
+      validator: MultiValidator([
+        RequiredValidator(errorText: "Enter a valid password"),
+        MinLengthValidator(6,
+            errorText: "Password must be at least 6 characters"),
+        MaxLengthValidator(15,
+            errorText: "Password must be at most 15 characters"),
+      ]),
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        suffixIcon: IconButton(
+            onPressed: _toggle,
+            icon: Icon(
+              _obscureText ? Icons.visibility : Icons.visibility_off,
+              color: Colors.white,
+            )),
+        labelText: "Password",
+        hintText: "Enter your password",
+        labelStyle: const TextStyle(color: Colors.white),
+        prefixIcon: const Icon(Icons.lock, color: Colors.white),
+      ),
+    );
   }
 }

@@ -13,8 +13,6 @@ class StoriesController extends GetxController {
   final Rx<List<String>> _urls = Rx<List<String>>([]);
   List<String> get urls => _urls.value;
 
-
-
   @override
   void onInit() {
     // TODO: implement onInit
@@ -30,7 +28,6 @@ class StoriesController extends GetxController {
         },
       ),
     );
-
   }
 
   likeStories() async {
@@ -50,12 +47,11 @@ class StoriesController extends GetxController {
 
   getUserStories(String uid) async {
     var snaps = await firebaseFirestore.collection('stories').doc(uid).get();
-    if(snaps.exists){
+    if (snaps.id == uid) {
       for (var i in snaps.data()!['storyUrl']) {
         _urls.value.add(i['url']);
         _urls.value.toSet().toList();
       }
-
     }
 
     return _urls.value;

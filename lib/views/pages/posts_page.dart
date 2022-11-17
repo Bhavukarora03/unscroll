@@ -1,19 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/post_controller.dart';
+import 'package:unscroll/models/posts_model.dart';
 import 'package:unscroll/views/screens/unscroll_stories.dart';
 import 'package:unscroll/views/widgets/user_profileimg.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../controllers/stories_controller.dart';
+import '../screens/profile_screen.dart';
 
-class PostsPage extends StatelessWidget {
+class PostsPage extends StatefulWidget {
   PostsPage({Key? key}) : super(key: key);
 
+  @override
+  State<PostsPage> createState() => _PostsPageState();
+}
+
+class _PostsPageState extends State<PostsPage> {
   final postController = Get.put(PostController());
+
+  bool readOnly = true;
+
   final storiesController = Get.put(StoriesController());
+
   final ScrollController _scrollController = ScrollController();
+  void _toggle() {
+    setState(() {
+      readOnly = !readOnly;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,25 +102,41 @@ class PostsPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      UserProfileImage(
-                        imageUrl: data.profilePic,
-                        radius: 15,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(data.username),
-                          Text(data.location),
-                        ],
-                      ),
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(
+                          () => ProfileScreen(
+                                uid: data.uid,
+                              ),
+                          transition: Transition.cupertino);
+                    },
+                    child: Row(
+                      children: [
+                        UserProfileImage(
+                          imageUrl: data.profilePic,
+                          radius: 15,
+                        ),
+                        width10,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(data.username),
+                            Text(
+                              data.location,
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  const Icon(Icons.more_vert)
+                  IconButton(
+                      onPressed: _toggle,
+                      icon: data.uid == authController.user.uid
+                          ? readOnly
+                              ? const Icon(Icons.edit)
+                              : const Icon(Icons.done)
+                          : const SizedBox()),
                 ],
               ),
               height10,
@@ -111,70 +144,22 @@ class PostsPage extends StatelessWidget {
                   onDoubleTap: () {
                     postController.likePost(data.id);
                   },
-                  child: InteractiveViewer(
-                      child: UserPostsImages(imageUrl: data.postURL))),
+                  child: UserPostsImages(imageUrl: data.postURL)),
               height10,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      IconButton(
-                          icon: Icon(
-                              data.likes.contains(authController.user.uid)
-                                  ? Icons.favorite
-                                  : Icons.favorite_border),
-                          color: data.likes.contains(authController.user.uid)
-                              ? Colors.red
-                              : Colors.white,
-                          onPressed: () {
-                            postController.likePost(data.id);
-                          }),
-                      width20,
+                      likePost(data),
                       IconButton(
                         icon: const Icon(Icons.comment_outlined),
                         onPressed: () {},
                       ),
-                      width20,
-                      IconButton(
-                        icon: const Icon(Icons.send_outlined),
-                        onPressed: () {},
-                      ),
+                      sharePost(data),
                     ],
                   ),
-                  IconButton(
-                      onPressed: () {
-                        if(data.uid == authController.user.uid){
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                content: const Text(
-                                    'Do you want to Delete this post?'),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('Cancel')),
-                                  TextButton(
-                                      onPressed: () {
-                                        if(data.uid == authController.user.uid){
-                                          postController.deletePost(data.id);
-                                          Navigator.pop(context);
-                                        }
-
-                                      },
-                                      child: const Text('Delete')),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                        else{}
-
-                      },
-                      icon: data.uid == authController.user.uid ?   const Icon(Icons.delete_outline) : const SizedBox()),
+                  deletePostButton(data, context),
                 ],
               ),
               height10,
@@ -182,28 +167,9 @@ class PostsPage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 12.0),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          '${data.likes.length} likes',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "${data.username} - ${data.caption}",
-                          style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(timeago.format(data.createdAt.toLocal())),
-                      ],
-                    ),
+                    likesCount(data),
+                    commentField(data, context),
+                    postedAt(data),
                   ],
                 ),
               ),
@@ -214,5 +180,113 @@ class PostsPage extends StatelessWidget {
       },
       childCount: postController.postsLists.length,
     ));
+  }
+
+  ///Share post
+  IconButton sharePost(PostsModel data) {
+    return IconButton(
+      icon: const Icon(Icons.send_outlined),
+      onPressed: () {
+        Share.share('Check out this post on: ${data.postURL}');
+      },
+    );
+  }
+
+  ///Likes Count
+  Row likesCount(PostsModel data) {
+    return Row(
+      children: [
+        Text(
+          '${data.likes.length} likes',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+
+  /// Timings
+  Row postedAt(PostsModel data) {
+    return Row(
+      children: [
+        Text(timeago.format(data.createdAt.toLocal())),
+      ],
+    );
+  }
+
+  /// Like Post
+  IconButton likePost(PostsModel data) {
+    return IconButton(
+        icon: Icon(data.likes.contains(authController.user.uid)
+            ? Icons.favorite
+            : Icons.favorite_border),
+        color: data.likes.contains(authController.user.uid)
+            ? Colors.red
+            : Colors.white,
+        onPressed: () {
+          postController.likePost(data.id);
+        });
+  }
+
+  ///Comment Editing Field
+  TextField commentField(PostsModel data, BuildContext context) {
+    final contains = data.uid == authController.user.uid;
+    return TextField(
+      readOnly: contains ? readOnly : true,
+      controller: TextEditingController(text: data.caption),
+      style: TextStyle(
+          color: contains
+              ? readOnly
+                  ? Colors.white
+                  : Colors.blueAccent
+              : Colors.white),
+      onSubmitted: (value) {
+        postController.updatePost(data.id, value);
+        readOnly = true;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Post Updated'),
+          ),
+        );
+      },
+      decoration: const InputDecoration(
+        border: InputBorder.none,
+      ),
+    );
+  }
+
+  /// Delete post button
+  IconButton deletePostButton(PostsModel data, BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          final contains = data.uid == authController.user.uid;
+          if (contains) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  content: const Text('Do you want to Delete this post?'),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Cancel')),
+                    TextButton(
+                        onPressed: () {
+                          if (contains) {
+                            postController.deletePost(data.id);
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: const Text('Delete')),
+                  ],
+                );
+              },
+            );
+          } else {}
+        },
+        icon: data.uid == authController.user.uid
+            ? const Icon(Icons.delete_outline)
+            : const SizedBox());
   }
 }

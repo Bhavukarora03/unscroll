@@ -38,7 +38,7 @@ class _ConfirmPostState extends State<ConfirmPost> {
         actions: [
           OutlinedButton(
             onPressed: () async{
-              EasyLoading.show(status: 'Uploading...');
+
 
               await _postController.uploadPost(
                 _captionController.text,

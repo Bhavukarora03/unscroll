@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:unscroll/controllers/comment_controller.dart';
 import 'package:unscroll/controllers/location_controller.dart';
+import 'package:unscroll/controllers/post_controller.dart';
 import 'package:unscroll/controllers/profile_controller.dart';
 import 'package:unscroll/controllers/search_controller.dart';
 
@@ -19,5 +20,6 @@ class GetBindings extends Bindings {
     Get.lazyPut(() => ProfileController());
     Get.lazyPut(() => SearchController());
     Get.lazyPut(() => LocationController());
+    Get.lazyPut(() => PostController());
   }
 }

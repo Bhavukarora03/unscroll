@@ -116,7 +116,8 @@ class AuthController extends GetxController with CacheManager {
         InternetConnectionChecker().onStatusChange.listen((status) {
       final hasInternet = status == InternetConnectionStatus.connected;
       _hasInternet.value = hasInternet;
-      hasInternet ? null
+      hasInternet
+          ? null
           : ScaffoldMessenger.of(Get.context!).showSnackBar(
               const SnackBar(content: Text('No Internet Connection')));
     });
@@ -134,15 +135,10 @@ class AuthController extends GetxController with CacheManager {
       try {
         if (response.payload != null) {
         } else {}
-      } catch (e) {
-        print(e);
-      }
+      } catch (e) {}
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print("__________________________message__________________________");
-      print('onMessage: ${message.notification!.title}');
-      print('onMessage: ${message.notification!.body}');
       BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
         message.notification!.body.toString(),
         htmlFormatBigText: true,
@@ -181,16 +177,6 @@ class AuthController extends GetxController with CacheManager {
       provisional: false,
       sound: true,
     );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-    } else if (settings.authorizationStatus ==
-        AuthorizationStatus.provisional) {
-      print('User granted provisional permission');
-    } else {
-      print('User declined or has not accepted permission');
-    }
-    print('User granted permission: ${settings.authorizationStatus}');
   }
 
   ///Get firebase messaging token

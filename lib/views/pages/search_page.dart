@@ -21,6 +21,7 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       return Scaffold(
+
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             toolbarHeight: 100,

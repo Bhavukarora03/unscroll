@@ -125,7 +125,7 @@ class UploadPostsController extends GetxController {
 
         var snapTokens = await firebaseFirestore.collection('usertokens').doc(uid).get();
         String token = snapTokens.data()!['token'];
-        print(token);
+
         sendPushMessage(token, "Unscroll" , "$displayName posted a new unscroll, show them some love");
 
         Navigator.of(Get.context!).pop();
@@ -224,7 +224,7 @@ class UploadPostsController extends GetxController {
         ),
       );
     } catch (e) {
-      print(e);
+
     }
   }
 }

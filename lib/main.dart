@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:unscroll/controllers/post_controller.dart';
 import 'package:unscroll/views/screens/splashScreen.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/bindings/bindings.dart';
@@ -13,6 +14,7 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
       .then((value) {
     Get.put(() => AuthController());
+
   });
   await FirebaseMessaging.instance.getInitialMessage();
   FirebaseMessaging.onBackgroundMessage(
@@ -29,6 +31,7 @@ class MyApp extends StatelessWidget {
         initialBinding: GetBindings(),
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
+
             textTheme: const TextTheme(
               displayLarge: TextStyle(
                 fontSize: 50,
@@ -55,5 +58,5 @@ class MyApp extends StatelessWidget {
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage? message) async {
-  print('Handling a background message ${message?.messageId}');
+
 }
