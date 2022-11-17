@@ -4,7 +4,8 @@ import 'package:unscroll/constants.dart';
 import 'package:unscroll/models/comment_model.dart' as com_model;
 
 class CommentController extends GetxController {
-  Rx<List<com_model.Comment>> _comments = Rx<List<com_model.Comment>>([]);
+  static CommentController get instance => Get.find();
+  final Rx<List<com_model.Comment>> _comments = Rx<List<com_model.Comment>>([]);
 
   List<com_model.Comment> get comments => _comments.value;
 

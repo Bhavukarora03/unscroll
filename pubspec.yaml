@@ -1,24 +1,10 @@
 name: unscroll
 description: Minor project
-
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
-
+publish_to: none
 version: 1.0.0+1
-
-environment:
-  sdk: '>=2.18.2 <3.0.0'
-
-
+environment: {sdk: '>=2.18.2 <3.0.0'}
 dependencies:
-  flutter:
-    sdk: flutter
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  flutter: {sdk: flutter}
   cupertino_icons: ^1.0.2
   firebase_core: ^1.24.0
   get: ^4.6.5
@@ -28,44 +14,46 @@ dependencies:
   cloud_firestore: ^3.5.1
   image_picker: ^0.8.6
   salomon_bottom_bar: ^3.3.1
-  video_player: ^2.4.7
-  flutter_launcher_icons: ^0.10.0
   video_compress: ^3.1.1
   modal_bottom_sheet: ^2.1.2
   timeago: ^3.3.0
   share_plus: ^6.0.1
   file_saver: ^0.1.1
+  shimmer: ^2.0.0
+  cached_video_player: ^2.0.3
+  internet_connection_checker: ^1.0.0+1
+  form_field_validator: ^1.1.0
+  google_sign_in: ^5.4.2
+  image_cropper: ^3.0.0
+  geolocator: ^9.0.2
+  geocoding: ^2.0.5
+  animated_splash_screen: ^1.3.0
+  get_storage: ^2.0.3
+  flutter_easyloading: ^3.0.5
+  local_auth: ^2.1.2
+  stop_watch_timer: ^2.0.0
+  story_view: ^0.14.0
+  flutter_local_notifications: ^12.0.3+1
+  firebase_messaging: ^13.1.0
+  http: ^0.13.5
+  connectivity_plus: ^3.0.2
+
 
 
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  flutter_test: {sdk: flutter}
   flutter_lints: ^2.0.0
-flutter_icons:
-  android: "launcher_icon"
-  android_round: "launcher_icon_round"
-  andriod: true
-  ios: true
-  image_path: "assets/icon/logo-us.png"
+
+
 
 flutter:
-
-
   uses-material-design: true
-
-
-  assets:
-   - assets/images/
-   - assets/icon/
-
-
-
-
+  assets: [assets/fonts/, assets/icon/, assets/images/]
   fonts:
-   - family: GTWalsheim
-     fonts:
-       - asset: assets/fonts/GTWalsheimPro-Regular.ttf
-       - asset: assets/fonts/GTWalsheimPro-Bold.ttf
-         weight: 500
-
+  - fonts:
+    - {asset: assets/fonts/GTWalsheimPro-Bold.ttf}
+    family: GTWalsheimPro
+  - fonts:
+    - {asset: assets/fonts/GTWalsheimPro-Regular.ttf}
+    family: GTWalsheimPro

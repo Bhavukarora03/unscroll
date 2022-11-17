@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:unscroll/views/screens/splashScreen.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/bindings/bindings.dart';
 import 'firebase_options.dart';
-import 'views/screens/screens.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,6 +14,9 @@ Future<void> main() async {
       .then((value) {
     Get.put(() => AuthController());
   });
+  await FirebaseMessaging.instance.getInitialMessage();
+  FirebaseMessaging.onBackgroundMessage(
+      (message) => _firebaseMessagingBackgroundHandler(message));
   runApp(const MyApp());
 }
 
@@ -21,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      initialBinding: GetBindings(),
+        initialBinding: GetBindings(),
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
             textTheme: const TextTheme(
@@ -43,7 +48,12 @@ class MyApp extends StatelessWidget {
                 ),
               ),
             )),
+        builder: EasyLoading.init(),
         // scaffoldBackgroundColor: ),
-        home: LoginScreen());
+        home: const SplashScreen());
   }
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage? message) async {
+  print('Handling a background message ${message?.messageId}');
 }
