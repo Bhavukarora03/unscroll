@@ -18,6 +18,8 @@ class CommentController extends GetxController {
     getComment();
   }
 
+
+
   getComment() async {
     _unscrollComments.bindStream(firebaseFirestore
         .collection('videos')
@@ -123,3 +125,4 @@ class CommentController extends GetxController {
     }
   }
 }
+

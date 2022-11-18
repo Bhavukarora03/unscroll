@@ -6,8 +6,10 @@ import '../../controllers/comment_controller.dart';
 import '../widgets/user_profileimg.dart';
 
 class CommentsScreen extends StatefulWidget {
-  const CommentsScreen({Key? key, required this.commentTextController})
-      : super(key: key);
+  const CommentsScreen({
+    Key? key,
+    required this.commentTextController,
+  }) : super(key: key);
 
   final TextEditingController commentTextController;
 
@@ -16,6 +18,7 @@ class CommentsScreen extends StatefulWidget {
 }
 
 class _CommentsScreenState extends State<CommentsScreen> {
+  @override
   final CommentController commentController = Get.put(CommentController());
 
   @override
@@ -48,19 +51,22 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       () => ListView.builder(
                         itemCount: commentController.postsComment.length,
                         itemBuilder: (context, index) {
-                          final postComment = commentController.postsComment[index];
-                          final unscrollComments = commentController.unscrollComments[index];
+
+                          final postComment =
+                              commentController.postsComment[index];
                           return ListTile(
                             isThreeLine: true,
                             leading: UserProfileImage.small(
-                                imageUrl: comment.profilePic),
+                                imageUrl: postComment.profilePic),
                             trailing: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 IconButton(
-                                    onPressed: () => commentController
-                                        .likeComment(comment.id, 'posts'),
-                                    icon: comment.likes
+                                    onPressed: () =>
+                                        commentController.likeComment(
+                                            postComment.id,
+                                            'posts'),
+                                    icon: postComment.likes
                                             .contains(authController.user.uid)
                                         ? const Icon(
                                             Icons.favorite,
@@ -73,7 +79,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                           )),
                                 Expanded(
                                     child: Text(
-                                  comment.likes.length.toString(),
+                                  postComment.likes.length.toString(),
                                   style: const TextStyle(fontSize: 8),
                                 ))
                               ],
@@ -83,7 +89,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  comment.comment,
+                                  postComment.comment,
                                   style: const TextStyle(
                                       color: Colors.grey, fontSize: 12),
                                 ),
@@ -92,14 +98,15 @@ class _CommentsScreenState extends State<CommentsScreen> {
                             title: Row(
                               children: [
                                 Text(
-                                  '${comment.username}    •',
+                                  '${postComment.username}    •',
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12),
                                 ),
                                 const Divider(indent: 10),
                                 Text(
-                                  timeago.format(comment.createdAt.toLocal()),
+                                  timeago
+                                      .format(postComment.createdAt.toLocal()),
                                   style: const TextStyle(
                                       color: Colors.grey, fontSize: 9),
                                 ),
@@ -123,8 +130,10 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         ),
                         trailing: IconButton(
                           onPressed: () {
-                            commentController
-                                .postComment(widget.commentTextController.text, 'videos');
+                            commentController.postComment(
+                                widget.commentTextController.text,
+                                'posts',
+                                );
                             widget.commentTextController.clear();
                           },
                           icon: const Icon(Icons.send),

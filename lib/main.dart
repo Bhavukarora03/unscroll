@@ -33,9 +33,13 @@ class MyApp extends StatelessWidget {
         theme: ThemeData.dark().copyWith(
             textTheme: GoogleFonts.aBeeZeeTextTheme(
               Theme.of(context).textTheme,
+
+
             ).copyWith(
               bodyText1: const TextStyle(color: Colors.white),
               bodyText2: const TextStyle(color: Colors.white),
+
+
             ),
             useMaterial3: true,
             appBarTheme: const AppBarTheme(
