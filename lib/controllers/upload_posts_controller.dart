@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -135,7 +134,7 @@ class UploadPostsController extends GetxController {
         Navigator.of(Get.context!).pop();
         ScaffoldMessenger.of(Get.context!).showSnackBar(
             const SnackBar(content: Text("Post uploaded successfully")));
-        EasyLoading.dismiss();
+
       } else {
         ScaffoldMessenger.of(Get.context!).showSnackBar(
             const SnackBar(content: Text("Please fill all the fields")));
@@ -191,7 +190,7 @@ class UploadPostsController extends GetxController {
         ScaffoldMessenger.of(Get.context!).showSnackBar(
             const SnackBar(content: Text("Successfully uploaded")));
         Get.back();
-        EasyLoading.dismiss();
+
       }
     } catch (e) {
       ScaffoldMessenger.of(Get.context!)

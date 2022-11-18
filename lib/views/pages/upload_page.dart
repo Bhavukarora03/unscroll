@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:unscroll/constants.dart';
-import 'package:unscroll/views/screens/confirm_stories.dart';
 import 'package:unscroll/views/screens/screens.dart';
 import 'package:unscroll/views/widgets/modelBottomSheet.dart';
 

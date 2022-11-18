@@ -5,7 +5,6 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:unscroll/constants.dart';
 import "package:unscroll/views/pages/pages.dart";
-import 'package:unscroll/views/pages/posts_page.dart';
 import 'package:unscroll/views/screens/profile_screen.dart';
 
 

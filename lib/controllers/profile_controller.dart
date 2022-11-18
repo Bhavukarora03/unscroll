@@ -58,7 +58,7 @@ class ProfileController extends GetxController {
     }
 
     DocumentSnapshot documentSnapshot =
-    await firebaseFirestore.collection('users').doc(_uid.value).get();
+        await firebaseFirestore.collection('users').doc(_uid.value).get();
 
     var userData = documentSnapshot.data()! as dynamic;
     String name = userData['username'];
@@ -175,7 +175,6 @@ class ProfileController extends GetxController {
         .get();
     for (int i = 0; i < snapshots.docs.length; i++) {
       _followers.value.add(snapshots.docs[i].data());
-
     }
   }
 
@@ -183,15 +182,12 @@ class ProfileController extends GetxController {
     await firebaseFirestore
         .collection('users')
         .doc(authController.user.uid)
-        .collection('following').get().then((value) {
+        .collection('following')
+        .get()
+        .then((value) {
       for (int i = 0; i < value.docs.length; i++) {
-
         _following.value.add(value.docs[i].data()['uid']);
-
       }
-
-
     });
-
   }
 }

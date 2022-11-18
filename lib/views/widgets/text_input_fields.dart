@@ -15,7 +15,8 @@ class TextInputField extends StatelessWidget {
       required this.prefixIcon,
       this.obscureText = false,
       this.keyboardType,
-      this.textInputAction = TextInputAction.next, required this.autofillHints})
+      this.textInputAction = TextInputAction.next,
+      required this.autofillHints})
       : super(key: key);
 
   @override

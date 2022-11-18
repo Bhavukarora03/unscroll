@@ -5,9 +5,11 @@ import 'package:unscroll/models/comment_model.dart' as com_model;
 
 class CommentController extends GetxController {
   static CommentController get instance => Get.find();
-  final Rx<List<com_model.Comment>> _comments = Rx<List<com_model.Comment>>([]);
+  final Rx<List<com_model.Comment>> _unscrollComments = Rx<List<com_model.Comment>>([]);
+  List<com_model.Comment> get unscrollComments => _unscrollComments.value;
 
-  List<com_model.Comment> get comments => _comments.value;
+  final Rx<List<com_model.Comment>> _postsComment = Rx<List<com_model.Comment>>([]);
+  List<com_model.Comment> get postsComment => _postsComment.value;
 
   String _postId = '';
 
@@ -17,7 +19,7 @@ class CommentController extends GetxController {
   }
 
   getComment() async {
-    _comments.bindStream(firebaseFirestore
+    _unscrollComments.bindStream(firebaseFirestore
         .collection('videos')
         .doc(_postId)
         .collection('comments')
@@ -29,9 +31,23 @@ class CommentController extends GetxController {
       }
       return temp;
     }));
+
+    _postsComment.bindStream(firebaseFirestore
+        .collection('posts')
+        .doc(_postId)
+        .collection('comments')
+        .snapshots()
+        .map((QuerySnapshot querySnapshot) {
+      List<com_model.Comment> temp = [];
+      for (var doc in querySnapshot.docs) {
+        temp.add(com_model.Comment.fromJson(doc));
+      }
+      return temp;
+    }));
+
   }
 
-  postComment(String commentText) async {
+  postComment(String commentText, String collection) async {
     try {
       if (commentText.isNotEmpty) {
         DocumentSnapshot userDocs = await firebaseFirestore
@@ -40,7 +56,7 @@ class CommentController extends GetxController {
             .get();
 
         var allDocs = await firebaseFirestore
-            .collection('videos')
+            .collection(collection)
             .doc(_postId)
             .collection('comments')
             .get();
@@ -58,15 +74,15 @@ class CommentController extends GetxController {
         );
 
         await firebaseFirestore
-            .collection('videos')
+            .collection(collection)
             .doc(_postId)
             .collection('comments')
             .doc('comment $length')
             .set(comments.toJson());
 
         DocumentSnapshot snapshot =
-            await firebaseFirestore.collection('videos').doc(_postId).get();
-        await firebaseFirestore.collection('videos').doc(_postId).update({
+            await firebaseFirestore.collection(collection).doc(_postId).get();
+        await firebaseFirestore.collection(collection).doc(_postId).update({
           'commentCount': (snapshot.data()! as dynamic)['commentCount'] + 1,
         });
       }
@@ -75,10 +91,12 @@ class CommentController extends GetxController {
     }
   }
 
-  likeComment(String id) async {
+
+
+  likeComment(String id, String collection) async {
     String uid = authController.user.uid;
     DocumentSnapshot snapshot = await firebaseFirestore
-        .collection('videos')
+        .collection(collection)
         .doc(_postId)
         .collection('comments')
         .doc(id)
@@ -86,7 +104,7 @@ class CommentController extends GetxController {
 
     if ((snapshot.data()! as dynamic)['likes'].contains(uid)) {
       await firebaseFirestore
-          .collection('videos')
+          .collection(collection)
           .doc(_postId)
           .collection('comments')
           .doc(id)
@@ -95,7 +113,7 @@ class CommentController extends GetxController {
       });
     } else {
       await firebaseFirestore
-          .collection('videos')
+          .collection(collection)
           .doc(_postId)
           .collection('comments')
           .doc(id)

@@ -9,6 +9,7 @@ import 'package:unscroll/views/widgets/user_profileimg.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../controllers/stories_controller.dart';
+import '../screens/comments_screen.dart';
 import '../screens/profile_screen.dart';
 
 class PostsPage extends StatefulWidget {
@@ -24,6 +25,8 @@ class _PostsPageState extends State<PostsPage> {
   bool readOnly = true;
 
   final storiesController = Get.put(StoriesController());
+
+  final TextEditingController commentTextController = TextEditingController();
 
   final ScrollController _scrollController = ScrollController();
   void _toggle() {
@@ -95,6 +98,8 @@ class _PostsPageState extends State<PostsPage> {
         delegate: SliverChildBuilderDelegate(
       (context, index) {
         final data = postController.postsLists[index];
+        final commentID = data.id;
+        commentController.updatePostID(commentID);
         return Container(
           key: ValueKey(data.id),
           margin: const EdgeInsets.all(10),
@@ -185,7 +190,7 @@ class _PostsPageState extends State<PostsPage> {
     return IconButton(
       icon: const Icon(Icons.comment_outlined),
       onPressed: () {
-        postController.saveNetworkImage(data.postURL);
+        Get.to(CommentsScreen(commentTextController: commentTextController,));
       },
     );
   }

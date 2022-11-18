@@ -4,10 +4,9 @@ import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/comment_controller.dart';
 import 'package:unscroll/controllers/upload_video_controller.dart';
 import 'package:unscroll/controllers/video_controller.dart';
+import 'package:unscroll/views/screens/comments_screen.dart';
 import 'package:unscroll/views/widgets/widgets.dart';
 import 'package:get/get.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:share_plus/share_plus.dart';
 
 class HomePage extends StatelessWidget {
@@ -114,17 +113,11 @@ class HomePage extends StatelessWidget {
                                 Text(data.likes.length.toString()),
                                 InkWell(
                                   onTap: () {
-                                    showMaterialModalBottomSheet(
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            topRight: Radius.circular(20),
-                                          ),
-                                        ),
-                                        bounce: true,
-                                        context: context,
-                                        builder: (context) =>
-                                            buildCommentSection(context));
+                                    Get.to(
+                                        CommentsScreen(
+                                            commentTextController:
+                                                commentTextController),
+                                        transition: Transition.rightToLeft);
                                   },
                                   child: const Icon(
                                     Icons.comment,
@@ -170,8 +163,7 @@ class HomePage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
                     ),
-                  )
-                )),
+                  ))),
     );
   }
 
@@ -208,118 +200,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  ///buildCommentSection
-  buildCommentSection(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.remove,
-              color: Colors.grey[600],
-              size: 50,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Comments",
-                    style: TextStyle(fontSize: 15),
-                  )),
-            ),
-            Expanded(
-              child: Obx(
-                () => ListView.builder(
-                  itemCount: commentController.comments.length,
-                  itemBuilder: (context, index) {
-                    final comment = commentController.comments[index];
-                    return ListTile(
-                      isThreeLine: true,
-                      leading:
-                          UserProfileImage.small(imageUrl: comment.profilePic),
-                      trailing: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                              onPressed: () =>
-                                  commentController.likeComment(comment.id),
-                              icon: comment.likes
-                                      .contains(authController.user.uid)
-                                  ? const Icon(
-                                      Icons.favorite,
-                                      color: Colors.redAccent,
-                                      size: 20,
-                                    )
-                                  : const Icon(
-                                      Icons.favorite_border,
-                                      size: 18,
-                                    )),
-                          Expanded(
-                              child: Text(
-                            comment.likes.length.toString(),
-                            style: const TextStyle(fontSize: 8),
-                          ))
-                        ],
-                      ),
-                      subtitle: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            comment.comment,
-                            style: const TextStyle(
-                                color: Colors.grey, fontSize: 12),
-                          ),
-                        ],
-                      ),
-                      title: Row(
-                        children: [
-                          Text(
-                            '${comment.username}    •',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w400, fontSize: 12),
-                          ),
-                          const Divider(indent: 10),
-                          Text(
-                            timeago.format(comment.createdAt.toLocal()),
-                            style: const TextStyle(
-                                color: Colors.grey, fontSize: 9),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: Card(
-                child: ListTile(
-                  title: TextFormField(
-                    controller: commentTextController,
-                    decoration: const InputDecoration(
-                      hintText: "Add a comment...",
-                      border: InputBorder.none,
-                    ),
-                  ),
-                  trailing: IconButton(
-                    onPressed: () {
-                      commentController.postComment(commentTextController.text);
-                      commentTextController.clear();
-                    },
-                    icon: const Icon(Icons.send),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+
+
 }

@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unscroll/views/screens/splashScreen.dart';
@@ -9,18 +8,14 @@ import 'controllers/auth_controller.dart';
 import 'controllers/bindings/bindings.dart';
 import 'firebase_options.dart';
 
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage? message) async {
-
-}
-
+Future<void> _firebaseMessagingBackgroundHandler(
+    RemoteMessage? message) async {}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
       .then((value) {
     Get.put(() => AuthController());
-
   });
   await FirebaseMessaging.instance.getInitialMessage();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -36,10 +31,8 @@ class MyApp extends StatelessWidget {
         initialBinding: GetBindings(),
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
-
             textTheme: GoogleFonts.aBeeZeeTextTheme(
               Theme.of(context).textTheme,
-
             ).copyWith(
               bodyText1: const TextStyle(color: Colors.white),
               bodyText2: const TextStyle(color: Colors.white),
@@ -57,9 +50,7 @@ class MyApp extends StatelessWidget {
                 ),
               ),
             )),
-        builder: EasyLoading.init(),
         // scaffoldBackgroundColor: ),
         home: const SplashScreen());
   }
 }
-
