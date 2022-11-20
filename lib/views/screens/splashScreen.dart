@@ -13,13 +13,11 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
-
   final authController = Get.put(AuthController());
 
   Future<void> initializeSettings() async {
     authController.checkLoginStatus();
-
+   // authController.checkAgain30Mins();
     //Simulate other services for 3 seconds
     await Future.delayed(const Duration(seconds: 3));
   }
@@ -68,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
           Padding(
-            padding:  EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.0),
             child: CircularProgressIndicator(),
           ),
           Text('Loading...'),

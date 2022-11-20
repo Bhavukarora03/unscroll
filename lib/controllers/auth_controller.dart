@@ -13,9 +13,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/models/users.dart' as model;
+import 'package:unscroll/views/screens/prank_screen.dart';
 
 import 'package:unscroll/views/screens/screens.dart';
 
@@ -83,6 +83,7 @@ class AuthController extends GetxController with CacheManager {
     getToken();
     initLocalNotifications();
     checkInternetConnection();
+
     super.onInit();
   }
 
@@ -196,6 +197,30 @@ class AuthController extends GetxController with CacheManager {
     }
   }
 
+  checkThirtyMin() async {
+    await firebaseFirestore
+        .collection('users')
+        .doc(firebaseAuth.currentUser!.uid)
+        .update({
+      'thirtyMinDone': false,
+    });
+
+  }
+
+
+
+  checkIfThirtyMinDone() async {
+    var docs = await firebaseFirestore
+        .collection('users')
+        .where('thirtyMinDone', isEqualTo: true)
+        .get();
+    if (docs.docs.isNotEmpty) {
+      isLogged.value = false;
+      removeToken();
+      Get.offAll(()=> PrankScreen());
+    }
+  }
+
   ///Get firebase messaging token
   void getNotificationToken() async {
     final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
@@ -272,7 +297,9 @@ class AuthController extends GetxController with CacheManager {
             username: username,
             email: email,
             profilePic: downloadURl,
-            uid: userCredential.user!.uid);
+            uid: userCredential.user!.uid,
+            thirtyMinDone: false,
+        );
         await firebaseFirestore
             .collection("users")
             .doc(userCredential.user!.uid)
@@ -324,7 +351,9 @@ class AuthController extends GetxController with CacheManager {
           username: user!.displayName!,
           email: user.email!,
           profilePic: user.photoURL!,
-          uid: user.uid);
+          uid: user.uid,
+        thirtyMinDone: false,
+      );
       await firebaseFirestore
           .collection("users")
           .doc(user.uid)

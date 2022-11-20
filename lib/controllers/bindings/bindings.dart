@@ -22,7 +22,7 @@ class GetBindings extends Bindings {
     Get.lazyPut(() => ProfileController());
     Get.lazyPut(() => SearchController());
     Get.lazyPut(() => LocationController());
-    Get.lazyPut(() => PostController());
+    Get.lazyPut(() => PostController(), fenix: true);
     Get.lazyPut(() => UploadPostsController());
     Get.lazyPut(() => StoriesController());
   }

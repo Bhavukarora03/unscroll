@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unscroll/views/screens/splashScreen.dart';
-import 'controllers/auth_controller.dart';
 import 'controllers/bindings/bindings.dart';
 import 'firebase_options.dart';
 
@@ -13,10 +12,9 @@ Future<void> _firebaseMessagingBackgroundHandler(
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
-      .then((value) {
-    Get.put(() => AuthController());
-  });
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  GetBindings().dependencies();
+
   await FirebaseMessaging.instance.getInitialMessage();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const MyApp());

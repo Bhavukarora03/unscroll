@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:unscroll/views/widgets/user_profileimg.dart';
 import '../../controllers/post_controller.dart';
 
-
+@immutable
 class EditPostScreen extends StatelessWidget {
   EditPostScreen(
       {Key? key,
@@ -15,11 +15,12 @@ class EditPostScreen extends StatelessWidget {
   final String imgUrl;
   final String editCaption;
   final String id;
-  String newValue = "";
+
   final postController = Get.find<PostController>();
 
   @override
   Widget build(BuildContext context) {
+    String newValue = "";
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -61,7 +62,7 @@ class EditPostScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(15),
                   child: ListTile(
-                    leading: Icon(Icons.closed_caption_outlined),
+                    leading: const Icon(Icons.closed_caption_outlined),
                     title: TextField(
                       style: const TextStyle(color: Colors.white),
                       controller: TextEditingController(text: editCaption),

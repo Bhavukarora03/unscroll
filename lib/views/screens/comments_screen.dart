@@ -18,7 +18,7 @@ class CommentsScreen extends StatefulWidget {
 }
 
 class _CommentsScreenState extends State<CommentsScreen> {
-  @override
+
   final CommentController commentController = Get.put(CommentController());
 
   @override

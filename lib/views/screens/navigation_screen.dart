@@ -1,10 +1,12 @@
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:unscroll/constants.dart';
 import "package:unscroll/views/pages/pages.dart";
+import 'package:unscroll/views/screens/prank_screen.dart';
 import 'package:unscroll/views/screens/profile_screen.dart';
 
 
@@ -26,17 +28,27 @@ class _NavigationScreenState extends State<NavigationScreen>
   final StopWatchTimer _stopWatchTimer = StopWatchTimer(
     mode: StopWatchMode.countDown,
     presetMillisecond: StopWatchTimer.getMilliSecFromMinute(30),
-    onEnded: () {
+    onEnded: () async {
+      await firebaseFirestore
+          .collection('users')
+          .doc(firebaseAuth.currentUser!.uid)
+          .update({
+        'thirtyMinDone': true,
+      });
       showDialog(
+          barrierDismissible: false,
           context: Get.context!,
           builder: (_) {
             return AlertDialog(
-              title: const Text("Time is up"),
+              title: const Text(
+                "Time is up",
+                style: TextStyle(color: Colors.white),
+              ),
               content: const Text("Time is up"),
               actions: [
                 TextButton(
                     onPressed: () {
-                      Navigator.pop(Get.context!);
+                      authController.checkIfThirtyMinDone();
                     },
                     child: const Text("Ok"))
               ],
@@ -45,20 +57,33 @@ class _NavigationScreenState extends State<NavigationScreen>
     },
   );
 
-
-
-
+  _checkthirtyMins() async {
+    await firebaseFirestore
+        .collection('users')
+        .doc(firebaseAuth.currentUser!.uid)
+        .get()
+        .then((value) {
+      if (value.data()!['thirtyMinDone'] == false) {
+        if (active) {
+          setState(() {
+            _stopWatchTimer.onStartTimer();
+          });
+        }
+      } else {
+        Get.offAll(() => PrankScreen());
+      }
+    });
+  }
 
   @override
   void initState() {
+    _checkthirtyMins();
+
+    FirebaseAnalytics.instance.setCurrentScreen(screenName: 'NavigationScreen');
+
     title.value = timer();
 
     super.initState();
-    if(active){
-      setState(() {
-        _stopWatchTimer.onStartTimer();
-      });
-    }
 
     WidgetsBinding.instance.addObserver(this);
   }
@@ -77,7 +102,6 @@ class _NavigationScreenState extends State<NavigationScreen>
     if (state == AppLifecycleState.resumed) {
       active = true;
       _stopWatchTimer.onStartTimer();
-
     } else if (state == AppLifecycleState.inactive) {
       active = false;
       _stopWatchTimer.onStopTimer();
@@ -88,9 +112,7 @@ class _NavigationScreenState extends State<NavigationScreen>
       active = false;
       _stopWatchTimer.onStopTimer();
     }
-
   }
-
 
   final pages = [
     const PostsPage(),
@@ -184,7 +206,7 @@ class _NavigationScreenState extends State<NavigationScreen>
     );
   }
 
-  Widget timer(){
+  Widget timer() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -195,8 +217,8 @@ class _NavigationScreenState extends State<NavigationScreen>
           initialData: _stopWatchTimer.rawTime.value,
           builder: (context, snap) {
             final value = snap.data!;
-            final displayTime = StopWatchTimer.getDisplayTime(value,
-               milliSecond: false);
+            final displayTime =
+                StopWatchTimer.getDisplayTime(value, milliSecond: false);
             return Column(
               children: <Widget>[
                 Row(
@@ -208,8 +230,7 @@ class _NavigationScreenState extends State<NavigationScreen>
                       child: Text(
                         displayTime,
                         style: const TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold),
+                            fontSize: 25, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -218,8 +239,6 @@ class _NavigationScreenState extends State<NavigationScreen>
             );
           },
         ),
-
-
       ],
     );
   }

@@ -114,6 +114,10 @@ class UploadPage extends StatelessWidget {
 
 
 
+         // ElevatedButton(onPressed: (){Get.to(()=>const ChatPage()); }, child: Text("Chat Page"))
+
+
+
         ],
       ),
     );

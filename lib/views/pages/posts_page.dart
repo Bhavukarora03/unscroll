@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
-
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/post_controller.dart';
-import 'package:unscroll/models/comment_model.dart';
 import 'package:unscroll/models/posts_model.dart';
 import 'package:unscroll/views/screens/unscroll_stories.dart';
 import 'package:unscroll/views/widgets/user_profileimg.dart';
@@ -25,6 +23,11 @@ class PostsPage extends StatefulWidget {
 class _PostsPageState extends State<PostsPage> {
   final postController = Get.put(PostController());
 
+  @override
+  void initState() {
+  postController;
+    super.initState();
+  }
   bool readOnly = true;
 
   final storiesController = Get.put(StoriesController());
@@ -32,11 +35,6 @@ class _PostsPageState extends State<PostsPage> {
   final TextEditingController commentTextController = TextEditingController();
 
   final ScrollController _scrollController = ScrollController();
-  void _toggle() {
-    setState(() {
-      readOnly = !readOnly;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -283,7 +281,7 @@ class _PostsPageState extends State<PostsPage> {
                 );
               });
         },
-        icon: Icon(Icons.more_horiz));
+        icon: const Icon(Icons.more_horiz));
   }
 
   ///Save Image to Gallery
