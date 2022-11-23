@@ -12,6 +12,7 @@ class VideoModel {
   String videoUrl;
   String thumbnail;
   String profilePic;
+  final DateTime createdAt;
 
   VideoModel(
       {required this.username,
@@ -24,7 +25,9 @@ class VideoModel {
       required this.id,
       required this.videoUrl,
       required this.thumbnail,
-      required this.profilePic});
+      required this.profilePic,
+      required this.createdAt});
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -39,6 +42,7 @@ class VideoModel {
       'videoUrl': videoUrl,
       'thumbnail': thumbnail,
       'profilePic': profilePic,
+      'createdAt': createdAt,
     };
   }
 
@@ -56,6 +60,7 @@ class VideoModel {
       videoUrl: snap['videoUrl'],
       thumbnail: snap['thumbnail'],
       profilePic: snap['profilePic'],
+      createdAt: snap['createdAt'].toDate(),
     );
   }
 }

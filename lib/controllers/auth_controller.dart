@@ -239,9 +239,7 @@ class AuthController extends GetxController with CacheManager {
   ///pickimage from ImageSource
   Future<Rx<File>> pickImage(ImageSource imageSource) async {
     final pickedImage = await ImagePicker().pickImage(source: imageSource);
-    if (pickedImage != null) {
-      Get.snackbar('success', "ez pz");
-    }
+
     _pickedImage = Rx<File>(File(pickedImage!.path));
     await ImageCropper()
         .cropImage(sourcePath: pickedImage.path, aspectRatioPresets: [
@@ -252,8 +250,9 @@ class AuthController extends GetxController with CacheManager {
       CropAspectRatioPreset.ratio16x9
     ], uiSettings: [
       AndroidUiSettings(
-          toolbarTitle: 'Cropper',
-          toolbarColor: Colors.deepOrange,
+          activeControlsWidgetColor: Colors.blueAccent,
+          toolbarTitle: 'Crop your unscroll',
+          toolbarColor: Colors.blueAccent.shade100,
           toolbarWidgetColor: Colors.white,
           initAspectRatio: CropAspectRatioPreset.original,
           lockAspectRatio: false),

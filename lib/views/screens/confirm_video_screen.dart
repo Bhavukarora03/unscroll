@@ -35,6 +35,7 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
     controller.play();
     controller.setVolume(1);
 
+
     controller.setLooping(true);
 
     super.initState();
@@ -49,103 +50,65 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.transparent,
+          actions: [
+            OutlinedButton(
+              onPressed: () async {
+                KeyboardUnFocus(context).hideKeyboard();
+                await videoController.uploadVideo(songNameController.text,
+                    captionController.text, widget.videoPath);
+              },
+              child: const Text('Confirm Post'),
+            ),
+          ],
+        ),
         body: SafeArea(
             child: SingleChildScrollView(
-      child: Column(children: [
-        Stack(children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.8,
-            child: CachedVideoPlayer(controller),
-          ),
-          Positioned(
-            top: 10,
-            left: 10,
-            child: IconButton(
-                onPressed: () {
-                  controller.pause();
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.close)),
-          ),
-          Positioned(
-            top: 10,
-            right: 10,
-            child: IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.more_vert),
-            ),
-          ),
-          Positioned(
-            bottom: 80,
-            left: 80,
-            top: 80,
-            right: 80,
-            child: IconButton(
-              onPressed: () {
-                if (controller.value.isPlaying) {
-                  controller.pause();
-                } else {
-                  controller.play();
-                }
-              },
-              icon: const Icon(
-                Icons.pause,
-                color: Colors.white70,
+          child: Column(children: [
+            Stack(children: [
+              Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white.withOpacity(0.5),
+                      spreadRadius: 10,
+                      blurRadius: 100,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                height: MediaQuery.of(context).size.height * 0.3,
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: CachedVideoPlayer(controller),
+              ),
+            ]),
+            height20,
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  height30,
+                  TextInputField(
+                    controller: songNameController,
+                    labelText: 'Song Name',
+                    prefixIcon: Icons.music_note,
+                    autofillHints: AutofillHints.name,
+                  ),
+                  height20,
+                  TextInputField(
+                    controller: captionController,
+                    labelText: "Add a caption",
+                    prefixIcon: Icons.closed_caption,
+                    autofillHints: 'caption',
+                  ),
+                ],
               ),
             ),
-          ),
-          Positioned(
-            bottom: 10,
-            right: 10,
-            child: IconButton(
-                onPressed: () {
-                  controller.setVolume(0);
-                },
-                icon: const Icon(Icons.volume_mute_outlined)),
-          ),
-        ]),
-        height20,
-        Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Text("Add a song to your video",
-                  style: TextStyle(fontSize: 15)),
-              height30,
-              TextInputField(
-                controller: songNameController,
-                labelText: 'Song Name',
-                prefixIcon: Icons.music_note,
-                autofillHints: AutofillHints.name,
-              ),
-              height20,
-              TextInputField(
-                controller: captionController,
-                labelText: "Add a caption",
-                prefixIcon: Icons.closed_caption,
-                autofillHints: 'caption',
-              ),
-              height20,
-              ElevatedButton.icon(
-                onPressed: () {
-                  videoController.uploadVideo(songNameController.text,
-                      captionController.text, widget.videoPath);
-
-                  const CircularProgressIndicator(
-                    backgroundColor: Colors.white,
-                    color: Colors.blueAccent,
-                  );
-                },
-                icon: const Icon(Icons.upload),
-                label: const Text("Upload"),
-              ),
-
-            ],
-          ),
-        ),
-      ]),
-    )));
+          ]),
+        )));
   }
 }

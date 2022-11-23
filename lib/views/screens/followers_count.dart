@@ -4,30 +4,40 @@ import 'package:get/get.dart';
 import 'package:unscroll/views/widgets/widgets.dart';
 
 class FollowersCount extends StatelessWidget {
-   FollowersCount({Key? key}) : super(key: key);
+  FollowersCount({Key? key, required this.uid}) : super(key: key);
 
+  final String uid;
   final ProfileController profileController = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: const Text("Followers"),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          title: const Text("Followers"),
 
-      ),
-      body: ListView.builder(
-          itemCount: profileController.followers.length,
-          itemBuilder: (context, index) {
+        ),
+        body: GetBuilder<ProfileController>(
+            init: profileController,
+            builder: (logic) {
+          return ListView.builder(
+            itemCount: profileController.following.length,
+            itemBuilder: (context, index) {
+              return ListTile(
 
-        return   ListTile(
-          leading:  UserProfileImage.medium(imageUrl: profileController.user['profilePic'],),
-          title:  Text(profileController.user['username'][index]),
-          trailing:  TextButton(onPressed: () {  },
-          child: const Text("Remove")),
-        );
-      }),
+                title: Text(profileController.following[index]),
+                trailing: TextButton(onPressed: (){
+
+                  profileController.unfollowUser();
+
+                }, child: const Text("Unfollow")),
+
+
+              );
+            },
+          );
+        })
+
     );
-
   }
 }

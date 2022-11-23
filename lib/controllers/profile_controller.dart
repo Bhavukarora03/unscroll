@@ -22,7 +22,7 @@ class ProfileController extends GetxController {
   updateUSerId(String uid) {
     _uid.value = uid;
     getUserData();
-    getfollowCount();
+    getFollowerCount();
   }
 
   getUserData() async {
@@ -57,12 +57,15 @@ class ProfileController extends GetxController {
           (querySnapshot3.docs[i].data() as dynamic)['storyUrl'][0]['url']);
     }
 
+
+
     DocumentSnapshot documentSnapshot =
         await firebaseFirestore.collection('users').doc(_uid.value).get();
 
     var userData = documentSnapshot.data()! as dynamic;
     String name = userData['username'];
     String profilePic = userData['profilePic'];
+    String bio = userData['bio'];
     int likes = 0;
     int storiesUrls = 0;
     int followers = 0;
@@ -115,6 +118,7 @@ class ProfileController extends GetxController {
       'thumbnails': thumbnails,
       'PostUrl': posts,
       'storyUrl': storiesUrls.toString(),
+      'bio': bio,
     };
     update();
   }
@@ -133,7 +137,10 @@ class ProfileController extends GetxController {
           .doc(_uid.value)
           .collection('followers')
           .doc(authController.user.uid)
-          .set({});
+          .set({
+
+
+      });
       await firebaseFirestore
           .collection('users')
           .doc(authController.user.uid)
@@ -167,27 +174,41 @@ class ProfileController extends GetxController {
     _user.value.update('isFollowing', (value) => !value);
   }
 
-  getfollowCount() async {
-    var snapshots = await firebaseFirestore
+getFollowerCount () async{
+  var followersSnapshot = await firebaseFirestore
         .collection('users')
-        .doc(authController.user.uid)
+        .doc(_uid.value)
         .collection('followers')
         .get();
-    for (int i = 0; i < snapshots.docs.length; i++) {
-      _followers.value.add(snapshots.docs[i].data());
-    }
-  }
-
-  getFollowingCount() async {
-    await firebaseFirestore
+    var followingSnapshot = await firebaseFirestore
         .collection('users')
-        .doc(authController.user.uid)
+        .doc(_uid.value)
         .collection('following')
-        .get()
-        .then((value) {
-      for (int i = 0; i < value.docs.length; i++) {
-        _following.value.add(value.docs[i].data()['uid']);
-      }
-    });
-  }
+        .get();
+
+    _followers.value = followersSnapshot.docs;
+
+    _following.value = followingSnapshot.docs.map((e) => e.id).toList();
+    update();
+}
+
+unfollowUser()async{
+  await firebaseFirestore
+          .collection('users')
+          .doc(_uid.value)
+          .collection('followers')
+          .doc(authController.user.uid)
+          .delete();
+      await firebaseFirestore
+          .collection('users')
+          .doc(authController.user.uid)
+          .collection('following')
+          .doc(_uid.value)
+          .delete();
+      _user.value
+          .update('following', (value) => (int.parse(value) - 1).toString());
+      _user.value.update('isFollowing', (value) => !value);
+      update();
+}
+
 }

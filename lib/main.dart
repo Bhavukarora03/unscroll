@@ -30,7 +30,11 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
             textTheme: GoogleFonts.aBeeZeeTextTheme(
-              Theme.of(context).textTheme,
+
+              Theme.of(context).textTheme.copyWith(
+                    bodyText1: const TextStyle(color: Colors.white),
+                    bodyText2: const TextStyle(color: Colors.white),
+                  ),
 
 
             ).copyWith(
@@ -38,6 +42,9 @@ class MyApp extends StatelessWidget {
               bodyText2: const TextStyle(color: Colors.white),
 
 
+            ),
+            listTileTheme: ListTileThemeData(
+              textColor: Colors.white,
             ),
             useMaterial3: true,
             appBarTheme: const AppBarTheme(

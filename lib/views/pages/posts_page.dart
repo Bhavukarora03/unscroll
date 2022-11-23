@@ -25,9 +25,10 @@ class _PostsPageState extends State<PostsPage> {
 
   @override
   void initState() {
-  postController;
+    postController;
     super.initState();
   }
+
   bool readOnly = true;
 
   final storiesController = Get.put(StoriesController());
@@ -41,10 +42,18 @@ class _PostsPageState extends State<PostsPage> {
     return Scaffold(
       body: Obx(
         () {
-          return CustomScrollView(controller: _scrollController, slivers: [
-            stories(),
-            posts(),
-          ]);
+          return RefreshIndicator(
+            semanticsLabel: 'Loading',
+            onRefresh: () async {
+              await Future.delayed(const Duration(seconds: 1));
+              postController.postsLists
+                  .sort((a, b) => b.createdAt.compareTo(a.createdAt));
+            },
+            child: CustomScrollView(controller: _scrollController, slivers: [
+              stories(),
+              posts(),
+            ]),
+          );
         },
       ),
     );
@@ -133,9 +142,7 @@ class _PostsPageState extends State<PostsPage> {
                         color: Colors.white,
                       ),
                     ),
-                    trailing: moreVerticalOptions(context, data)
-
-                    ),
+                    trailing: moreVerticalOptions(context, data)),
               ),
               height10,
               GestureDetector(
@@ -180,8 +187,6 @@ class _PostsPageState extends State<PostsPage> {
                 child: Column(
                   children: [
                     likesCount(data),
-
-
                   ],
                 ),
               ),
@@ -210,12 +215,12 @@ class _PostsPageState extends State<PostsPage> {
                           ? ListTile(
                               onTap: () {
                                 Get.back();
-                                Get.to(() => EditPostScreen(
-                                  imgUrl: data.postURL,
-                                  editCaption: data.caption, id: data.id,
-
-
-                                ),
+                                Get.to(
+                                    () => EditPostScreen(
+                                          imgUrl: data.postURL,
+                                          editCaption: data.caption,
+                                          id: data.id,
+                                        ),
                                     arguments: data);
                               },
                               leading: const Icon(Icons.edit),
@@ -316,7 +321,7 @@ class _PostsPageState extends State<PostsPage> {
         width10,
         Text(
           data.caption,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
         ),
       ],
     );

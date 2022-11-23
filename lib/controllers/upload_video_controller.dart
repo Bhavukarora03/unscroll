@@ -75,6 +75,7 @@ class UploadVideoController extends GetxController {
         videoUrl: videoUrl,
         thumbnail: thumbnail,
         profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
+        createdAt: DateTime.now(),
       );
 
       await firebaseFirestore

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/profile_controller.dart';
 import 'package:unscroll/views/screens/followers_count.dart';
@@ -9,6 +8,8 @@ import 'package:unscroll/views/screens/following_count.dart';
 
 import 'package:unscroll/views/widgets/widgets.dart';
 import 'package:get/get.dart';
+
+import 'edit_profile.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
@@ -70,31 +71,42 @@ class _ProfileScreenState extends State<ProfileScreen>
                 height20,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Column(
+                    Column(crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         UserProfileImage.medium(
                             imageUrl: profileController.user['profilePic'],
-                            radius: 40),
+                            radius: 35),
                         height10,
                         Text(
                           profileController.user['username'],
                           style: const TextStyle(
                               fontSize: 15, fontWeight: FontWeight.bold),
                         ),
+                        height10,
+                        Text(
+                           profileController.user['bio'],
+                          style: const TextStyle(
+                              color: Colors.grey, fontSize: 12),
+
+                        ),
                       ],
                     ),
                     Column(
                       children: [
                         Text(
-                          profileController.user['likes'],
+                          profileController.user['PostUrl'].length.toString(),
                         ),
-                        const Text('likes')
+                        const Text('posts')
                       ],
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.to(() => FollowersCount());
+                        Get.to(() => FollowersCount(
+                              uid: widget.uid,
+
+                        ));
                       },
                       child: Column(
                         children: [
@@ -118,33 +130,75 @@ class _ProfileScreenState extends State<ProfileScreen>
                         ],
                       ),
                     ),
+                    IconButton(onPressed: (){
+                      showModalBottomSheet(context: context, builder: (context){
+                        return SizedBox(
+                          height: 125,
+                          child: Column(
+                            children: [
+                              Icon(Icons.minimize),
+
+                              ListTile(
+                                leading: const Icon(Icons.logout),
+                                title: const Text("Logout"),
+                                onTap: (){
+                                  authController.signOut();
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      });
+
+                    }, icon: const Icon(Icons.more_vert))
                   ],
                 ),
                 height20,
-                Row(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 1,
+                              blurRadius: 15,
+                              offset: const Offset(
+                                  0, 3), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                          ),
+                          label: Text(
+                            widget.uid == authController.user.uid
+                                ? 'Edit Profile'
+                                : profileController.user['isFollowing']
+                                    ? 'Unfollow'
+                                    : 'Follow',
+                          ),
+                          icon: widget.uid == authController.user.uid
+                              ? const Icon(Icons.edit)
+                              : const Icon(Icons.person_add),
+                          onPressed: () {
+                            if (widget.uid == authController.user.uid) {
+                              Get.to(() => EditProfile(
+                                  uid: widget.uid,
+                                  username: profileController.user['username'],
+                                  profilePic:
+                                      profileController.user['profilePic']));
+                            } else {
+                              profileController.followerUser();
+                            }
+                          },
+                        ),
                       ),
-                      label: Text(
-                        widget.uid == authController.user.uid
-                            ? 'Sign Out'
-                            : profileController.user['isFollowing']
-                                ? 'Unfollow'
-                                : 'Follow',
-                      ),
-                      icon: widget.uid == authController.user.uid
-                          ? const Icon(Icons.logout_sharp)
-                          : const Icon(Icons.person_add),
-                      onPressed: () {
-                        if (widget.uid == authController.user.uid) {
-                          authController.signOut();
-                        } else {
-                          profileController.followerUser();
-                        }
-                      },
                     ),
                   ],
                 ),
@@ -191,48 +245,59 @@ class _TabBarLibraryState extends State<TabBarLibrary> {
       child: TabBarView(
         controller: widget._tabController,
         children: [
-          GridView.builder(
-              itemCount: profileController.user['PostUrl'].length,
+          RefreshIndicator(
+            onRefresh: () async {
+              await Future.delayed(const Duration(seconds: 1));
+            },
+            child: GridView.builder(
+                itemCount: profileController.user['PostUrl'].length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    mainAxisExtent: 150,
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 5),
+                itemBuilder: (context, index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                        image: CachedNetworkImageProvider(
+                          profileController.user['PostUrl'][index],
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  );
+                }),
+          ),
+          RefreshIndicator(
+            onRefresh: () async {
+              await Future.delayed(const Duration(seconds: 1));
+            },
+            child: GridView.builder(
+              itemCount:
+                  Get.find<ProfileController>().user['thumbnails'].length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisExtent: 150,
+                  mainAxisExtent: 250,
                   crossAxisCount: 3,
-                  crossAxisSpacing: 8,
+                  crossAxisSpacing: 5,
                   mainAxisSpacing: 5),
               itemBuilder: (context, index) {
                 return Container(
                   decoration: BoxDecoration(
-                    color: Colors.black,
                     borderRadius: BorderRadius.circular(10),
+                    color: Colors.black,
                     image: DecorationImage(
                       image: CachedNetworkImageProvider(
-                        profileController.user['PostUrl'][index],
+                        Get.find<ProfileController>().user['thumbnails'][index],
                       ),
                       fit: BoxFit.cover,
                     ),
                   ),
                 );
-              }),
-          GridView.builder(
-            itemCount: Get.find<ProfileController>().user['thumbnails'].length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisExtent: 250,
-                crossAxisCount: 3,
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 5),
-            itemBuilder: (context, index) {
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.black,
-                  image: DecorationImage(
-                    image: CachedNetworkImageProvider(
-                      Get.find<ProfileController>().user['thumbnails'][index],
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              );
-            },
+              },
+            ),
           ),
         ],
       ),
