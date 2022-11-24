@@ -77,9 +77,8 @@ class _PostsPageState extends State<PostsPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => UnscrollStories(
-                                uid: data.uid,
-                              ));
+                            Get.to(() => UnscrollStories(uid: data.uid));
+
                         },
                         child: UserProfileImage(
                           imageUrl: data.profilePic,

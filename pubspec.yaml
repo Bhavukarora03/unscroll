@@ -47,6 +47,8 @@ dependencies:
   firebase_analytics: ^9.3.8
   firebase_crashlytics: ^2.9.0
   flutter_cache_manager: ^3.3.0
+  story: ^0.8.0
+  cloud_functions: ^3.3.9
 
 
 

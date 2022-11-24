@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:story/story_page_view/story_page_view.dart';
 import 'package:story_view/controller/story_controller.dart';
-import 'package:story_view/utils.dart';
-import 'package:story_view/widgets/story_view.dart';
-import 'package:unscroll/constants.dart';
+
 import '../../controllers/profile_controller.dart';
 import '../../controllers/stories_controller.dart';
 import "package:get/get.dart";
@@ -23,12 +22,6 @@ class _UnscrollStoriesState extends State<UnscrollStories> {
 
   final controller = StoryController();
 
-  String uid = "";
-
-  getUserStory() {
-    uid = widget.uid;
-  }
-
   @override
   void initState() {
     storiesController.getUserStories(widget.uid);
@@ -39,56 +32,23 @@ class _UnscrollStoriesState extends State<UnscrollStories> {
   Widget build(BuildContext context) {
     return Obx(() {
       return Scaffold(
-        body: storiesController.stories.isEmpty
-            ? const Center(
-                child: Text('No stories'),
-              )
-            : widget.uid == authController.user.uid
-                ? StoryView(
-                    storyItems: [
-                      for (var i = 0; i < storiesController.urls.length; i++)
-                        StoryItem.pageImage(
-                          url: storiesController.urls[i],
-                          controller: controller,
-                          imageFit: BoxFit.cover,
-                        ),
-                    ],
-                    onComplete: () {
-                      Get.back();
-                    },
-                    progressPosition: ProgressPosition.top,
-                    repeat: false,
-                    inline: false,
-                    onVerticalSwipeComplete: (direction) {
-                      if (direction == Direction.down) {
-                        Navigator.pop(context);
-                      }
-                    }, //
-                    onStoryShow: (s) {}, controller: controller,
-                  )
-                : StoryView(
-                    storyItems: [
-                      StoryItem.pageImage(
-                        url: storiesController.urls[0],
-                        controller: controller,
-                        imageFit: BoxFit.cover,
-                      ),
-                    ],
-
-                    onComplete: () {
-                      Get.back();
-                    },
-                    progressPosition: ProgressPosition.top,
-                    repeat: false,
-                    inline: false,
-                    onVerticalSwipeComplete: (direction) {
-                      if (direction == Direction.down) {
-                        Navigator.pop(context);
-                      }
-                    }, //
-                    onStoryShow: (s) {}, controller: controller,
-                  ),
-      );
+          body: StoryPageView(
+        itemBuilder: (context, pageIndex, storyIndex) {
+          return Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(
+                    storiesController.urls[storyIndex]),
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
+        storyLength: (pageIndex) {
+          return storiesController.stories[pageIndex].storyUrl.length;
+        },
+        pageLength: storiesController.stories.length,
+      ));
     });
   }
 }

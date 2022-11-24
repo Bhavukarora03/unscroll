@@ -29,11 +29,13 @@ class _NavigationScreenState extends State<NavigationScreen>
     mode: StopWatchMode.countDown,
     presetMillisecond: StopWatchTimer.getMilliSecFromMinute(30),
     onEnded: () async {
+
       await firebaseFirestore
           .collection('users')
           .doc(firebaseAuth.currentUser!.uid)
           .update({
         'thirtyMinDone': true,
+
       });
       showDialog(
           barrierDismissible: false,
