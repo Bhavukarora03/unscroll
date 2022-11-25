@@ -119,7 +119,7 @@ class UploadPage extends StatelessWidget {
 
 
 
-         ElevatedButton(onPressed: (){  }, child: Text("Chat Page"))
+         ElevatedButton(onPressed: (){  authController.signOut() ; }, child: Text("Chat Page"))
 
 
 

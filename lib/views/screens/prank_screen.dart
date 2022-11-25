@@ -16,7 +16,6 @@ class PrankScreen extends StatefulWidget {
 class _PrankScreenState extends State<PrankScreen> with WidgetsBindingObserver {
   bool active = true;
   final box = GetStorage();
-  Timer _timer = Timer.periodic(const Duration(seconds: 1), (timer) {});
 
   final StopWatchTimer _stopWatchTimer = StopWatchTimer(
     mode: StopWatchMode.countDown,

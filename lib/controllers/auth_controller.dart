@@ -297,12 +297,16 @@ class AuthController extends GetxController with CacheManager {
             email: email,
             profilePic: downloadURl,
             uid: userCredential.user!.uid,
+            bio: "Hey there! I'm using Unscroll",
+
             thirtyMinDone: false,
         );
         await firebaseFirestore
             .collection("users")
             .doc(userCredential.user!.uid)
             .set(user.toJson());
+
+
       } else {
         Get.snackbar("success", "Successfully selected image");
       }
@@ -351,13 +355,14 @@ class AuthController extends GetxController with CacheManager {
           email: user.email!,
           profilePic: user.photoURL!,
           uid: user.uid,
+          bio: "Hey there! I'm using Unscroll",
         thirtyMinDone: false,
       );
       await firebaseFirestore
           .collection("users")
           .doc(user.uid)
           .set(googleUser.toJson());
-      // navigate to your wanted page
+
       return;
     } catch (e) {
       rethrow;

@@ -64,159 +64,164 @@ class _ProfileScreenState extends State<ProfileScreen>
           );
         }
 
-        return Scaffold(
-          body: SafeArea(
-            child: Column(
-              children: [
-                height20,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        UserProfileImage.medium(
-                            imageUrl: profileController.user['profilePic'],
-                            radius: 35),
-                        height10,
-                        Text(
-                          profileController.user['username'],
-                          style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        ),
-                        height10,
-                        Text(
-                           profileController.user['bio'],
-                          style: const TextStyle(
-                              color: Colors.grey, fontSize: 12),
-
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          profileController.user['PostUrl'].length.toString(),
-                        ),
-                        const Text('posts')
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(() => FollowersCount(
-                              uid: widget.uid,
-
-                        ));
-                      },
-                      child: Column(
+        return RefreshIndicator(
+          onRefresh: () async {
+            await controller.updateUSerId(widget.uid);
+          },
+          child: Scaffold(
+            body: SafeArea(
+              child: Column(
+                children: [
+                  height20,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          UserProfileImage.medium(
+                              imageUrl: profileController.user['profilePic'],
+                              radius: 35),
+                          height10,
                           Text(
-                            profileController.user['followers'].toString(),
+                            profileController.user['username'],
+                            style: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold),
                           ),
-                          const Text('Followers')
+                          height10,
+                          Text(
+                             profileController.user['bio'],
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 12),
+
+                          ),
                         ],
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(() => FollowingCount());
-                      },
-                      child: Column(
+                      Column(
                         children: [
                           Text(
-                            profileController.user['following'],
+                            profileController.user['PostUrl'].length.toString(),
                           ),
-                          const Text('Following')
+                          const Text('posts')
                         ],
                       ),
-                    ),
-                    IconButton(onPressed: (){
-                      showModalBottomSheet(context: context, builder: (context){
-                        return SizedBox(
-                          height: 125,
-                          child: Column(
-                            children: [
-                              Icon(Icons.minimize),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => FollowersCount(
+                                uid: widget.uid,
 
-                              ListTile(
-                                leading: const Icon(Icons.logout),
-                                title: const Text("Logout"),
-                                onTap: (){
-                                  authController.signOut();
-                                },
+                          ));
+                        },
+                        child: Column(
+                          children: [
+                            Text(
+                              profileController.user['followers'].toString(),
+                            ),
+                            const Text('Followers')
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => FollowingCount());
+                        },
+                        child: Column(
+                          children: [
+                            Text(
+                              profileController.user['following'],
+                            ),
+                            const Text('Following')
+                          ],
+                        ),
+                      ),
+                      IconButton(onPressed: (){
+                        showModalBottomSheet(context: context, builder: (context){
+                          return SizedBox(
+                            height: 125,
+                            child: Column(
+                              children: [
+                                Icon(Icons.minimize),
+
+                                ListTile(
+                                  leading: const Icon(Icons.logout),
+                                  title: const Text("Logout"),
+                                  onTap: (){
+                                    authController.signOut();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        });
+
+                      }, icon: const Icon(Icons.more_vert))
+                    ],
+                  ),
+                  height20,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 1,
+                                blurRadius: 15,
+                                offset: const Offset(
+                                    0, 3), // changes position of shadow
                               ),
                             ],
                           ),
-                        );
-                      });
-
-                    }, icon: const Icon(Icons.more_vert))
-                  ],
-                ),
-                height20,
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 1,
-                              blurRadius: 15,
-                              offset: const Offset(
-                                  0, 3), // changes position of shadow
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
                             ),
-                          ],
-                        ),
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            label: Text(
+                              widget.uid == authController.user.uid
+                                  ? 'Edit Profile'
+                                  : profileController.user['isFollowing']
+                                      ? 'Unfollow'
+                                      : 'Follow',
+                            ),
+                            icon: widget.uid == authController.user.uid
+                                ? const Icon(Icons.edit)
+                                : const Icon(Icons.person_add),
+                            onPressed: () {
+                              if (widget.uid == authController.user.uid) {
+                                Get.to(() => EditProfile(
+                                    uid: widget.uid,
+                                    username: profileController.user['username'],
+                                    profilePic:
+                                        profileController.user['profilePic']));
+                              } else {
+                                profileController.followerUser();
+                              }
+                            },
                           ),
-                          label: Text(
-                            widget.uid == authController.user.uid
-                                ? 'Edit Profile'
-                                : profileController.user['isFollowing']
-                                    ? 'Unfollow'
-                                    : 'Follow',
-                          ),
-                          icon: widget.uid == authController.user.uid
-                              ? const Icon(Icons.edit)
-                              : const Icon(Icons.person_add),
-                          onPressed: () {
-                            if (widget.uid == authController.user.uid) {
-                              Get.to(() => EditProfile(
-                                  uid: widget.uid,
-                                  username: profileController.user['username'],
-                                  profilePic:
-                                      profileController.user['profilePic']));
-                            } else {
-                              profileController.followerUser();
-                            }
-                          },
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                height20,
-                TabBar(
-                  controller: _tabController,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  tabs: const [
-                    Tab(
-                      text: 'Posts',
-                    ),
-                    Tab(
-                      text: 'Unscrolls',
-                    ),
-                  ],
-                ),
-                TabBarLibrary(tabController: _tabController),
-              ],
+                    ],
+                  ),
+                  height20,
+                  TabBar(
+                    controller: _tabController,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    tabs: const [
+                      Tab(
+                        text: 'Posts',
+                      ),
+                      Tab(
+                        text: 'Unscrolls',
+                      ),
+                    ],
+                  ),
+                  TabBarLibrary(tabController: _tabController),
+                ],
+              ),
             ),
           ),
         );

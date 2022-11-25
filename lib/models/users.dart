@@ -6,12 +6,16 @@ class User {
   String profilePic;
   String uid;
   bool thirtyMinDone;
+  String bio;
   User(
       {required this.username,
       required this.email,
       required this.profilePic,
       required this.uid,
-      required this.thirtyMinDone});
+      required this.thirtyMinDone,
+      required this.bio});
+
+
 
 
   Map<String, dynamic> toJson() => {
@@ -20,6 +24,7 @@ class User {
         'profilePic': profilePic,
         'uid': uid,
         'thirtyMinDone': thirtyMinDone,
+        'bio': bio,
       };
 
   static User fromSnap(DocumentSnapshot snapshot) {
@@ -30,6 +35,7 @@ class User {
       profilePic: data['profilePic'],
       uid: data['uid'],
       thirtyMinDone: data['thirtyMinDone'],
+      bio: data['bio'],
     );
   }
 }

@@ -47,6 +47,7 @@ var firebaseStorage = FirebaseStorage.instance;
 var realTimeDataBase = FirebaseDatabase.instance;
 var functions = FirebaseFunctions.instance;
 
+
 //Controller
 var authController = AuthController.instance;
 var locationController = LocationController.instance;
