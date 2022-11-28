@@ -55,12 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       builder: (controller) {
         if (controller.user.isEmpty) {
           return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.white,
-                color: Colors.teal,
-              ),
-            ),
+            body: Center(child: kSpinKit),
           );
         }
 
@@ -77,7 +72,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Column(crossAxisAlignment: CrossAxisAlignment.start,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           UserProfileImage.medium(
                               imageUrl: profileController.user['profilePic'],
@@ -90,10 +86,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                           ),
                           height10,
                           Text(
-                             profileController.user['bio'],
+                            profileController.user['bio'],
                             style: const TextStyle(
                                 color: Colors.grey, fontSize: 12),
-
                           ),
                         ],
                       ),
@@ -109,8 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         onTap: () {
                           Get.to(() => FollowersCount(
                                 uid: widget.uid,
-
-                          ));
+                              ));
                         },
                         child: Column(
                           children: [
@@ -134,27 +128,29 @@ class _ProfileScreenState extends State<ProfileScreen>
                           ],
                         ),
                       ),
-                      IconButton(onPressed: (){
-                        showModalBottomSheet(context: context, builder: (context){
-                          return SizedBox(
-                            height: 125,
-                            child: Column(
-                              children: [
-                                Icon(Icons.minimize),
-
-                                ListTile(
-                                  leading: const Icon(Icons.logout),
-                                  title: const Text("Logout"),
-                                  onTap: (){
-                                    authController.signOut();
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        });
-
-                      }, icon: const Icon(Icons.more_vert))
+                      IconButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return SizedBox(
+                                    height: 125,
+                                    child: Column(
+                                      children: [
+                                        const Icon(Icons.minimize),
+                                        ListTile(
+                                          leading: const Icon(Icons.logout),
+                                          title: const Text("Logout"),
+                                          onTap: () {
+                                            authController.signOut();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                });
+                          },
+                          icon: const Icon(Icons.more_vert))
                     ],
                   ),
                   height20,
@@ -178,7 +174,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                           ),
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
                             ),
                             label: Text(
                               widget.uid == authController.user.uid
@@ -193,8 +190,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                             onPressed: () {
                               if (widget.uid == authController.user.uid) {
                                 Get.to(() => EditProfile(
+                                    bio: profileController.user['bio'],
                                     uid: widget.uid,
-                                    username: profileController.user['username'],
+                                    username:
+                                        profileController.user['username'],
                                     profilePic:
                                         profileController.user['profilePic']));
                               } else {
@@ -254,55 +253,86 @@ class _TabBarLibraryState extends State<TabBarLibrary> {
             onRefresh: () async {
               await Future.delayed(const Duration(seconds: 1));
             },
-            child: GridView.builder(
-                itemCount: profileController.user['PostUrl'].length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisExtent: 150,
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 5),
-                itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                          profileController.user['PostUrl'][index],
+            child: profileController.user['PostUrl'].length == 0
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.camera_outlined,
+                          size: 100, color: Colors.white60),
+                      height50,
+                      Center(
+                        child: Text(
+                          'No Posts Yet',
                         ),
-                        fit: BoxFit.cover,
                       ),
-                    ),
-                  );
-                }),
+                    ],
+                  )
+                : GridView.builder(
+                    itemCount: profileController.user['PostUrl'].length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            mainAxisExtent: 150,
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 5),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                            image: CachedNetworkImageProvider(
+                              profileController.user['PostUrl'][index],
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    }),
           ),
           RefreshIndicator(
             onRefresh: () async {
               await Future.delayed(const Duration(seconds: 1));
             },
-            child: GridView.builder(
-              itemCount:
-                  Get.find<ProfileController>().user['thumbnails'].length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisExtent: 250,
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5),
-              itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.black,
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        Get.find<ProfileController>().user['thumbnails'][index],
+            child: profileController.user['thumbnails'].length == 0
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.video_collection_outlined,
+                          size: 100, color: Colors.white60),
+                      height50,
+                      Center(
+                        child: Text(
+                          'No Unscrolls Yet',
+                        ),
                       ),
-                      fit: BoxFit.cover,
-                    ),
+                    ],
+                  )
+                : GridView.builder(
+                    itemCount:
+                        Get.find<ProfileController>().user['thumbnails'].length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            mainAxisExtent: 250,
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 5,
+                            mainAxisSpacing: 5),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.black,
+                          image: DecorationImage(
+                            image: CachedNetworkImageProvider(
+                              Get.find<ProfileController>().user['thumbnails']
+                                  [index],
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),

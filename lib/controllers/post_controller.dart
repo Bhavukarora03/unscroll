@@ -48,7 +48,7 @@ class PostController extends GetxController {
   }
 
   deletePost(String id) async {
-    await firebaseFirestore.collection('posts').doc().delete();
+    await firebaseFirestore.collection('posts').doc(id).delete();
   }
 
   updatePost(String id, String caption) async {

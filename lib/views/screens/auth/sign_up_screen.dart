@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -16,16 +15,18 @@ class SignUpScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Center(
           child: Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -33,69 +34,18 @@ class SignUpScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 100.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisSize: MainAxisSize.max,
                       children: [
-                        Stack(
-                          children: [
-                           GetBuilder(
-                               init: authController,
-                               builder: (controller) => CircleAvatar(
-                              radius: 50,
-                              backgroundImage: FileImage(File(authController.pickedImage.path)),
-                            )),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.blueAccent,
-                                radius: 15,
-                                child: IconButton(
-                                  onPressed: () {
-                                    showCupertinoModalBottomSheet(
-                                      barrierColor:
-                                          Colors.black.withOpacity(0.5),
-                                      context: context,
-                                      builder: (_) => Material(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            height10,
-                                            const Icon(Icons.linear_scale),
-                                            height20,
-                                            ListTile(
-                                                leading:
-                                                    const Icon(Icons.camera),
-                                                title: const Text("Camera"),
-                                                onTap: () {
-                                                  authController.pickImage(
-                                                      ImageSource.camera);
-                                                  Get.back();
-                                                }),
-                                            ListTile(
-                                                leading:
-                                                    const Icon(Icons.image),
-                                                title: const Text("Gallery"),
-                                                onTap: () {
-                                                  authController.pickImage(
-                                                      ImageSource.gallery);
-
-
-                                                  Get.back();
-                                                }),
-                                            height80
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    size: 15,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                        profileAvatar(context),
+                        const SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: Text("Make your Free DoomScroll Account",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400)),
                         ),
                       ],
                     ),
@@ -153,6 +103,71 @@ class SignUpScreen extends StatelessWidget {
               )),
         ),
       ),
+    );
+  }
+
+  Stack profileAvatar(BuildContext context) {
+    return Stack(
+      children: [
+        GetBuilder(
+            init: authController,
+            builder: (controller) => authController.pickedImage.path.isNotEmpty
+                ? CircleAvatar(
+                    radius: 50,
+                    backgroundImage:
+                        FileImage(File(authController.pickedImage.path)),
+                  )
+                : const UserProfileImage(
+                    imageUrl:
+                        "https://images.unsplash.com/photo-1634896941598-b6b500a502a7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=756&q=80",
+                    radius: 60)),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: CircleAvatar(
+            backgroundColor: Colors.blueAccent,
+            radius: 15,
+            child: IconButton(
+              onPressed: () {
+                showCupertinoModalBottomSheet(
+                  barrierColor: Colors.black.withOpacity(0.5),
+                  context: context,
+                  builder: (_) => Material(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        height10,
+                        const Icon(Icons.linear_scale),
+                        height20,
+                        ListTile(
+                            leading: const Icon(Icons.camera),
+                            title: const Text("Camera"),
+                            onTap: () {
+                              authController.pickImage(ImageSource.camera);
+                              Get.back();
+                            }),
+                        ListTile(
+                            leading: const Icon(Icons.image),
+                            title: const Text("Gallery"),
+                            onTap: () {
+                              authController.pickImage(ImageSource.gallery);
+
+                              Get.back();
+                            }),
+                        height80
+                      ],
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.edit,
+                size: 15,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:unscroll/constants.dart';
+import 'package:unscroll/views/pages/chat_page.dart';
 import 'package:unscroll/views/screens/screens.dart';
 import 'package:unscroll/views/widgets/modelBottomSheet.dart';
-
 
 class UploadPage extends StatelessWidget {
   const UploadPage({Key? key}) : super(key: key);
@@ -65,11 +65,7 @@ class UploadPage extends StatelessWidget {
       Get.snackbar("Error", "No Image Selected");
     }
   }
-  Future<void> getFruit() async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('listFruit');
-    final results = await callable();
-    List fruit = results.data;  // ["Apple", "Banana", "Cherry", "Date", "Fig", "Grapes"]
-  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -116,13 +112,7 @@ class UploadPage extends StatelessWidget {
             topRadius: 0,
             bottomRadius: 15,
           ),
-
-
-
-         ElevatedButton(onPressed: (){  authController.signOut() ; }, child: Text("Chat Page"))
-
-
-
+          ElevatedButton(onPressed: () {}, child: const Text("Chat Page"))
         ],
       ),
     );

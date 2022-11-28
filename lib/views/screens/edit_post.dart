@@ -70,6 +70,9 @@ class EditPostScreen extends StatelessWidget {
                         hintText: 'Write a caption...',
                         border: InputBorder.none,
                       ),
+                      onChanged: (value) {
+                        newValue = value;
+                      },
                       onSubmitted: (value) {
                         newValue = value;
                         postController.updatePost(id, value);

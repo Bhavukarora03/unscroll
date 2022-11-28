@@ -1,58 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
-import 'package:unscroll/views/widgets/user_profileimg.dart';
+
+import '../widgets/user_profileimg.dart';
 
 class EditProfile extends StatelessWidget {
-  EditProfile(
-      {Key? key,
+  const EditProfile(
+      {super.key,
       required this.uid,
       required this.username,
-      required this.profilePic})
-      : super(key: key);
-
+      required this.profilePic,
+      required this.bio});
   final String uid;
+  final String bio;
   final String username;
   final String profilePic;
-
-  TextEditingController bioController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     TextEditingController usernameController =
         TextEditingController(text: username);
+    TextEditingController bioController = TextEditingController(text: bio);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: const Text('Edit Profile'),
-      ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          Center(
-              child: Stack(children: [
-            GestureDetector(
-                child: UserProfileImage(imageUrl: profilePic, radius: 50))
-          ])),
-          const SizedBox(height: 20),
-          TextField(
-            controller: usernameController,
-            style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-              labelText: 'Username',
-            ),
-          ),
-          TextField(
-            controller: bioController,
-            style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-              labelText: 'Add Bio',
-            ),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () async {
-              Future.delayed(const Duration(seconds: 1));
+        actions: [
+          IconButton(
+            onPressed: () async{
               await firebaseFirestore.collection('users').doc(uid).update({
                 'username': usernameController.text,
                 'bio': bioController.text,
@@ -60,9 +35,41 @@ class EditProfile extends StatelessWidget {
 
               Get.back();
             },
-            child: const Text('Update'),
-          ),
+            icon: const Icon(Icons.done),
+          )
         ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(40.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Center(
+                child: Stack(children: [
+              GestureDetector(
+                  child: UserProfileImage(
+                imageUrl: profilePic,
+                radius: 50,
+              ))
+            ])),
+            const SizedBox(height: 20),
+            TextField(
+              controller: usernameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                labelText: 'Username',
+              ),
+            ),
+            TextField(
+              controller: bioController,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                labelText: 'Add Bio',
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

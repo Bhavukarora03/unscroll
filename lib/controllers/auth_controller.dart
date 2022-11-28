@@ -204,10 +204,7 @@ class AuthController extends GetxController with CacheManager {
         .update({
       'thirtyMinDone': false,
     });
-
   }
-
-
 
   checkIfThirtyMinDone() async {
     var docs = await firebaseFirestore
@@ -217,7 +214,7 @@ class AuthController extends GetxController with CacheManager {
     if (docs.docs.isNotEmpty) {
       isLogged.value = false;
       removeToken();
-      Get.offAll(()=> PrankScreen());
+      Get.offAll(() => PrankScreen());
     }
   }
 
@@ -231,7 +228,10 @@ class AuthController extends GetxController with CacheManager {
   }
 
   void uploadTokenToFireStore(String token) async {
-    await firebaseFirestore.collection('usertokens').doc(user.uid).set({
+    await firebaseFirestore
+        .collection('usertokens')
+        .doc(firebaseAuth.currentUser?.uid)
+        .set({
       'token': token,
     });
   }
@@ -293,25 +293,27 @@ class AuthController extends GetxController with CacheManager {
 
         String downloadURl = await _uploadImageToStorage(image);
         model.User user = model.User(
-            username: username,
-            email: email,
-            profilePic: downloadURl,
-            uid: userCredential.user!.uid,
-            bio: "Hey there! I'm using Unscroll",
-
-            thirtyMinDone: false,
+          username: username,
+          email: email,
+          profilePic: downloadURl,
+          uid: userCredential.user!.uid,
+          bio: "Hey there! I'm using Unscroll",
+          thirtyMinDone: false,
         );
         await firebaseFirestore
             .collection("users")
             .doc(userCredential.user!.uid)
             .set(user.toJson());
 
-
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+            const SnackBar(content: Text('Welcome to DoomScroll')));
       } else {
-        Get.snackbar("success", "Successfully selected image");
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+            const SnackBar(content: Text('Please fill all the fields')));
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      ScaffoldMessenger.of(Get.context!)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
@@ -321,12 +323,15 @@ class AuthController extends GetxController with CacheManager {
       if (email.isNotEmpty && password.isNotEmpty) {
         await firebaseAuth.signInWithEmailAndPassword(
             email: email, password: password);
-        Get.snackbar("Success", "Logged in with mail and password");
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+            const SnackBar(content: Text('Welcome to DoomScroll')));
       } else {
-        Get.snackbar("Error", "Please fill all the fields");
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+            const SnackBar(content: Text('Please fill all the fields')));
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      ScaffoldMessenger.of(Get.context!)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
@@ -351,11 +356,11 @@ class AuthController extends GetxController with CacheManager {
 
       final User? user = authResult.user;
       model.User googleUser = model.User(
-          username: user!.displayName!,
-          email: user.email!,
-          profilePic: user.photoURL!,
-          uid: user.uid,
-          bio: "Hey there! I'm using Unscroll",
+        username: user!.displayName!,
+        email: user.email!,
+        profilePic: user.photoURL!,
+        uid: user.uid,
+        bio: "Hey there! I'm using Unscroll",
         thirtyMinDone: false,
       );
       await firebaseFirestore

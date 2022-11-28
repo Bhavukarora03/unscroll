@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:unscroll/constants.dart';
-import "package:unscroll/views/screens/screens.dart";
+import 'package:unscroll/views/screens/auth/sign_up_screen.dart';
 
 
 final _formKey = GlobalKey<FormState>();
@@ -28,80 +29,105 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  void onPressedLogin() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+    });
+    if (_formKey.currentState!.validate()) {
+      authController.loginUser(_emailController.text, _passwordController.text);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
         //nice
         resizeToAvoidBottomInset: false,
         body: SafeArea(
-          child: Center(
-            child: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 100.0,
-                      ),
-                      child: Center(child: Image.asset("assets/icon/logo.png")),
-                    ),
-                    Form(
-                      key: _formKey,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      child: AutofillGroup(
-                        child: Column(
-                          children: [
-                            buildEmailTextFormField(),
-                            height20,
-                            buildPasswordTextFormField()
-                          ],
-                        ),
-                      ),
-                    ),
-                    height50,
-                    ElevatedButton(
-                        onPressed: () {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            FocusScopeNode currentFocus = FocusScope.of(context);
-                            if (!currentFocus.hasPrimaryFocus) {
-                              currentFocus.unfocus();
-                            }
-                          });
-                          if (_formKey.currentState!.validate()) {
-                            authController.loginUser(_emailController.text,
-                                _passwordController.text);
-                          }
-                        },
-                        child: const Text(
-                          "Continue",
-                        )),
-                    height50,
-                    const Align(alignment: Alignment.center, child: Text("or")),
-                    height50,
-                    ElevatedButton.icon(
-                        onPressed: () => authController.loginWithGoogle(),
-                        icon: Image.asset(
-                          "assets/images/logo.png",
-                          height: 20,
-                        ),
-                        label: const Text("Continue with Google")),
-                    height50,
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      const Text("Don't have an account?"),
-                      TextButton(
-                          onPressed: () {
-                            HapticFeedback.heavyImpact();
-                            Get.to(() => SignUpScreen(),
-                                transition: Transition.rightToLeft);
-                          },
-                          child: const Text("Sign up"))
-                    ])
-                  ],
-                )),
+          child: OnBoardingSlider(
+            headerBackgroundColor: Colors.transparent,
+            finishButtonText: 'Register',
+            skipTextButton: const Text('Skip'),
+            finishButtonColor: const Color(0xff7FC0C2),
+
+            onFinish: () {
+             Get.to(() => SignUpScreen());
+            },
+            trailingFunction: () {
+              onPressedLogin();
+            },
+            trailing: const Text(
+              'Login',
+              style: TextStyle(color: Colors.white),
+            ),
+            background: [
+              Image.asset('assets/images/landing.gif',
+                  width: size.width, height: 400),
+              const SizedBox.shrink()
+            ],
+            totalPage: 2,
+            speed: 1.8,
+            pageBodies: [
+              Column(
+                children:  <Widget>[
+                  SizedBox(
+                    height: 480,
+                  ),
+                  Text('Welcome to DoomScroll',
+                      style: GoogleFonts.marckScript(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.w400
+
+                      ) ),
+                ],
+              ),
+              loginData(context)
+            ],
           ),
         ));
+  }
+
+  Widget loginData(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(40.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: AutofillGroup(
+              child: Column(
+                children: [
+                  buildEmailTextFormField(),
+                  height20,
+                  buildPasswordTextFormField()
+                ],
+              ),
+            ),
+          ),
+          height30,
+          Center(child: Text('Or')),
+          height30,
+
+          ElevatedButton.icon(
+              onPressed: () => authController.loginWithGoogle(),
+              icon: Image.asset(
+                "assets/images/logo.png",
+                height: 20,
+              ),
+              label: const Text("Continue with Google")),
+          height50,
+          const Center(child: Text("Don't have an account with us?"))
+        ],
+      ),
+    );
   }
 
   /// Email Text Form Field

@@ -68,17 +68,7 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
             child: SingleChildScrollView(
           child: Column(children: [
             Stack(children: [
-              Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
-                      spreadRadius: 10,
-                      blurRadius: 100,
-                      offset: const Offset(0, 3), // changes position of shadow
-                    ),
-                  ],
-                ),
+              SizedBox(
                 height: MediaQuery.of(context).size.height * 0.3,
                 width: MediaQuery.of(context).size.width * 0.3,
                 child: CachedVideoPlayer(controller),

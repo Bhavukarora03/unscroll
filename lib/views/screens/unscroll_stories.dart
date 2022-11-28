@@ -1,15 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:story/story_page_view/story_page_view.dart';
-import 'package:story_view/controller/story_controller.dart';
+import 'package:unscroll/views/widgets/widgets.dart';
 
 import '../../controllers/profile_controller.dart';
 import '../../controllers/stories_controller.dart';
 import "package:get/get.dart";
 
 class UnscrollStories extends StatefulWidget {
-  const UnscrollStories({Key? key, required this.uid}) : super(key: key);
-
-  final String uid;
+  const UnscrollStories({Key? key}) : super(key: key);
 
   @override
   State<UnscrollStories> createState() => _UnscrollStoriesState();
@@ -20,11 +19,8 @@ class _UnscrollStoriesState extends State<UnscrollStories> {
 
   final profileController = Get.put(ProfileController());
 
-  final controller = StoryController();
-
   @override
   void initState() {
-    storiesController.getUserStories(widget.uid);
     super.initState();
   }
 
@@ -33,16 +29,37 @@ class _UnscrollStoriesState extends State<UnscrollStories> {
     return Obx(() {
       return Scaffold(
           body: StoryPageView(
+        onPageLimitReached: () {
+          Get.back();
+        },
         itemBuilder: (context, pageIndex, storyIndex) {
-          return Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                    storiesController.urls[storyIndex]),
-                fit: BoxFit.cover,
+          return Stack(children: [
+            Positioned.fill(
+              child: CachedNetworkImage(
+                  imageUrl:
+                      storiesController.stories[pageIndex].storyUrl[storyIndex],
+                  fit: BoxFit.cover),
+            ),
+            //userprofile image
+            Positioned(
+              top: 60,
+              left: 20,
+              child: Row(
+                children: [
+                  UserProfileImage.small(
+                      imageUrl:
+                          storiesController.stories[pageIndex].profilePic),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    storiesController.stories[pageIndex].username,
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  )
+                ],
               ),
             ),
-          );
+          ]);
         },
         storyLength: (pageIndex) {
           return storiesController.stories[pageIndex].storyUrl.length;

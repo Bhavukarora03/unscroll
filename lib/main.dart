@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:unscroll/controllers/auth_controller.dart';
 import 'package:unscroll/views/screens/splashScreen.dart';
 import 'controllers/bindings/bindings.dart';
 import 'firebase_options.dart';
@@ -12,7 +14,8 @@ Future<void> _firebaseMessagingBackgroundHandler(
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
+      .then((value) => Get.put(AuthController()));
   GetBindings().dependencies();
 
   await FirebaseMessaging.instance.getInitialMessage();
@@ -25,25 +28,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return GetMaterialApp(
         initialBinding: GetBindings(),
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
+          brightness: Brightness.dark,
             textTheme: GoogleFonts.aBeeZeeTextTheme(
-
               Theme.of(context).textTheme.copyWith(
                     bodyText1: const TextStyle(color: Colors.white),
                     bodyText2: const TextStyle(color: Colors.white),
                   ),
-
-
             ).copyWith(
               bodyText1: const TextStyle(color: Colors.white),
               bodyText2: const TextStyle(color: Colors.white),
-
-
             ),
-            listTileTheme: ListTileThemeData(
+            listTileTheme: const ListTileThemeData(
               textColor: Colors.white,
             ),
             useMaterial3: true,

@@ -23,14 +23,14 @@ class HomePage extends StatelessWidget {
 
     return Obx(
       () => Scaffold(
-          body: videoController.isLoaded
+          body: videoController.videoList.isNotEmpty
               ? RefreshIndicator(
-            onRefresh: ()async {
-              await Future.delayed(const Duration(seconds: 1));
-
-              videoController.videoList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-            },
-                child: PageView.builder(
+                  onRefresh: () async {
+                    await Future.delayed(const Duration(seconds: 1));
+                    videoController.videoList
+                        .sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                  },
+                  child: PageView.builder(
                     itemCount: videoController.videoList.length,
                     scrollDirection: Axis.vertical,
                     controller: PageController(
@@ -64,12 +64,14 @@ class HomePage extends StatelessWidget {
                                         Text(
                                           data.username,
                                           style: const TextStyle(
-                                              color: Colors.white, fontSize: 20),
+                                              color: Colors.white,
+                                              fontSize: 20),
                                         ),
                                         Text(
                                           data.caption,
                                           style: const TextStyle(
-                                              color: Colors.white, fontSize: 15),
+                                              color: Colors.white,
+                                              fontSize: 15),
                                         ),
                                         Row(
                                           children: [
@@ -97,7 +99,8 @@ class HomePage extends StatelessWidget {
                               margin: EdgeInsets.only(
                                   top: size.height / 4, left: size.width / 1.3),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   buildProfileImage(
@@ -107,7 +110,8 @@ class HomePage extends StatelessWidget {
                                     onTap: () =>
                                         videoController.likeVideo(data.id),
                                     child: Icon(
-                                      data.likes.contains(authController.user.uid)
+                                      data.likes
+                                              .contains(authController.user.uid)
                                           ? Icons.favorite
                                           : Icons.favorite_border,
                                       color: data.likes
@@ -169,16 +173,16 @@ class HomePage extends StatelessWidget {
                       );
                     },
                   ),
-              )
+                )
               : Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
+                  baseColor: Colors.grey[850]!,
+                  highlightColor: Colors.grey[800]!,
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
                     ),
-                  )
-                )),
+                  ))
+      ),
     );
   }
 
@@ -251,8 +255,8 @@ class HomePage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           IconButton(
-                              onPressed: () =>
-                                  commentController.likeComment(comment.id, 'videos'),
+                              onPressed: () => commentController.likeComment(
+                                  comment.id, 'videos'),
                               icon: comment.likes
                                       .contains(authController.user.uid)
                                   ? const Icon(

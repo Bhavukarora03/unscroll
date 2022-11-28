@@ -1,7 +1,6 @@
-
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:unscroll/constants.dart';
@@ -9,6 +8,7 @@ import "package:unscroll/views/pages/pages.dart";
 import 'package:unscroll/views/screens/prank_screen.dart';
 import 'package:unscroll/views/screens/profile_screen.dart';
 
+int timerValue = 0;
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({Key? key}) : super(key: key);
@@ -23,43 +23,58 @@ class _NavigationScreenState extends State<NavigationScreen>
 
   final ValueNotifier<Widget> title = ValueNotifier<Widget>(const SizedBox());
   final ValueNotifier<int> _currentIndex = ValueNotifier<int>(0);
+  late final AsyncSnapshot snap;
 
   ///StopWatch Timer
   final StopWatchTimer _stopWatchTimer = StopWatchTimer(
     mode: StopWatchMode.countDown,
     presetMillisecond: StopWatchTimer.getMilliSecFromMinute(30),
-    onEnded: () async {
 
+    onStopped: () {
+      final box = GetStorage();
+      box.write('TimerValue', timerValue);
+      print("Timer Stopped at $timerValue");
+    },
+    onEnded: () async {
       await firebaseFirestore
           .collection('users')
           .doc(firebaseAuth.currentUser!.uid)
-          .update({
-        'thirtyMinDone': true,
-
-      });
+          .update(
+        {
+          'thirtyMinDone': true,
+        },
+      );
       showDialog(
-          barrierDismissible: false,
-          context: Get.context!,
-          builder: (_) {
-            return AlertDialog(
-              title: const Text(
-                "Time is up",
-                style: TextStyle(color: Colors.white),
-              ),
-              content: const Text("Time is up"),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      authController.checkIfThirtyMinDone();
-                    },
-                    child: const Text("Ok"))
-              ],
-            );
-          });
+        barrierDismissible: false,
+        context: Get.context!,
+        builder: (_) {
+          return AlertDialog(
+            title: const Text(
+              "Time is up",
+              style: TextStyle(color: Colors.white),
+            ),
+            content: const Text("Time is up"),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    authController.checkIfThirtyMinDone();
+                  },
+                  child: const Text("Ok"))
+            ],
+          );
+        },
+      );
     },
   );
 
-  _checkthirtyMins() async {
+  Future<int> readTimer() async {
+    final box = GetStorage();
+    int value = await box.read('TimerValue');
+
+    return value;
+  }
+
+  _checkThirtyMins() async {
     await firebaseFirestore
         .collection('users')
         .doc(firebaseAuth.currentUser!.uid)
@@ -79,15 +94,15 @@ class _NavigationScreenState extends State<NavigationScreen>
 
   @override
   void initState() {
-    _checkthirtyMins();
-
-    FirebaseAnalytics.instance.setCurrentScreen(screenName: 'NavigationScreen');
-
-    title.value = timer();
-
+    // setState(() {
+    //   _stopWatchTimer.minuteTime.listen((event) {
+    //     timerValue = event;
+    //   });
+    // });
+    //
+    // _checkThirtyMins();
     super.initState();
-
-    WidgetsBinding.instance.addObserver(this);
+   // WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -95,6 +110,7 @@ class _NavigationScreenState extends State<NavigationScreen>
     super.dispose();
 
     WidgetsBinding.instance.removeObserver(this);
+
     await _stopWatchTimer.dispose();
   }
 
@@ -139,11 +155,26 @@ class _NavigationScreenState extends State<NavigationScreen>
           slivers: [
             SliverAppBar(
               backgroundColor: Colors.transparent,
-              title: ValueListenableBuilder(
-                valueListenable: title,
-                builder: (context, value, child) {
-                  return value;
-                },
+              title: Row(
+                children: [
+                  FutureBuilder(
+                      future: readTimer(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Row(
+                            children: [
+                              timer(snapshot),
+                              Text(
+                                "Time Left: ${snapshot.data!}",
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return const Text("Loading");
+                        }
+                      }),
+                ],
               ),
               centerTitle: true,
               floating: false,
@@ -208,7 +239,8 @@ class _NavigationScreenState extends State<NavigationScreen>
     );
   }
 
-  Widget timer() {
+  Widget timer(AsyncSnapshot snapshot) {
+    final data = snapshot.data;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -216,7 +248,7 @@ class _NavigationScreenState extends State<NavigationScreen>
         /// Display stop watch time
         StreamBuilder<int>(
           stream: _stopWatchTimer.rawTime,
-          initialData: _stopWatchTimer.rawTime.value,
+          initialData: data,
           builder: (context, snap) {
             final value = snap.data!;
             final displayTime =

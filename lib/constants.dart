@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shimmer/shimmer.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/comment_controller.dart';
 import 'controllers/location_controller.dart';
@@ -47,7 +49,6 @@ var firebaseStorage = FirebaseStorage.instance;
 var realTimeDataBase = FirebaseDatabase.instance;
 var functions = FirebaseFunctions.instance;
 
-
 //Controller
 var authController = AuthController.instance;
 var locationController = LocationController.instance;
@@ -55,6 +56,31 @@ var profileController = ProfileController.instance;
 var videoController = VideoController.instance;
 var storyController = StoriesController.instance;
 var commentController = CommentController.instance;
+
+
+const kSpinKit = SpinKitSpinningLines(
+  color: Colors.teal,
+  size: 50.0,
+);
+
+
+
+
+
+
+extension ShimmerEffect on Widget {
+  Widget get shimmer {
+    return Shimmer.fromColors(
+        baseColor: Colors.grey[850]!,
+        highlightColor: Colors.grey[800]!,
+        child: Container(
+            decoration: BoxDecoration(
+          color: Colors.grey[300],
+        ),
+                child: this));
+
+  }
+}
 
 extension KeyboardUnFocus on BuildContext {
   void hideKeyboard() {
@@ -66,4 +92,3 @@ extension KeyboardUnFocus on BuildContext {
     });
   }
 }
-

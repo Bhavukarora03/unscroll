@@ -119,17 +119,20 @@ class UploadPostsController extends GetxController {
           location: location,
         );
 
+
+
         await firebaseFirestore
             .collection('posts')
             .doc(uuid)
             .set(postsModel.toJson());
 
-        var snapTokens =
-            await firebaseFirestore.collection('usertokens').doc(uid).get();
-        String token = snapTokens.data()!['token'];
 
-        sendPushMessage(token, "Unscroll",
-            "$displayName posted a new unscroll, show them some love");
+        // var snapTokens =
+        //     await firebaseFirestore.collection('usertokens').doc(uid).get();
+        // String token = snapTokens.data()!['token'];
+        //
+        // sendPushMessage(token, "Unscroll",
+        //     "$displayName posted a new unscroll, show them some love");
 
         Navigator.of(Get.context!).pop();
         ScaffoldMessenger.of(Get.context!).showSnackBar(
@@ -164,20 +167,13 @@ class UploadPostsController extends GetxController {
             id: "stories $id",
             profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
             likes: [],
-            storyUrl: [
-              ({
-                "url": storyUrl,
-                "createdAt": DateTime.now(),
-              })
-            ]);
+            storyUrl: [storyUrl]);
         var documents = firebaseFirestore.collection('stories').doc(uid).get();
         if ((await documents).exists) {
           await firebaseFirestore.collection('stories').doc(uid).set({
             'storyUrl': FieldValue.arrayUnion([
-              {
-                "url": storyUrl,
-                'createdAt': DateTime.now(),
-              }
+                storyUrl,
+
             ])
           }, SetOptions(merge: true));
         } else {

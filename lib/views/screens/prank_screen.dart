@@ -1,10 +1,9 @@
 import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:unscroll/constants.dart';
+
 
 class PrankScreen extends StatefulWidget {
   PrankScreen({Key? key}) : super(key: key);
@@ -41,15 +40,15 @@ class _PrankScreenState extends State<PrankScreen> with WidgetsBindingObserver {
       active = true;
       _stopWatchTimer.onStartTimer();
     } else if (state == AppLifecycleState.inactive) {
-      print("inactive");
+
       active = false;
       _stopWatchTimer.onStopTimer();
     } else if (state == AppLifecycleState.paused) {
-      print("paused");
+
       active = false;
       _stopWatchTimer.onStopTimer();
     } else if (state == AppLifecycleState.detached) {
-      print("detached");
+
       active = true;
       _stopWatchTimer.onStartTimer();
     }
@@ -106,77 +105,60 @@ class _PrankScreenState extends State<PrankScreen> with WidgetsBindingObserver {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          readValue();
-                        },
-                        child: Text("Read")),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    // StreamBuilder<int>(
-                    //   stream: _stopWatchTimer.rawTime,
-                    //   initialData: _stopWatchTimer.rawTime.value,
-                    //   builder: (context, snap) {
-                    //     final value = snap.data!;
-                    //     final displayTime = StopWatchTimer.getDisplayTime(value,
-                    //         milliSecond: false);
-                    //     return Text(
-                    //       displayTime,
-                    //       style: TextStyle(
-                    //         fontSize: 20,
-                    //         fontWeight: FontWeight.bold,
-                    //       ),
-                    //     );
-                    //   },
-                    // ),
+                    //timer(snapshot),
                   ],
                 ),
               ),
             );
           }
-          return Scaffold(
+          return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
             ),
           );
+        });
+  }
 
-          Widget timer() {
-            final box = GetStorage();
+  Widget timer(AsyncSnapshot snapshot) {
+    final data = snapshot.data;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        /// Display stop watch time
+        StreamBuilder<int>(
+          stream: data,
+          initialData: 0,
+          builder: (context, snap) {
+            final value = snap.data!;
+            final displayTime =
+                StopWatchTimer.getDisplayTime(value, milliSecond: false);
             return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                StreamBuilder<int>(
-                  stream: _stopWatchTimer.rawTime,
-                  initialData: _stopWatchTimer.rawTime.value,
-                  builder: (context, snap) {
-                    final value = snap.data!;
-                    final displayTime = StopWatchTimer.getDisplayTime(value,
-                        milliSecond: false);
-                    return Column(
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.lock_clock),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Text(
-                                displayTime,
-                                style: const TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.lock_clock),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        displayTime,
+                        style: const TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+
+                        },
+                        child: const Text("Ok"))
+                  ],
                 ),
               ],
             );
-          }
-        });
+          },
+        ),
+      ],
+    );
   }
 }

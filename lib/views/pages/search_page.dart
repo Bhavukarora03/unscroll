@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/search_controller.dart';
 import 'package:unscroll/controllers/video_controller.dart';
 import 'package:unscroll/views/screens/profile_screen.dart';
@@ -53,10 +54,12 @@ class SearchPage extends StatelessWidget {
           body: searchController.searchUsers.isEmpty
               ? CustomScrollView(controller: _scrollController, slivers: [
                   unscrolls(),
-                  const SliverToBoxAdapter(
+                   SliverToBoxAdapter(
                       child: Divider(
-                    color: Colors.white,
+                    color: Colors.grey.shade700,
                     thickness: 1,
+                        indent: 20,
+                        endIndent: 20,
                   )),
                   posts(),
                 ])
@@ -102,7 +105,7 @@ class SearchPage extends StatelessWidget {
         delegate: SliverChildListDelegate([
       SizedBox(
         height: 300,
-        child: GridView.builder(
+        child:  postController.postsLists.isEmpty ? ShimmerEffect(const SizedBox()).shimmer : GridView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: postController.postsLists.length,
           itemBuilder: (context, index) {
@@ -135,7 +138,7 @@ class SearchPage extends StatelessWidget {
         delegate: SliverChildListDelegate([
       SizedBox(
         height: 300,
-        child: GridView.builder(
+        child: videoController.videoList.isEmpty ? ShimmerEffect(const SizedBox()).shimmer : GridView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: videoController.videoList.length,
           itemBuilder: (context, index) {

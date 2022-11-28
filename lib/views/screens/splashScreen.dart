@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return FutureBuilder(
         future: initializeSettings(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.done) {
             return AnimatedSplashScreen(
               animationDuration: const Duration(seconds: 5),
               backgroundColor: Colors.black,
@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
             if (snapshot.hasError) {
               return errorView(snapshot);
             } else {
-              return const CircularProgressIndicator();
+              return Center(child: const CircularProgressIndicator());
             }
           }
         });

@@ -1,10 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/post_controller.dart';
 import 'package:unscroll/models/posts_model.dart';
-import 'package:unscroll/views/screens/unscroll_stories.dart';
+import 'package:unscroll/views/screens/screens.dart';
 import 'package:unscroll/views/widgets/user_profileimg.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -22,12 +23,6 @@ class PostsPage extends StatefulWidget {
 
 class _PostsPageState extends State<PostsPage> {
   final postController = Get.put(PostController());
-
-  @override
-  void initState() {
-    postController;
-    super.initState();
-  }
 
   bool readOnly = true;
 
@@ -49,57 +44,74 @@ class _PostsPageState extends State<PostsPage> {
               postController.postsLists
                   .sort((a, b) => b.createdAt.compareTo(a.createdAt));
             },
-            child: CustomScrollView(controller: _scrollController, slivers: [
-              stories(),
-              posts(),
-            ]),
+            child: postController.postsLists.isNotEmpty
+                ? CustomScrollView(controller: _scrollController, slivers: [
+                    stories(),
+                    posts(),
+                  ])
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.signpost_sharp,
+                          size: 150, color: Colors.white60),
+                      Center(
+                        child: Text(
+                          'No Posts Yet',
+                        ),
+                      ),
+                    ],
+                  ),
           );
         },
       ),
     );
   }
 
-  Widget stories() {
-    return SliverList(
-      delegate: SliverChildListDelegate(
-        [
-          SizedBox(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: storiesController.stories.length,
-              itemBuilder: (context, index) {
-                final data = storiesController.stories[index];
-                return SizedBox(
-                  width: 100,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                            Get.to(() => UnscrollStories(uid: data.uid));
-
-                        },
-                        child: UserProfileImage(
-                          imageUrl: data.profilePic,
-                          radius: 30,
-                        ),
+  SliverToBoxAdapter stories() {
+    return SliverToBoxAdapter(
+        child: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: () {
+              Get.to(() => UnscrollStories());
+            },
+            child: Container(
+              height: 100,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: const AssetImage('assets/images/stories.png'),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.5), BlendMode.darken)),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text(
+                      'Unscroll Stories',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Text(
-                        data.username,
-                        style: const TextStyle(
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ));
   }
 
   Widget posts() {
@@ -145,24 +157,26 @@ class _PostsPageState extends State<PostsPage> {
               ),
               height10,
               GestureDetector(
-                  onDoubleTap: () {
-                    postController.likePost(data.id);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.blueAccent.shade100.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 30,
-                          offset:
-                              const Offset(-1, 0), // changes position of shadow
-                        ),
-                      ],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: UserPostsImages(imageUrl: data.postURL),
-                  )),
+                onDoubleTap: () {
+                  postController.likePost(data.id);
+                },
+                child: Container(
+
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blueAccent.shade100.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 30,
+                        offset:
+                            const Offset(-1, 0), // changes position of shadow
+                      ),
+                    ],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: UserPostsImages(imageUrl: data.postURL),
+                ),
+              ),
               height10,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
