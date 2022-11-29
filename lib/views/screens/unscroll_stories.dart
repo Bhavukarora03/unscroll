@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:story/story_page_view/story_page_view.dart';
+import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/widgets/widgets.dart';
 
 import '../../controllers/profile_controller.dart';
@@ -49,13 +50,16 @@ class _UnscrollStoriesState extends State<UnscrollStories> {
                   UserProfileImage.small(
                       imageUrl:
                           storiesController.stories[pageIndex].profilePic),
-                  SizedBox(
-                    width: 10,
-                  ),
+                  height10,
                   Text(
                     storiesController.stories[pageIndex].username,
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  )
+                    style: const TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                 Positioned(
+                   top: 60,
+                    right: 20,
+                   child: IconButton(onPressed: (){}, icon: Icon(Icons.heart_broken)),
+                 )
                 ],
               ),
             ),

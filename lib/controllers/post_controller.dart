@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 
-
 import 'package:unscroll/models/posts_model.dart';
 
 import '../constants.dart';
@@ -24,6 +23,7 @@ class PostController extends GetxController {
           for (var doc in querySnapshot.docs) {
             temp.add(PostsModel.fromSnap(doc));
             temp.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
           }
 
           return temp;
@@ -55,28 +55,29 @@ class PostController extends GetxController {
     await firebaseFirestore.collection('posts').doc(id).update({
       'caption': caption,
     });
-    if(Get.isDialogOpen!) Get.back();
+    if (Get.isDialogOpen!) Get.back();
   }
 
   void saveNetworkImage(String pathProvided) async {
     try {
       // Saved with this method.
-     var file = DefaultCacheManager().downloadFile(pathProvided);
-     if(file != null){
-
-       ScaffoldMessenger.of(Get.context!).showSnackBar(
-         const SnackBar(
-           content: Text('Image Saved'),
-         ),
-       );
-
-
-     }
-     Get.back();
-
+      var file = DefaultCacheManager().downloadFile(pathProvided);
+      if (file != null) {
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+          const SnackBar(
+            content: Text('Image Saved'),
+          ),
+        );
+      }
+      Get.back();
     } on PlatformException catch (error) {
       ScaffoldMessenger.of(Get.context!)
           .showSnackBar(SnackBar(content: Text('Download Failed $error')));
     }
   }
+
+  getPost(){
+    return _posts;
+  }
+
 }

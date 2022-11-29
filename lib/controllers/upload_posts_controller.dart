@@ -119,25 +119,21 @@ class UploadPostsController extends GetxController {
           location: location,
         );
 
-
-
         await firebaseFirestore
             .collection('posts')
             .doc(uuid)
             .set(postsModel.toJson());
 
+        var snapTokens =
+            await firebaseFirestore.collection('usertokens').doc(uid).get();
+        String token = snapTokens.data()!['token'];
 
-        // var snapTokens =
-        //     await firebaseFirestore.collection('usertokens').doc(uid).get();
-        // String token = snapTokens.data()!['token'];
-        //
-        // sendPushMessage(token, "Unscroll",
-        //     "$displayName posted a new unscroll, show them some love");
+        sendPushMessage(token, "",
+            "$displayName posted a new unscroll, show them some love");
 
         Navigator.of(Get.context!).pop();
         ScaffoldMessenger.of(Get.context!).showSnackBar(
             const SnackBar(content: Text("Post uploaded successfully")));
-
       } else {
         ScaffoldMessenger.of(Get.context!).showSnackBar(
             const SnackBar(content: Text("Please fill all the fields")));
@@ -172,8 +168,7 @@ class UploadPostsController extends GetxController {
         if ((await documents).exists) {
           await firebaseFirestore.collection('stories').doc(uid).set({
             'storyUrl': FieldValue.arrayUnion([
-                storyUrl,
-
+              storyUrl,
             ])
           }, SetOptions(merge: true));
         } else {
@@ -186,7 +181,6 @@ class UploadPostsController extends GetxController {
         ScaffoldMessenger.of(Get.context!).showSnackBar(
             const SnackBar(content: Text("Successfully uploaded")));
         Get.back();
-
       }
     } catch (e) {
       ScaffoldMessenger.of(Get.context!)

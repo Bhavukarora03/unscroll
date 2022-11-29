@@ -335,6 +335,25 @@ class AuthController extends GetxController with CacheManager {
     }
   }
 
+  sendEmail(String sendEmailTo, String subject, String emailBody) async {
+    await firebaseFirestore.collection("mail").add(
+      {
+        'to': "$sendEmailTo",
+        'message': {
+          'subject'
+              "$subject"
+              'text': "$emailBody",
+          'html': "This is the <code>HTML</code> section of the email body"
+        },
+      },
+    ).then(
+      (value) {
+        print("Queued email for delivery!");
+      },
+    );
+    print('Email');
+  }
+
   ///Sign out User
   void signOut() async {
     await firebaseAuth.signOut();
@@ -367,6 +386,9 @@ class AuthController extends GetxController with CacheManager {
           .collection("users")
           .doc(user.uid)
           .set(googleUser.toJson());
+
+      await sendEmail(user.email!, "Welcome to Unscroll",
+        "We are so glad to have you, shall we explore the world of DoomScrolling");
 
       return;
     } catch (e) {

@@ -198,8 +198,21 @@ class _PostsPageState extends State<PostsPage> {
               Padding(
                 padding: const EdgeInsets.only(left: 12.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     likesCount(data),
+                    height10,
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            data.caption,
+                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                        ),
+                      ],
+                    ),
+
                   ],
                 ),
               ),
@@ -307,7 +320,7 @@ class _PostsPageState extends State<PostsPage> {
     return IconButton(
       icon: const Icon(Icons.comment_outlined),
       onPressed: () {
-        Get.to(CommentsScreen(commentTextController: commentTextController),
+        Get.to(()=> CommentsScreen(commentTextController: commentTextController),
             transition: Transition.cupertino);
       },
     );
@@ -328,14 +341,19 @@ class _PostsPageState extends State<PostsPage> {
     return Row(
       children: [
         Text(
-          '${data.likes.length} likes',
+          '${data.likes.length} likes    ',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         width10,
-        Text(
-          data.caption,
-          style: const TextStyle(fontSize: 12, color: Colors.grey),
+        GestureDetector(
+          onTap: (){
+            Get.to(()=> CommentsScreen(commentTextController: commentTextController));
+          },
+          child: Text('View all ${data.commentCount} comments',
+              style: const TextStyle(color: Colors.grey, )
+          ),
         ),
+
       ],
     );
   }

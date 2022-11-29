@@ -1,13 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/profile_controller.dart';
 import 'package:unscroll/views/screens/followers_count.dart';
 import 'package:unscroll/views/screens/following_count.dart';
+import 'package:unscroll/views/screens/post_view.dart';
 
 import 'package:unscroll/views/widgets/widgets.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'edit_profile.dart';
 
@@ -33,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   getUserids() async {
     uid = widget.uid;
   }
-
+  final Uri _url = Uri.parse('https://www.privacypolicygenerator.info/live.php?token=IlpPFFeTuVICmMdJSxXYqFYbv2fzW2QE');
   @override
   void initState() {
     profileController.updateUSerId(widget.uid);
@@ -47,7 +50,11 @@ class _ProfileScreenState extends State<ProfileScreen>
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
-
+  Future<void> _launchUrl() async {
+    if (!await launchUrl(_url)) {
+      throw 'Could not launch $_url';
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProfileController>(
@@ -128,29 +135,55 @@ class _ProfileScreenState extends State<ProfileScreen>
                           ],
                         ),
                       ),
-                      IconButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return SizedBox(
-                                    height: 125,
-                                    child: Column(
-                                      children: [
-                                        const Icon(Icons.minimize),
-                                        ListTile(
-                                          leading: const Icon(Icons.logout),
-                                          title: const Text("Logout"),
-                                          onTap: () {
-                                            authController.signOut();
-                                          },
-                                        ),
-                                      ],
+                      widget.uid == authController.user.uid
+                          ? IconButton(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
+                                      ),
                                     ),
-                                  );
-                                });
-                          },
-                          icon: const Icon(Icons.more_vert))
+                                    context: context,
+                                    builder: (context) {
+                                      return SizedBox(
+                                        height: 300,
+                                        child: Column(
+                                          children: [
+                                            const Icon(Icons.minimize),
+
+                                            ListTile(
+                                              onTap: () {
+                                                _launchUrl();
+
+                                              },
+                                              leading: const Icon(Icons.privacy_tip),
+                                              title: const Text('Privacy and policy'),
+
+                                            ),
+                                            ListTile(
+                                              leading: const Icon(Icons.cached),
+                                              title: const Text('Clear cache'),
+                                              onTap: () async {
+                                                await DefaultCacheManager()
+                                                    .emptyCache();
+                                              },
+                                            ),
+                                            ListTile(
+                                              leading: const Icon(Icons.logout),
+                                              title: const Text("Logout"),
+                                              onTap: () {
+                                                authController.signOut();
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    });
+                              },
+                              icon: const Icon(Icons.more_vert))
+                          : const SizedBox(),
                     ],
                   ),
                   height20,
@@ -218,7 +251,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                     ],
                   ),
-                  TabBarLibrary(tabController: _tabController),
+                  TabBarLibrary(
+                    tabController: _tabController,
+                    uid: widget.uid,
+                  ),
                 ],
               ),
             ),
@@ -233,10 +269,12 @@ class TabBarLibrary extends StatefulWidget {
   const TabBarLibrary({
     Key? key,
     required TabController tabController,
+    required this.uid,
   })  : _tabController = tabController,
         super(key: key);
 
   final TabController _tabController;
+  final String uid;
 
   @override
   State<TabBarLibrary> createState() => _TabBarLibraryState();
@@ -276,15 +314,31 @@ class _TabBarLibraryState extends State<TabBarLibrary> {
                             crossAxisSpacing: 8,
                             mainAxisSpacing: 5),
                     itemBuilder: (context, index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                            image: CachedNetworkImageProvider(
-                              profileController.user['PostUrl'][index],
+                      return GestureDetector(
+                        onTap: () {
+
+                            Get.to(() => PostView(
+                                  postUrl: profileController.user['PostUrl']
+                                      [index],
+                                  uid: widget.uid,
+                                  username: profileController.user['username'],
+                                  profileUrl:
+                                      profileController.user['profilePic'],
+                                ), transition: Transition.cupertino);
+
+
+
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: CachedNetworkImageProvider(
+                                profileController.user['PostUrl'][index],
+                              ),
+                              fit: BoxFit.cover,
                             ),
-                            fit: BoxFit.cover,
                           ),
                         ),
                       );

@@ -1,13 +1,19 @@
+import 'dart:isolate';
+
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:unscroll/controllers/auth_controller.dart';
 import 'package:unscroll/views/screens/splashScreen.dart';
+import 'package:unscroll/views/widgets/timer.dart';
 import 'controllers/bindings/bindings.dart';
 import 'firebase_options.dart';
+
 
 Future<void> _firebaseMessagingBackgroundHandler(
     RemoteMessage? message) async {}
@@ -20,7 +26,11 @@ Future<void> main() async {
 
   await FirebaseMessaging.instance.getInitialMessage();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await AndroidAlarmManager.initialize();
+
   runApp(const MyApp());
+  const int helloAlarmID = 0;
+
 }
 
 class MyApp extends StatelessWidget {
@@ -36,7 +46,7 @@ class MyApp extends StatelessWidget {
         initialBinding: GetBindings(),
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
-          brightness: Brightness.dark,
+            brightness: Brightness.dark,
             textTheme: GoogleFonts.aBeeZeeTextTheme(
               Theme.of(context).textTheme.copyWith(
                     bodyText1: const TextStyle(color: Colors.white),

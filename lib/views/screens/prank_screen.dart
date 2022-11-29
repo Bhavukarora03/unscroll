@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:unscroll/constants.dart';
-
 
 class PrankScreen extends StatefulWidget {
   PrankScreen({Key? key}) : super(key: key);
@@ -40,15 +40,12 @@ class _PrankScreenState extends State<PrankScreen> with WidgetsBindingObserver {
       active = true;
       _stopWatchTimer.onStartTimer();
     } else if (state == AppLifecycleState.inactive) {
-
       active = false;
       _stopWatchTimer.onStopTimer();
     } else if (state == AppLifecycleState.paused) {
-
       active = false;
       _stopWatchTimer.onStopTimer();
     } else if (state == AppLifecycleState.detached) {
-
       active = true;
       _stopWatchTimer.onStartTimer();
     }
@@ -105,7 +102,11 @@ class _PrankScreenState extends State<PrankScreen> with WidgetsBindingObserver {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    //timer(snapshot),
+                    ElevatedButton(
+                        onPressed: () async {
+                          await Purchases.purchaseProduct('id_subscription');
+                        },
+                        child: Text("Buy Sub")),
                   ],
                 ),
               ),
@@ -147,11 +148,7 @@ class _PrankScreenState extends State<PrankScreen> with WidgetsBindingObserver {
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    ElevatedButton(
-                        onPressed: () {
-
-                        },
-                        child: const Text("Ok"))
+                    ElevatedButton(onPressed: () {}, child: const Text("Ok"))
                   ],
                 ),
               ],

@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/pages/chat_page.dart';
 import 'package:unscroll/views/screens/screens.dart';
 import 'package:unscroll/views/widgets/modelBottomSheet.dart';
+import 'package:unscroll/views/widgets/timer.dart';
 
 class UploadPage extends StatelessWidget {
   const UploadPage({Key? key}) : super(key: key);
@@ -112,9 +114,24 @@ class UploadPage extends StatelessWidget {
             topRadius: 0,
             bottomRadius: 15,
           ),
-          ElevatedButton(onPressed: () {}, child: const Text("Chat Page"))
+          ElevatedButton(
+              onPressed: () async {
+                try {
+                  var package = await Purchases.getOfferings();
+                  final purchaserInfo = await Purchases.purchasePackage(
+                      package.current!.lifetime!);
+
+                  print(purchaserInfo.entitlements.all["premium"]!.isActive);
+
+                  if (purchaserInfo.entitlements.all["premium"]!.isActive) {}
+                } catch (e) {
+                  print(e);
+                }
+              },
+              child: const Text("Chat Page"))
         ],
       ),
     );
   }
 }
+
