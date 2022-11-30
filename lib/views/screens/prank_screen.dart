@@ -54,7 +54,6 @@ class _PrankScreenState extends State<PrankScreen> with WidgetsBindingObserver {
   Future<String> readValue() async {
     int value = box.read('timerValue');
     var valueData = StopWatchTimer.getDisplayTime(value);
-    print(valueData);
     return valueData;
   }
 
@@ -104,9 +103,9 @@ class _PrankScreenState extends State<PrankScreen> with WidgetsBindingObserver {
                   children: [
                     ElevatedButton(
                         onPressed: () async {
-                          await Purchases.purchaseProduct('id_subscription');
+
                         },
-                        child: Text("Buy Sub")),
+                        child: const Text("Buy Sub")),
                   ],
                 ),
               ),

@@ -27,6 +27,7 @@ Future<void> main() async {
   await FirebaseMessaging.instance.getInitialMessage();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await AndroidAlarmManager.initialize();
+  await Purchases.setDebugLogsEnabled(true);
 
   runApp(const MyApp());
   const int helloAlarmID = 0;

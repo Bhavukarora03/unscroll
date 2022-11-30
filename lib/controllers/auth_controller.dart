@@ -79,10 +79,9 @@ class AuthController extends GetxController with CacheManager {
   @override
   void onInit() {
     requestNotificationPermission();
-    getNotificationToken();
     getToken();
     initLocalNotifications();
-    checkInternetConnection();
+
 
     super.onInit();
   }
@@ -335,24 +334,6 @@ class AuthController extends GetxController with CacheManager {
     }
   }
 
-  sendEmail(String sendEmailTo, String subject, String emailBody) async {
-    await firebaseFirestore.collection("mail").add(
-      {
-        'to': "$sendEmailTo",
-        'message': {
-          'subject'
-              "$subject"
-              'text': "$emailBody",
-          'html': "This is the <code>HTML</code> section of the email body"
-        },
-      },
-    ).then(
-      (value) {
-        print("Queued email for delivery!");
-      },
-    );
-    print('Email');
-  }
 
   ///Sign out User
   void signOut() async {
@@ -395,6 +376,25 @@ class AuthController extends GetxController with CacheManager {
       rethrow;
     }
   }
+  sendEmail(String sendEmailTo, String subject, String emailBody) async {
+    await firebaseFirestore.collection("mail").add(
+      {
+        'to': "$sendEmailTo",
+        'message': {
+          'subject'
+              "$subject"
+              'text': "$emailBody",
+          'html': "<a href=''>Unscroll</a>",
+        },
+      },
+    ).then(
+          (value) {
+        print("Queued email for delivery!");
+      },
+    );
+    print('Email');
+  }
+
 }
 
 ///Mixin to cache userAuth data

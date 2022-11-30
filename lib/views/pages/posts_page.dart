@@ -10,9 +10,7 @@ import 'package:unscroll/views/widgets/user_profileimg.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../controllers/stories_controller.dart';
-import '../screens/comments_screen.dart';
 import '../screens/edit_post.dart';
-import '../screens/profile_screen.dart';
 
 class PostsPage extends StatefulWidget {
   const PostsPage({Key? key}) : super(key: key);

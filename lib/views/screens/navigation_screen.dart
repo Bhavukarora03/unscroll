@@ -67,6 +67,7 @@ class _NavigationScreenState extends State<NavigationScreen>
 
   @override
   initState() {
+    authController.getNotificationToken();
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }

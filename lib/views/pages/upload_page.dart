@@ -2,15 +2,15 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:unscroll/constants.dart';
-import 'package:unscroll/views/pages/chat_page.dart';
 import 'package:unscroll/views/screens/screens.dart';
 import 'package:unscroll/views/widgets/modelBottomSheet.dart';
-import 'package:unscroll/views/widgets/timer.dart';
+import 'dart:io' show Platform;
 
 class UploadPage extends StatelessWidget {
   const UploadPage({Key? key}) : super(key: key);
@@ -117,15 +117,16 @@ class UploadPage extends StatelessWidget {
           ElevatedButton(
               onPressed: () async {
                 try {
-                  var package = await Purchases.getOfferings();
-                  final purchaserInfo = await Purchases.purchasePackage(
-                      package.current!.lifetime!);
 
-                  print(purchaserInfo.entitlements.all["premium"]!.isActive);
 
-                  if (purchaserInfo.entitlements.all["premium"]!.isActive) {}
-                } catch (e) {
-                  print(e);
+                  PurchasesConfiguration configuration;
+                  configuration = PurchasesConfiguration(revenueAppKey);
+                  await Purchases.configure(configuration);
+
+
+
+                } on PlatformException catch (e) {
+                  // optional error handling
                 }
               },
               child: const Text("Chat Page"))
@@ -134,4 +135,3 @@ class UploadPage extends StatelessWidget {
     );
   }
 }
-
