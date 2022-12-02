@@ -64,7 +64,7 @@ const kSpinKit = SpinKitSpinningLines(
 );
 
 
-
+const entitlement = "premium";
 const revenueAppKey = "goog_WyftrZXbtjpamOLzcBGOFjJvxQT";
 
 

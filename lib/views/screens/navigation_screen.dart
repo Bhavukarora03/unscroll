@@ -1,20 +1,21 @@
-import 'dart:isolate';
-
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:unscroll/constants.dart';
 import "package:unscroll/views/pages/pages.dart";
 import 'package:unscroll/views/screens/prank_screen.dart';
+
 import 'package:unscroll/views/screens/profile_screen.dart';
+import 'package:unscroll/views/widgets/sharedprefs.dart';
 
 import '../widgets/timer.dart';
 
-
-
+int duration = 1800;
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({Key? key}) : super(key: key);
@@ -29,9 +30,9 @@ class _NavigationScreenState extends State<NavigationScreen>
 
   final ValueNotifier<Widget> title = ValueNotifier<Widget>(const SizedBox());
   final ValueNotifier<int> _currentIndex = ValueNotifier<int>(0);
-  final AndroidAlarmManager _alarmManager = AndroidAlarmManager();
-  int alarmId = 1;
+  late CountDownController _controller;
 
+  late int newValue;
   _checkThirtyMins() async {
     await firebaseFirestore
         .collection('users')
@@ -63,11 +64,20 @@ class _NavigationScreenState extends State<NavigationScreen>
     );
   }
 
+  Future<int> readTimer() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int value = prefs.getInt('text')!;
 
+    return value;
+  }
 
   @override
   initState() {
     authController.getNotificationToken();
+    _controller = CountDownController();
+
+    _controller.start();
+
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
@@ -75,7 +85,8 @@ class _NavigationScreenState extends State<NavigationScreen>
   @override
   void dispose() async {
     super.dispose();
-    AndroidAlarmManager.cancel(alarmId);
+    TextPreferences.setTime(duration);
+
     WidgetsBinding.instance.removeObserver(this);
   }
 
@@ -83,13 +94,17 @@ class _NavigationScreenState extends State<NavigationScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      active = true;
-    } else if (state == AppLifecycleState.inactive) {
-      active = false;
-    } else if (state == AppLifecycleState.paused) {
-      active = false;
+      _controller.resume();
+    } else if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      TextPreferences.setTime(duration);
+      _controller.pause();
+
+      print("inactive");
     } else if (state == AppLifecycleState.detached) {
-      active = false;
+      print("detached");
+      TextPreferences.setTime(duration);
+      _controller.pause();
     }
   }
 
@@ -117,7 +132,58 @@ class _NavigationScreenState extends State<NavigationScreen>
             SliverAppBar(
               backgroundColor: Colors.transparent,
               centerTitle: true,
-              floating: false,
+              toolbarHeight: 100,
+              title: GestureDetector(
+                onTap: () {},
+                child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: const [
+                      BoxShadow(
+                        offset: Offset(-20, 20),
+                        color: Colors.red,
+                        blurRadius: 15,
+                        spreadRadius: -20,
+                      ),
+                      BoxShadow(
+                        offset: Offset(-20, -20),
+                        color: Colors.orange,
+                        blurRadius: 15,
+                        spreadRadius: -20,
+                      ),
+                      BoxShadow(
+                        offset: Offset(20, -20),
+                        color: Colors.blue,
+                        blurRadius: 15,
+                        spreadRadius: -20,
+                      ),
+                      BoxShadow(
+                        offset: Offset(20, 20),
+                        color: Colors.deepPurple,
+                        blurRadius: 15,
+                        spreadRadius: -20,
+                      )
+                    ],
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "Your Daily Doom Scroll limit is 30 minutes",
+                          style: GoogleFonts.openSans(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                      counterTimer(),
+                    ],
+                  ),
+                ),
+              ),
+              floating: true,
               elevation: 0,
             ),
             SliverFillRemaining(
@@ -131,6 +197,60 @@ class _NavigationScreenState extends State<NavigationScreen>
           ],
         ),
       ),
+    );
+  }
+
+  ///counterTimer
+  FutureBuilder<int> counterTimer() {
+    return FutureBuilder(
+      future: readTimer(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return CircularCountDownTimer(
+            width: 60,
+            height: 60,
+            textFormat: CountdownTextFormat.S,
+            duration: snapshot.data as int,
+            fillColor: Colors.teal,
+            ringColor: Colors.white54,
+            isReverse: true,
+            isReverseAnimation: true,
+            onChange: (value) {
+              duration = int.parse(value.toString());
+            },
+            textStyle: const TextStyle(
+              fontSize: 12,
+              color: Colors.white,
+            ),
+            controller: _controller,
+            onComplete: () {
+              showDialog(
+                barrierDismissible: false,
+                context: Get.context!,
+                builder: (_) {
+                  return AlertDialog(
+                    title: const Text(
+                      "Time is up",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    content: const Text("Time is up"),
+                    actions: [
+                      TextButton(
+                          onPressed: () async {
+                            Get.offAll(() => const PrankScreen());
+                            //authController.checkIfThirtyMinDone();
+                          },
+                          child: const Text("Ok"))
+                    ],
+                  );
+                },
+              );
+            },
+          );
+        } else {
+          return const Text("Restart the app");
+        }
+      },
     );
   }
 

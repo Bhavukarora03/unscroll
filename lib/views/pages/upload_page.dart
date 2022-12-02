@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/screens.dart';
@@ -116,18 +117,37 @@ class UploadPage extends StatelessWidget {
           ),
           ElevatedButton(
               onPressed: () async {
-                try {
+                final offerings = await Purchases.getOfferings();
 
+                showCupertinoModalBottomSheet(
+                  backgroundColor: Colors.teal,
+                    context: context,
+                    builder: (context) {
+                      var product = offerings.current!.availablePackages;
+                      return Material(
+                        child: SizedBox(
+                          height: 300,
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              var item = offerings.current!.availablePackages;
+                              return ListTile(
+                                title: Text(item[index].storeProduct.title),
+                                subtitle:
+                                    Text(item[index].storeProduct.description),
+                                trailing:
+                                    Text(item[index].storeProduct.priceString),
+                                onTap: () async {
+                                 CustomerInfo customerInfo = await Purchases.purchasePackage(item[index]);
 
-                  PurchasesConfiguration configuration;
-                  configuration = PurchasesConfiguration(revenueAppKey);
-                  await Purchases.configure(configuration);
+                                },
+                              );
+                            },
+                            itemCount: product.length,
+                          ),
+                        ),
+                      );
+                    });
 
-
-
-                } on PlatformException catch (e) {
-                  // optional error handling
-                }
               },
               child: const Text("Chat Page"))
         ],

@@ -51,6 +51,10 @@ dependencies:
   palette_generator: ^0.3.3+2
   purchases_flutter: ^4.4.2
   url_launcher: ^6.1.7
+  circular_countdown_timer: ^0.2.3
+
+
+
 
 
 

@@ -6,6 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/auth/sign_up_screen.dart';
 
+import '../../widgets/sharedprefs.dart';
+import '../navigation_screen.dart';
+
 
 final _formKey = GlobalKey<FormState>();
 
@@ -40,7 +43,11 @@ class _LoginScreenState extends State<LoginScreen> {
       authController.loginUser(_emailController.text, _passwordController.text);
     }
   }
+@override
+  void dispose() {
 
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

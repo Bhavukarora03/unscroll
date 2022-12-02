@@ -3,6 +3,11 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 
 
+const SENDGRID_API_KEY = functions.config().sendgrid.key;
+const sgMail = require("@sendgrid/mail");
+// eslint-disable-next-line max-len
+sgMail.setApiKey(SENDGRID_API_KEY);
+
 const toExactMinute = 1000 * 60 * 60 * 24;
 // eslint-disable-next-line require-jsdoc
 function updateDoc(id) {
@@ -26,3 +31,31 @@ exports.updateField = functions.firestore
       setTimeout(() => updateDoc(id), toExactMinute);
       return id;
     });
+
+
+// eslint-disable-next-line max-len
+exports.sendEmail = functions.firestore.document("/users/{id}").onCreate((users) => {
+  const userId = users.id;
+  const db = admin.firestore();
+  return db.collection("users").doc(userId).get().then((doc) => {
+    const userId = doc.data();
+
+    const msg = {
+      to: userId.email,
+      from: "bhavuk.arora03@gmail.com",
+      template_Id: "d-1cb3a6be2027491098d42629ca402eef",
+      dynamic_template_data: {
+        subject: "Welcome to the team!",
+        name: userId.name,
+      },
+    };
+    return sgMail.send(msg);
+  }).then(() => {
+    console.log("Email sent");
+  }
+  ).catch((error) => {
+    console.error(error);
+  }
+  );
+});
+

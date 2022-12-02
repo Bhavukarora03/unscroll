@@ -1,160 +1,61 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:unscroll/constants.dart';
 
+import '../widgets/sharedprefs.dart';
+import 'navigation_screen.dart';
+
 class PrankScreen extends StatefulWidget {
-  PrankScreen({Key? key}) : super(key: key);
+  const PrankScreen({Key? key}) : super(key: key);
 
   @override
   State<PrankScreen> createState() => _PrankScreenState();
 }
 
-class _PrankScreenState extends State<PrankScreen> with WidgetsBindingObserver {
-  bool active = true;
-  final box = GetStorage();
-
-  final StopWatchTimer _stopWatchTimer = StopWatchTimer(
-    mode: StopWatchMode.countDown,
-    presetMillisecond: StopWatchTimer.getMilliSecFromHour(24),
-    onEnded: () async {
-      await firebaseFirestore
-          .collection('users')
-          .doc(firebaseAuth.currentUser!.uid)
-          .update({
-        'thirtyMinDone': false,
-      });
-    },
-  );
-
-  updateThirty() async {
-    await functions.httpsCallable('updateThirty').call();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      active = true;
-      _stopWatchTimer.onStartTimer();
-    } else if (state == AppLifecycleState.inactive) {
-      active = false;
-      _stopWatchTimer.onStopTimer();
-    } else if (state == AppLifecycleState.paused) {
-      active = false;
-      _stopWatchTimer.onStopTimer();
-    } else if (state == AppLifecycleState.detached) {
-      active = true;
-      _stopWatchTimer.onStartTimer();
-    }
-  }
-
-  Future<String> readValue() async {
-    int value = box.read('timerValue');
-    var valueData = StopWatchTimer.getDisplayTime(value);
-    return valueData;
-  }
-
-  _checkthirtyMins() async {
-    await firebaseFirestore
-        .collection('users')
-        .doc(firebaseAuth.currentUser!.uid)
-        .get()
-        .then((value) {
-      if (value.data()!['thirtyMinDone'] == true) {
-        if (active) {
-          setState(() {
-            _stopWatchTimer.onStartTimer();
-          });
-          box.write('timerValue', _stopWatchTimer.rawTime.value);
-        }
-      }
-    });
-  }
-
-  @override
-  void initState() {
-    _checkthirtyMins();
-    _stopWatchTimer.rawTime.listen(
-        (value) => box.write('timerValue', _stopWatchTimer.rawTime.value));
-
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
+class _PrankScreenState extends State<PrankScreen> {
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: readValue(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () async {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Prank'),
+        automaticallyImplyLeading: true,
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () {
 
-                        },
-                        child: const Text("Buy Sub")),
-                  ],
-                ),
-              ),
-            );
-          }
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
+
+              },
+              child: const Text('Start Prank'),
             ),
-          );
-        });
-  }
 
-  Widget timer(AsyncSnapshot snapshot) {
-    final data = snapshot.data;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        /// Display stop watch time
-        StreamBuilder<int>(
-          stream: data,
-          initialData: 0,
-          builder: (context, snap) {
-            final value = snap.data!;
-            final displayTime =
-                StopWatchTimer.getDisplayTime(value, milliSecond: false);
-            return Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.lock_clock),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        displayTime,
-                        style: const TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    ElevatedButton(onPressed: () {}, child: const Text("Ok"))
-                  ],
-                ),
-              ],
-            );
-          },
+            ElevatedButton(
+              onPressed: ()async {
+              final SharedPreferences prefs = await SharedPreferences.getInstance();
+             final val =  prefs.setInt('text', 50);
+              print(val);
+              Get.offAll(()=> const NavigationScreen());
+
+              },
+
+              child: const Text('Start Prank'),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

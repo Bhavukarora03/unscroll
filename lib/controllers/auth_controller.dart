@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -19,6 +20,8 @@ import 'package:unscroll/views/screens/prank_screen.dart';
 
 import 'package:unscroll/views/screens/screens.dart';
 
+import '../views/widgets/sharedprefs.dart';
+
 enum AuthState { login, register }
 
 class AuthController extends GetxController with CacheManager {
@@ -27,6 +30,7 @@ class AuthController extends GetxController with CacheManager {
 
   ///firebase auth user
   late Rx<User?> _user;
+
   User get user => _user.value!;
 
   ///boolean to check login value
@@ -34,22 +38,26 @@ class AuthController extends GetxController with CacheManager {
 
   ///Image picker
   Rx<File> _pickedImage = Rx<File>(File(''));
+
   File get pickedImage => _pickedImage.value;
 
   ///Internet Connection Checker
   final Rx<bool> _hasInternet = Rx<bool>(false);
+
   bool get hasInternet => _hasInternet.value;
 
   ///Google Sign In
-  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+      scopes: ['https://mail.google.com/']);
 
   ///firebaseMessaging Token
   final Rx<String> _firebaseMesToken = ''.obs;
+
   String get firebaseMesToken => _firebaseMesToken.value;
 
   ///flutter Notification PLugin
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin();
 
   ///Check Internet Connection
   ConnectivityResult connectivityResult = ConnectivityResult.none;
@@ -82,12 +90,12 @@ class AuthController extends GetxController with CacheManager {
     getToken();
     initLocalNotifications();
 
-
     super.onInit();
   }
 
   @override
   void dispose() {
+
     internetSubscription.cancel();
     super.dispose();
   }
@@ -107,6 +115,7 @@ class AuthController extends GetxController with CacheManager {
     if (user == null) {
       Get.offAll(() => const LoginScreen());
     } else {
+
       Get.offAll(() => const NavigationScreen());
     }
   }
@@ -115,13 +124,13 @@ class AuthController extends GetxController with CacheManager {
   checkInternetConnection() {
     internetSubscription =
         InternetConnectionChecker().onStatusChange.listen((status) {
-      final hasInternet = status == InternetConnectionStatus.connected;
-      _hasInternet.value = hasInternet;
-      hasInternet
-          ? null
-          : ScaffoldMessenger.of(Get.context!).showSnackBar(
+          final hasInternet = status == InternetConnectionStatus.connected;
+          _hasInternet.value = hasInternet;
+          hasInternet
+              ? null
+              : ScaffoldMessenger.of(Get.context!).showSnackBar(
               const SnackBar(content: Text('No Internet Connection')));
-    });
+        });
   }
 
   ///init flutter local Notifications
@@ -129,17 +138,16 @@ class AuthController extends GetxController with CacheManager {
     var andriodInit = const AndroidInitializationSettings('ic_launcher');
     var iosInit = const DarwinInitializationSettings();
     var initSettings =
-        InitializationSettings(android: andriodInit, iOS: iosInit);
+    InitializationSettings(android: andriodInit, iOS: iosInit);
     flutterLocalNotificationsPlugin.initialize(initSettings,
         onDidReceiveNotificationResponse: (response) async {
-      try {
-        if (response.payload != null) {
-        } else {}
-      } catch (e) {
-        ScaffoldMessenger.of(Get.context!).showSnackBar(
-            const SnackBar(content: Text('No Internet Connection')));
-      }
-    });
+          try {
+            if (response.payload != null) {} else {}
+          } catch (e) {
+            ScaffoldMessenger.of(Get.context!).showSnackBar(
+                const SnackBar(content: Text('No Internet Connection')));
+          }
+        });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
@@ -152,12 +160,12 @@ class AuthController extends GetxController with CacheManager {
       );
 
       AndroidNotificationDetails andriodNotificationDetails =
-          AndroidNotificationDetails('test', 'test',
-              importance: Importance.max,
-              priority: Priority.high,
-              styleInformation: bigTextStyleInformation,
-              ticker: 'test',
-              playSound: true);
+      AndroidNotificationDetails('test', 'test',
+          importance: Importance.max,
+          priority: Priority.high,
+          styleInformation: bigTextStyleInformation,
+          ticker: 'test',
+          playSound: true);
 
       NotificationDetails notificationDetails = NotificationDetails(
           android: andriodNotificationDetails,
@@ -280,8 +288,8 @@ class AuthController extends GetxController with CacheManager {
   }
 
   ///register users with email and password
-  void registerUser(
-      String email, String username, String password, File? image) async {
+  void registerUser(String email, String username, String password,
+      File? image) async {
     try {
       if (email.isNotEmpty &&
           username.isNotEmpty &&
@@ -334,7 +342,6 @@ class AuthController extends GetxController with CacheManager {
     }
   }
 
-
   ///Sign out User
   void signOut() async {
     await firebaseAuth.signOut();
@@ -345,9 +352,9 @@ class AuthController extends GetxController with CacheManager {
   loginWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount =
-          await googleSignIn.signIn();
+      await googleSignIn.signIn();
       final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount!.authentication;
+      await googleSignInAccount!.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
@@ -368,35 +375,15 @@ class AuthController extends GetxController with CacheManager {
           .doc(user.uid)
           .set(googleUser.toJson());
 
-      await sendEmail(user.email!, "Welcome to Unscroll",
-        "We are so glad to have you, shall we explore the world of DoomScrolling");
+
 
       return;
     } catch (e) {
       rethrow;
     }
   }
-  sendEmail(String sendEmailTo, String subject, String emailBody) async {
-    await firebaseFirestore.collection("mail").add(
-      {
-        'to': "$sendEmailTo",
-        'message': {
-          'subject'
-              "$subject"
-              'text': "$emailBody",
-          'html': "<a href=''>Unscroll</a>",
-        },
-      },
-    ).then(
-          (value) {
-        print("Queued email for delivery!");
-      },
-    );
-    print('Email');
-  }
 
 }
-
 ///Mixin to cache userAuth data
 mixin CacheManager {
   Future<bool> saveToken(String? token) async {
