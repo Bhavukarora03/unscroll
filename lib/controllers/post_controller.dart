@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
-
 import 'package:unscroll/models/posts_model.dart';
-
 import '../constants.dart';
 
 class PostController extends GetxController {
@@ -74,10 +72,6 @@ class PostController extends GetxController {
       ScaffoldMessenger.of(Get.context!)
           .showSnackBar(SnackBar(content: Text('Download Failed $error')));
     }
-  }
-
-  getPost(){
-    return _posts;
   }
 
 }

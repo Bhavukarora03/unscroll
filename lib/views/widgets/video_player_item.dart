@@ -124,7 +124,6 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
                   ),
                   child: Icon(
                     _isPlaying ? Icons.volume_up : Icons.volume_off,
-                    color: Colors.white24,
                     size: 35,
                   ),
                 ),

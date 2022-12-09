@@ -43,7 +43,6 @@ class SignUpScreen extends StatelessWidget {
                           width: 100,
                           child: Text("Make your Free DoomScroll Account",
                               style: TextStyle(
-                                  color: Colors.white,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w400)),
                         ),

@@ -6,8 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/auth/sign_up_screen.dart';
 
-import '../../widgets/sharedprefs.dart';
-import '../navigation_screen.dart';
 
 
 final _formKey = GlobalKey<FormState>();
@@ -69,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
             },
             trailing: const Text(
               'Login',
-              style: TextStyle(color: Colors.white),
+
             ),
             background: [
               Image.asset('assets/images/landing.gif',
@@ -120,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           height30,
-          Center(child: Text('Or')),
+          const Center(child: Text('Or')),
           height30,
 
           ElevatedButton.icon(
@@ -148,14 +146,14 @@ class _LoginScreenState extends State<LoginScreen> {
       validator: EmailValidator(errorText: "Enter a valid email"),
       decoration: const InputDecoration(
         labelText: "Email",
-        labelStyle: TextStyle(color: Colors.white),
+
         hintText: "Enter your email",
-        prefixIcon: Icon(Icons.email, color: Colors.white),
+        prefixIcon: Icon(Icons.email),
         border: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+          borderSide: BorderSide(),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+          borderSide: BorderSide(),
         ),
       ),
     );
@@ -178,21 +176,20 @@ class _LoginScreenState extends State<LoginScreen> {
       ]),
       decoration: InputDecoration(
         border: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+          borderSide: BorderSide(),
         ),
         focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+          borderSide: BorderSide(),
         ),
         suffixIcon: IconButton(
             onPressed: _toggle,
             icon: Icon(
               _obscureText ? Icons.visibility : Icons.visibility_off,
-              color: Colors.white,
+              // color: Colors.white,
             )),
         labelText: "Password",
         hintText: "Enter your password",
-        labelStyle: const TextStyle(color: Colors.white),
-        prefixIcon: const Icon(Icons.lock, color: Colors.white),
+        prefixIcon: const Icon(Icons.lock),
       ),
     );
   }

@@ -26,7 +26,6 @@ class ModelBottomSheetForCamera extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
-          backgroundColor: iconColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(topRadius),

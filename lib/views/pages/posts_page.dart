@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
+
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/post_controller.dart';
 import 'package:unscroll/models/posts_model.dart';
@@ -73,7 +73,7 @@ class _PostsPageState extends State<PostsPage> {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () {
-              Get.to(() => UnscrollStories());
+              Get.to(() => const UnscrollStories());
             },
             child: Container(
               height: 100,
@@ -141,14 +141,12 @@ class _PostsPageState extends State<PostsPage> {
                       data.username,
                       style: const TextStyle(
                         fontSize: 15,
-                        color: Colors.white,
                       ),
                     ),
                     subtitle: Text(
                       data.location,
                       style: const TextStyle(
                         fontSize: 12,
-                        color: Colors.white,
                       ),
                     ),
                     trailing: moreVerticalOptions(context, data)),
@@ -159,7 +157,6 @@ class _PostsPageState extends State<PostsPage> {
                   postController.likePost(data.id);
                 },
                 child: Container(
-
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
@@ -205,12 +202,12 @@ class _PostsPageState extends State<PostsPage> {
                         Flexible(
                           child: Text(
                             data.caption,
-                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.grey),
                           ),
                         ),
                       ],
                     ),
-
                   ],
                 ),
               ),
@@ -248,15 +245,15 @@ class _PostsPageState extends State<PostsPage> {
                                     arguments: data);
                               },
                               leading: const Icon(Icons.edit),
-                              title: const Text('Edit Post',
-                                  style: TextStyle(color: Colors.white)),
+                              title: const Text(
+                                'Edit Post',
+                              ),
                             )
                           : const SizedBox(),
                       ListTile(
                         leading: const Icon(Icons.share),
                         title: const Text(
                           "Share",
-                          style: TextStyle(color: Colors.white),
                         ),
                         onTap: () {
                           Share.share(
@@ -265,15 +262,16 @@ class _PostsPageState extends State<PostsPage> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.save),
-                        title: const Text("Save",
-                            style: TextStyle(color: Colors.white)),
+                        title: const Text(
+                          "Save",
+                        ),
                         onTap: () {},
                       ),
                       data.uid == authController.user.uid
                           ? ListTile(
                               leading: const Icon(Icons.delete),
                               title: const Text("Delete",
-                                  style: TextStyle(color: Colors.white)),
+                              ),
                               onTap: () {
                                 showDialog(
                                   context: context,
@@ -316,9 +314,10 @@ class _PostsPageState extends State<PostsPage> {
   ///Save Image to Gallery
   IconButton commentSection(PostsModel data) {
     return IconButton(
-      icon: const Icon(Icons.comment_outlined),
+      icon: const Icon(Icons.comment_outlined,  color: Colors.grey,),
       onPressed: () {
-        Get.to(()=> CommentsScreen(commentTextController: commentTextController),
+        Get.to(
+            () => CommentsScreen(commentTextController: commentTextController),
             transition: Transition.cupertino);
       },
     );
@@ -327,7 +326,7 @@ class _PostsPageState extends State<PostsPage> {
   ///Share post
   IconButton sharePost(PostsModel data) {
     return IconButton(
-      icon: const Icon(Icons.send_outlined),
+      icon: const Icon(Icons.send_outlined, color: Colors.grey,),
       onPressed: () {
         Share.share('Check out this post on: ${data.postURL}');
       },
@@ -344,14 +343,15 @@ class _PostsPageState extends State<PostsPage> {
         ),
         width10,
         GestureDetector(
-          onTap: (){
-            Get.to(()=> CommentsScreen(commentTextController: commentTextController));
+          onTap: () {
+            Get.to(() =>
+                CommentsScreen(commentTextController: commentTextController));
           },
           child: Text('View all ${data.commentCount} comments',
-              style: const TextStyle(color: Colors.grey, )
-          ),
+              style: const TextStyle(
+                color: Colors.grey,
+              )),
         ),
-
       ],
     );
   }
@@ -361,6 +361,7 @@ class _PostsPageState extends State<PostsPage> {
     return Row(
       children: [
         Text(timeago.format(data.createdAt.toLocal())),
+
       ],
     );
   }
@@ -373,7 +374,7 @@ class _PostsPageState extends State<PostsPage> {
             : Icons.favorite_border),
         color: data.likes.contains(authController.user.uid)
             ? Colors.red
-            : Colors.white,
+            : Colors.grey,
         onPressed: () {
           postController.likePost(data.id);
         });

@@ -1,17 +1,18 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_functions/cloud_functions.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
+
+
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/screens.dart';
 import 'package:unscroll/views/widgets/modelBottomSheet.dart';
-import 'dart:io' show Platform;
+
 
 class UploadPage extends StatelessWidget {
   const UploadPage({Key? key}) : super(key: key);
@@ -24,7 +25,11 @@ class UploadPage extends StatelessWidget {
             videoPath: vid.path,
           ));
     } else {
-      Get.snackbar("Error", "No Video Selected");
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        const SnackBar(
+          content: Text("No video selected"),
+        ),
+      );
     }
   }
 
@@ -36,7 +41,11 @@ class UploadPage extends StatelessWidget {
             storyPath: storyPath.path,
           ));
     } else {
-      Get.snackbar("Error", "No Video Selected");
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        const SnackBar(
+          content: Text("No story selected"),
+        ),
+      );
     }
   }
 
@@ -65,7 +74,11 @@ class UploadPage extends StatelessWidget {
             imgPath: croppedFile.path,
           ));
     } else {
-      Get.snackbar("Error", "No Image Selected");
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        const SnackBar(
+          content: Text("No post selected"),
+        ),
+      );
     }
   }
 
@@ -115,38 +128,35 @@ class UploadPage extends StatelessWidget {
             topRadius: 0,
             bottomRadius: 15,
           ),
+
           ElevatedButton(
               onPressed: () async {
-                final offerings = await Purchases.getOfferings();
 
-                showCupertinoModalBottomSheet(
-                  backgroundColor: Colors.teal,
-                    context: context,
-                    builder: (context) {
-                      var product = offerings.current!.availablePackages;
-                      return Material(
-                        child: SizedBox(
-                          height: 300,
-                          child: ListView.builder(
-                            itemBuilder: (context, index) {
-                              var item = offerings.current!.availablePackages;
-                              return ListTile(
-                                title: Text(item[index].storeProduct.title),
-                                subtitle:
-                                    Text(item[index].storeProduct.description),
-                                trailing:
-                                    Text(item[index].storeProduct.priceString),
-                                onTap: () async {
-                                 CustomerInfo customerInfo = await Purchases.purchasePackage(item[index]);
 
-                                },
-                              );
-                            },
-                            itemCount: product.length,
-                          ),
-                        ),
-                      );
-                    });
+                // PurchasesConfiguration configuration;
+                // configuration = PurchasesConfiguration(revenueAppKey);
+                // await Purchases.configure(configuration);
+                //
+                // try {
+                //   Offerings offerings = await Purchases.getOfferings();
+                //   if (offerings.current != null) {
+                //    showDialog(context: context, builder: (context) => AlertDialog(
+                //      title: const Text("Purchase"),
+                //      content: const Text("Do you want to purchase this item?"),
+                //      actions: [
+                //        TextButton(onPressed: () => Navigator.pop(context), child: Text("No")),
+                //        TextButton(onPressed: () async {
+                //         await Purchases.purchasePackage(offerings.current!.monthly!);
+                //          Navigator.pop(context);
+                //        }, child: Text("Yes"))
+                //      ],
+                //    ));
+                //   }
+                // } on PlatformException catch (e) {
+                //   if (kDebugMode) {
+                //     print(e);
+                //   }
+
 
               },
               child: const Text("Chat Page"))

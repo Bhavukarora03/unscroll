@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/comment_controller.dart';
@@ -14,7 +15,9 @@ class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
 
   final VideoController videoController = Get.put(VideoController());
+
   final TextEditingController commentTextController = TextEditingController();
+
   final CommentController commentController = Get.put(CommentController());
 
   @override
@@ -23,6 +26,7 @@ class HomePage extends StatelessWidget {
 
     return Obx(
       () => Scaffold(
+
           body: videoController.videoList.isNotEmpty
               ? RefreshIndicator(
                   onRefresh: () async {
@@ -64,25 +68,25 @@ class HomePage extends StatelessWidget {
                                         Text(
                                           data.username,
                                           style: const TextStyle(
-                                              color: Colors.white,
+
                                               fontSize: 20),
                                         ),
                                         Text(
                                           data.caption,
                                           style: const TextStyle(
-                                              color: Colors.white,
+
                                               fontSize: 15),
                                         ),
                                         Row(
                                           children: [
                                             const Icon(
                                               Icons.music_note,
-                                              color: Colors.white,
+
                                             ),
                                             Text(
                                               data.songName,
                                               style: const TextStyle(
-                                                  color: Colors.white,
+
                                                   fontSize: 15),
                                             ),
                                           ],
@@ -138,7 +142,7 @@ class HomePage extends StatelessWidget {
                                     },
                                     child: const Icon(
                                       Icons.comment,
-                                      color: Colors.white,
+
                                     ),
                                   ),
                                   Text(data.commentCount.toString()),
@@ -149,7 +153,7 @@ class HomePage extends StatelessWidget {
                                     },
                                     child: const Icon(
                                       Icons.share,
-                                      color: Colors.white,
+
                                     ),
                                   ),
                                   InkWell(
@@ -159,7 +163,7 @@ class HomePage extends StatelessWidget {
                                     },
                                     child: const Icon(
                                       Icons.bookmark_border,
-                                      color: Colors.white,
+
                                     ),
                                   ),
                                   CircleAnimation(

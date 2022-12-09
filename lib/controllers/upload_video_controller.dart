@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/models/video_model.dart';
@@ -85,6 +86,7 @@ class UploadVideoController extends GetxController {
 
 
       Get.back();
+      await EasyLoading.showSuccess("Video Uploaded Successfully");
     } catch (e) {
       Get.snackbar("error", e.toString());
     }

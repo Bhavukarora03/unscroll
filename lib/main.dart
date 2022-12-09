@@ -1,42 +1,49 @@
-import 'dart:isolate';
-
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:unscroll/controllers/auth_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unscroll/constants.dart';
+import 'package:unscroll/themes.dart';
 import 'package:unscroll/views/screens/splashScreen.dart';
-import 'package:unscroll/views/widgets/timer.dart';
+
+import 'package:unscroll/views/screens/navigation_screen.dart';
+import 'package:unscroll/views/widgets/sharedprefs.dart';
 import 'controllers/bindings/bindings.dart';
 import 'firebase_options.dart';
-
 
 Future<void> _firebaseMessagingBackgroundHandler(
     RemoteMessage? message) async {}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
-      .then((value) => Get.put(AuthController()));
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   GetBindings().dependencies();
-
   await FirebaseMessaging.instance.getInitialMessage();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-
   await Purchases.setDebugLogsEnabled(true);
-
-  runApp(const MyApp());
-  const int helloAlarmID = 0;
-
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  _getThemeStatus() async {
+    var _isLight = _prefs.then((SharedPreferences prefs) {
+      return prefs.getBool('theme') ?? true;
+    }).obs;
+    authController.isLightTheme.value = await _isLight.value;
+    Get.changeThemeMode(
+        authController.isLightTheme.value ? ThemeMode.light : ThemeMode.dark);
+  }
+
+  MyApp() {
+    _getThemeStatus();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,33 +54,10 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
         initialBinding: GetBindings(),
         debugShowCheckedModeBanner: false,
-        theme: ThemeData.dark().copyWith(
-            brightness: Brightness.dark,
-            textTheme: GoogleFonts.aBeeZeeTextTheme(
-              Theme.of(context).textTheme.copyWith(
-                    bodyText1: const TextStyle(color: Colors.white),
-                    bodyText2: const TextStyle(color: Colors.white),
-                  ),
-            ).copyWith(
-              bodyText1: const TextStyle(color: Colors.white),
-              bodyText2: const TextStyle(color: Colors.white),
-            ),
-            listTileTheme: const ListTileThemeData(
-              textColor: Colors.white,
-            ),
-            useMaterial3: true,
-            appBarTheme: const AppBarTheme(
-              elevation: 0,
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(15),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-            )),
+        darkTheme: darkTheme,
+        themeMode: ThemeMode.system,
+        theme: lightTheme,
+        builder: EasyLoading.init(),
         // scaffoldBackgroundColor: ),
         home: const SplashScreen());
   }

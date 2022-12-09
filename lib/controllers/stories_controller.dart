@@ -58,7 +58,6 @@ class StoriesController extends GetxController {
             .toList()
             .cast<String>());
 
-    print(_urls.value);
     return _urls.value;
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math' as math;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ViewportOffset;
@@ -59,6 +60,11 @@ class _ConfirmStoryState extends State<ConfirmStory> {
                       ),
                     ),
                     onPressed: ()  {
+                      EasyLoading.show(
+                        dismissOnTap: false,
+                        status: 'loading...',
+                        maskType: EasyLoadingMaskType.black,
+                      );
                       KeyboardUnFocus(context).hideKeyboard();
 
                       uploadController.uploadStories(widget.storyPath);

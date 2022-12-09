@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/widgets/text_input_fields.dart';
@@ -56,6 +57,11 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
           actions: [
             OutlinedButton(
               onPressed: () async {
+                EasyLoading.show(
+                  dismissOnTap: false,
+                  status: 'loading...',
+                  maskType: EasyLoadingMaskType.black,
+                );
                 KeyboardUnFocus(context).hideKeyboard();
                 await videoController.uploadVideo(songNameController.text,
                     captionController.text, widget.videoPath);

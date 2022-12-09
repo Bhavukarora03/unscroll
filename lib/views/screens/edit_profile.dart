@@ -55,14 +55,12 @@ class EditProfile extends StatelessWidget {
             const SizedBox(height: 20),
             TextField(
               controller: usernameController,
-              style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 labelText: 'Username',
               ),
             ),
             TextField(
               controller: bioController,
-              style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 labelText: 'Add Bio',
               ),

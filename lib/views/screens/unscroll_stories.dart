@@ -53,7 +53,7 @@ class _UnscrollStoriesState extends State<UnscrollStories> {
                   height10,
                   Text(
                     storiesController.stories[pageIndex].username,
-                    style: const TextStyle(color: Colors.white, fontSize: 20),
+                    style: const TextStyle( fontSize: 20),
                   ),
                  Positioned(
                    top: 60,

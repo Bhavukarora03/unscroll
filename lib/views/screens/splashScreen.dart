@@ -34,7 +34,6 @@ class _SplashScreenState extends State<SplashScreen> {
               splash: const Text(
                 'Unscroll',
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
                 ),
@@ -48,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
             if (snapshot.hasError) {
               return errorView(snapshot);
             } else {
-              return Center(child: const CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
           }
         });

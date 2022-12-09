@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:unscroll/constants.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/controllers/location_controller.dart';
@@ -21,9 +22,9 @@ class _ConfirmPostState extends State<ConfirmPost> {
   final TextEditingController _captionController = TextEditingController();
   final location = Get.find<LocationController>();
   final TextEditingController _locationController = TextEditingController(
-    text: "${locationController.placeMark[0].street!}, ${locationController.placeMark[0].locality!}, ${locationController.placeMark[0].country!}",
+    text:
+        "${locationController.placeMark[0].street!}, ${locationController.placeMark[0].locality!}, ${locationController.placeMark[0].country!}",
   );
-
 
   final UploadPostsController _postController =
       Get.put(UploadPostsController());
@@ -33,14 +34,18 @@ class _ConfirmPostState extends State<ConfirmPost> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         title: const Text('Confirm Post'),
         actions: [
           OutlinedButton(
-            onPressed: () {
-
+            onPressed: () async {
+              EasyLoading.show(
+                dismissOnTap: false,
+                status: 'loading...',
+                maskType: EasyLoadingMaskType.black,
+              );
               KeyboardUnFocus(context).hideKeyboard();
-
               _postController.uploadPost(
                 _captionController.text,
                 widget.imgPath,
@@ -117,10 +122,7 @@ class _ConfirmPostState extends State<ConfirmPost> {
               controller: _locationController,
               decoration: InputDecoration(
                 prefixIcon: IconButton(
-                    onPressed: () {
-
-                    },
-                    icon: const Icon(Icons.location_on)),
+                    onPressed: () {}, icon: const Icon(Icons.location_on)),
                 border: InputBorder.none,
                 labelText: 'Add a location...',
                 // hintText:

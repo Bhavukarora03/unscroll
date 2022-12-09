@@ -41,6 +41,9 @@ class AuthController extends GetxController with CacheManager {
 
   File get pickedImage => _pickedImage.value;
 
+  final  isLightTheme = false.obs;
+
+
   ///Internet Connection Checker
   final Rx<bool> _hasInternet = Rx<bool>(false);
 
@@ -204,26 +207,32 @@ class AuthController extends GetxController with CacheManager {
     }
   }
 
-  checkThirtyMin() async {
-    await firebaseFirestore
-        .collection('users')
-        .doc(firebaseAuth.currentUser!.uid)
-        .update({
-      'thirtyMinDone': false,
-    });
-  }
-
   checkIfThirtyMinDone() async {
+
     var docs = await firebaseFirestore
         .collection('users')
         .where('thirtyMinDone', isEqualTo: true)
         .get();
     if (docs.docs.isNotEmpty) {
       isLogged.value = false;
-      removeToken();
-      Get.offAll(() => PrankScreen());
+      Get.offAll(() => const  PrankScreen());
+    }
+
+  }
+
+  checkIfTwentyFourHrsIsDone()async{
+    var docs = await firebaseFirestore
+        .collection('users')
+        .where('twentyFourHrsDone', isEqualTo: false)
+        .get();
+    if (docs.docs.isNotEmpty) {
+      TextPreferences.setTime(1800);
+      Get.offAll(() => const  NavigationScreen());
+
     }
   }
+
+
 
   ///Get firebase messaging token
   void getNotificationToken() async {

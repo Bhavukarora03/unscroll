@@ -34,7 +34,7 @@ class SearchPage extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(15.0)),
                   borderSide: BorderSide.none,
                 ),
-                fillColor: Colors.black38,
+
                 hintText: 'Search',
                 prefixIcon: Icon(Icons.search),
                 prefixIconColor: Colors.white,

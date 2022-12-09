@@ -1,14 +1,8 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:flutter/services.dart';
 import 'package:unscroll/constants.dart';
+import 'package:unscroll/views/widgets/sharedprefs.dart';
 
-import '../widgets/sharedprefs.dart';
-import 'navigation_screen.dart';
 
 class PrankScreen extends StatefulWidget {
   const PrankScreen({Key? key}) : super(key: key);
@@ -19,8 +13,14 @@ class PrankScreen extends StatefulWidget {
 
 class _PrankScreenState extends State<PrankScreen> {
   @override
-  void dispose() {
+  void initState() {
+    authController.checkIfTwentyFourHrsIsDone();
 
+    super.initState();
+  }
+
+  @override
+  void dispose() {
     super.dispose();
   }
 
@@ -33,25 +33,15 @@ class _PrankScreenState extends State<PrankScreen> {
       ),
       body: Center(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ElevatedButton(
-              onPressed: () {
-
-
-              },
-              child: const Text('Start Prank'),
-            ),
 
             ElevatedButton(
-              onPressed: ()async {
-              final SharedPreferences prefs = await SharedPreferences.getInstance();
-             final val =  prefs.setInt('text', 50);
-              print(val);
-              Get.offAll(()=> const NavigationScreen());
-
+              onPressed: () async {
+                TextPreferences.setTime(1800);
+                SystemNavigator.pop();
               },
-
-              child: const Text('Start Prank'),
+              child: const Text('Exit the App'),
             ),
           ],
         ),

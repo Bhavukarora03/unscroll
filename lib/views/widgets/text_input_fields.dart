@@ -30,14 +30,14 @@ class TextInputField extends StatelessWidget {
         autofillHints: [autofillHints],
         decoration: (InputDecoration(
           focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white70, width: 2.0),
+            borderSide: BorderSide( width: 2.0),
           ),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5)),
           ),
-          prefixIcon: Icon(prefixIcon, color: Colors.white70),
+          prefixIcon: Icon(prefixIcon,),
           label: Text(labelText!),
-          labelStyle: const TextStyle(color: Colors.white70),
+
         )),
       ),
     );

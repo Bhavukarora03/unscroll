@@ -1,19 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:unscroll/constants.dart';
 import "package:unscroll/views/pages/pages.dart";
 import 'package:unscroll/views/screens/prank_screen.dart';
-
 import 'package:unscroll/views/screens/profile_screen.dart';
 import 'package:unscroll/views/widgets/sharedprefs.dart';
-
-import '../widgets/timer.dart';
 
 int duration = 1800;
 
@@ -28,11 +23,11 @@ class _NavigationScreenState extends State<NavigationScreen>
     with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   bool active = true;
 
-  final ValueNotifier<Widget> title = ValueNotifier<Widget>(const SizedBox());
   final ValueNotifier<int> _currentIndex = ValueNotifier<int>(0);
   late CountDownController _controller;
 
-  late int newValue;
+
+
   _checkThirtyMins() async {
     await firebaseFirestore
         .collection('users')
@@ -55,7 +50,7 @@ class _NavigationScreenState extends State<NavigationScreen>
           actions: [
             TextButton(
                 onPressed: () {
-                  authController.checkIfThirtyMinDone();
+                  Get.offAll(() => const PrankScreen());
                 },
                 child: const Text("Ok"))
           ],
@@ -67,13 +62,13 @@ class _NavigationScreenState extends State<NavigationScreen>
   Future<int> readTimer() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     int value = prefs.getInt('text')!;
-
     return value;
   }
 
   @override
   initState() {
     authController.getNotificationToken();
+    authController.checkIfThirtyMinDone();
     _controller = CountDownController();
 
     _controller.start();
@@ -100,9 +95,9 @@ class _NavigationScreenState extends State<NavigationScreen>
       TextPreferences.setTime(duration);
       _controller.pause();
 
-      print("inactive");
+
     } else if (state == AppLifecycleState.detached) {
-      print("detached");
+
       TextPreferences.setTime(duration);
       _controller.pause();
     }
@@ -112,7 +107,7 @@ class _NavigationScreenState extends State<NavigationScreen>
     const PostsPage(),
     HomePage(),
     SearchPage(),
-    UploadPage(),
+    const UploadPage(),
     ProfileScreen(
       uid: authController.user.uid,
     ),
@@ -133,56 +128,7 @@ class _NavigationScreenState extends State<NavigationScreen>
               backgroundColor: Colors.transparent,
               centerTitle: true,
               toolbarHeight: 100,
-              title: GestureDetector(
-                onTap: () {},
-                child: Container(
-                  decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(
-                        offset: Offset(-20, 20),
-                        color: Colors.red,
-                        blurRadius: 15,
-                        spreadRadius: -20,
-                      ),
-                      BoxShadow(
-                        offset: Offset(-20, -20),
-                        color: Colors.orange,
-                        blurRadius: 15,
-                        spreadRadius: -20,
-                      ),
-                      BoxShadow(
-                        offset: Offset(20, -20),
-                        color: Colors.blue,
-                        blurRadius: 15,
-                        spreadRadius: -20,
-                      ),
-                      BoxShadow(
-                        offset: Offset(20, 20),
-                        color: Colors.deepPurple,
-                        blurRadius: 15,
-                        spreadRadius: -20,
-                      )
-                    ],
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          "Your Daily Doom Scroll limit is 30 minutes",
-                          style: GoogleFonts.openSans(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      counterTimer(),
-                    ],
-                  ),
-                ),
-              ),
+              title: appBarTimer(),
               floating: true,
               elevation: 0,
             ),
@@ -200,6 +146,66 @@ class _NavigationScreenState extends State<NavigationScreen>
     );
   }
 
+  GestureDetector appBarTimer() {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(
+          "https://images.unsplash.com/photo-1638864616275-9f0b291a2eb6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1064&q=80"
+            ),
+            fit: BoxFit.cover,
+          ),
+          boxShadow: const [
+            BoxShadow(
+              offset: Offset(-20, 20),
+              color: Colors.red,
+              blurRadius: 15,
+              spreadRadius: -20,
+            ),
+            BoxShadow(
+              offset: Offset(-20, -20),
+              color: Colors.orange,
+              blurRadius: 15,
+              spreadRadius: -20,
+            ),
+            BoxShadow(
+              offset: Offset(20, -20),
+              color: Colors.blue,
+              blurRadius: 15,
+              spreadRadius: -20,
+            ),
+            BoxShadow(
+              offset: Offset(20, 20),
+              color: Colors.deepPurple,
+              blurRadius: 15,
+              spreadRadius: -20,
+            )
+          ],
+
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Flexible(
+              child: Text(
+                "Your Daily Doom Scroll limit is 30 minutes",
+                style: TextStyle(
+                  color: authController.isLightTheme.value ? Colors.white : Colors.white,
+
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            counterTimer(),
+          ],
+        ),
+      ),
+    );
+  }
+
   ///counterTimer
   FutureBuilder<int> counterTimer() {
     return FutureBuilder(
@@ -211,7 +217,7 @@ class _NavigationScreenState extends State<NavigationScreen>
             height: 60,
             textFormat: CountdownTextFormat.S,
             duration: snapshot.data as int,
-            fillColor: Colors.teal,
+            fillColor: Colors.red,
             ringColor: Colors.white54,
             isReverse: true,
             isReverseAnimation: true,
@@ -224,27 +230,7 @@ class _NavigationScreenState extends State<NavigationScreen>
             ),
             controller: _controller,
             onComplete: () {
-              showDialog(
-                barrierDismissible: false,
-                context: Get.context!,
-                builder: (_) {
-                  return AlertDialog(
-                    title: const Text(
-                      "Time is up",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    content: const Text("Time is up"),
-                    actions: [
-                      TextButton(
-                          onPressed: () async {
-                            Get.offAll(() => const PrankScreen());
-                            //authController.checkIfThirtyMinDone();
-                          },
-                          child: const Text("Ok"))
-                    ],
-                  );
-                },
-              );
+              _checkThirtyMins();
             },
           );
         } else {
@@ -257,42 +243,37 @@ class _NavigationScreenState extends State<NavigationScreen>
   Widget _bottomNavigationBar() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
-      child: SalomonBottomBar(
-        currentIndex: _currentIndex.value,
-        onTap: (i) => setState(() => _onNavItemsSelected(i)),
-        items: [
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.home),
-            title: const Text("Home"),
-            selectedColor: Colors.green,
+      child: NavigationBar(
+        backgroundColor: Colors.transparent,
+        height: 80,
+        elevation: 0,
+        selectedIndex: _currentIndex.value,
+        onDestinationSelected: (i) => setState(() => _onNavItemsSelected(i)),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home),
+            label: "Home",
+            selectedIcon: Icon(Icons.home_outlined),
           ),
-
-          /// Home
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.video_collection_outlined),
-            title: const Text("Unscroll"),
-            selectedColor: Colors.purple,
+          NavigationDestination(
+            icon: Icon(Icons.video_library),
+            label: "Unscroll",
+            selectedIcon: Icon(Icons.video_library_outlined),
           ),
-
-          /// Search
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.search),
-            title: const Text("Search"),
-            selectedColor: Colors.white70,
+          NavigationDestination(
+            icon: Icon(Icons.search),
+            label: "Search",
+            selectedIcon: Icon(Icons.person_search_rounded),
           ),
-
-          /// Likes
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.add),
-            title: const Text("add"),
-            selectedColor: const Color(0xff94CBED),
+          NavigationDestination(
+            icon: Icon(Icons.upload_rounded),
+            label: "Upload",
+            selectedIcon: Icon(Icons.upload_outlined),
           ),
-
-          /// Profile
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.person),
-            title: const Text("Profile"),
-            selectedColor: Colors.teal,
+          NavigationDestination(
+            icon: Icon(Icons.person),
+            label: "Profile",
+            selectedIcon: Icon(Icons.person_add_alt_1_outlined),
           ),
         ],
       ),
