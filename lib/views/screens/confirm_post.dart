@@ -35,26 +35,32 @@ class _ConfirmPostState extends State<ConfirmPost> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+
+
+
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
-        title: const Text('Confirm Post'),
+        title: const Text('Your post', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
         actions: [
-          OutlinedButton(
-            onPressed: () async {
-              EasyLoading.show(
-                dismissOnTap: false,
-                status: 'Uploading...',
-                maskType: EasyLoadingMaskType.black,
-              );
-              KeyboardUnFocus(context).hideKeyboard();
-              _postController.uploadPost(
-                _captionController.text,
-                widget.imgPath,
-                _locationController.text,
-              );
-            },
-            child: const Text('Confirm Post'),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: () async {
+                EasyLoading.show(
+                  dismissOnTap: false,
+                  status: 'Uploading...',
+                  maskType: EasyLoadingMaskType.black,
+                );
+                KeyboardUnFocus(context).hideKeyboard();
+                _postController.uploadPost(
+                  _captionController.text,
+                  widget.imgPath,
+                  _locationController.text,
+                );
+              },
+              child: const Text('Confirm ppload'),
+            ),
           ),
         ],
       ),

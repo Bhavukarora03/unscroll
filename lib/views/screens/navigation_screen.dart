@@ -62,6 +62,7 @@ class _NavigationScreenState extends State<NavigationScreen>
 
   @override
   initState() {
+    authController.checkInternetConnection();
     authController.getNotificationToken();
     authController.checkIfThirtyMinDone();
     _controller = CountDownController();

@@ -57,6 +57,9 @@ dependencies:
   flutter_typeahead: ^4.1.1
   photo_view: ^0.14.0
   stories_editor: ^0.2.2
+  like_button: ^2.0.5
+  animated_text_kit: ^4.2.2
+  upi_india: ^3.0.1
 
 
 

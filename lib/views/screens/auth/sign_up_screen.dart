@@ -61,7 +61,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           width: 100,
                           child: Text("Make your Free DoomScroll Account",
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w400)),
+                                  fontSize: 20, fontWeight: FontWeight.w800)),
                         ),
                       ],
                     ),
@@ -84,9 +84,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(),
-                              ),
+
+
                             ),
                             validator: MultiValidator([
                               RequiredValidator(errorText: 'Name is required'),
@@ -116,9 +115,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide(),
                               ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(),
-                              ),
+
                             ),
                           ),
                           height20,
@@ -142,9 +139,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide(),
                               ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(),
-                              ),
+
                               suffixIcon: IconButton(
                                   onPressed: () {
                                     setState(() {

@@ -65,7 +65,7 @@ class UploadPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(25.0),
-      child: Column(
+      child: authController.hasInternet ? Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -79,8 +79,9 @@ class UploadPage extends StatelessWidget {
             ),
           ),
           height80,
+
           ModelBottomSheetForCamera(
-            titleText: "upload a unscroll",
+            titleText: "Unscroll",
             onPressedCamera: () => uploadVideo(ImageSource.camera, context),
             onPressedGallery: () => uploadVideo(ImageSource.gallery, context),
             icon: Icons.u_turn_right,
@@ -90,7 +91,7 @@ class UploadPage extends StatelessWidget {
           ),
           height20,
           ModelBottomSheetForCamera(
-            titleText: "Upload a post",
+            titleText: "Post",
             onPressedCamera: () => uploadPost(ImageSource.camera, context),
             onPressedGallery: () => uploadPost(ImageSource.gallery, context),
             icon: CupertinoIcons.photo_on_rectangle,
@@ -109,12 +110,24 @@ class UploadPage extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                Get.to(() => const ConfirmStory());
+               showDialog(context: context, builder: (context) => const AlertDialog(
+                 title: Text("Coming Soon"),
+                 content: Text("This feature is coming soon"),
+               ));
               },
-              label: const Text("Upload a story"),
+              label: const Text("Story"),
               icon: const Icon(Icons.upload))
         ],
-      ),
+      ): Column(
+        children: [
+          Image.asset("assets/images/walking-girl.png",scale: 3,),
+          const Text("No internet connection", style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold
+
+          ),),
+        ],
+      )
     );
   }
 }

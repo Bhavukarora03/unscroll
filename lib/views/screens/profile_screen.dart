@@ -3,11 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/profile_controller.dart';
-import 'package:unscroll/views/screens/followings_count.dart';
+import 'package:unscroll/views/screens/about_app.dart';
 import 'package:unscroll/views/screens/post_view.dart';
 import 'package:unscroll/views/widgets/sharedprefs.dart';
 import 'package:unscroll/views/widgets/widgets.dart';
@@ -41,7 +40,10 @@ class _ProfileScreenState extends State<ProfileScreen>
   getUserids() async {
     uid = widget.uid;
   }
-  final Uri _url = Uri.parse('https://www.privacypolicygenerator.info/live.php?token=IlpPFFeTuVICmMdJSxXYqFYbv2fzW2QE');
+  final Uri _policyUrl = Uri.parse('https://www.privacypolicygenerator.info/live.php?token=IlpPFFeTuVICmMdJSxXYqFYbv2fzW2QE');
+
+  Uri get policyUrl => _policyUrl;
+
   @override
   void initState() {
     profileController.updateUSerId(widget.uid);
@@ -64,8 +66,8 @@ class _ProfileScreenState extends State<ProfileScreen>
     super.dispose();
   }
   Future<void> _launchUrl() async {
-    if (!await launchUrl(_url)) {
-      throw 'Could not launch $_url';
+    if (!await launchUrl(_policyUrl)) {
+      throw 'Could not launch $_policyUrl';
     }
   }
   @override
@@ -134,7 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => FollowingsCount(uid: widget.uid));
+                       //   Get.to(() => FollowingsCount(uid: widget.uid));
                         },
                         child: Column(
                           children: [
@@ -159,11 +161,37 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     context: context,
                                     builder: (context) {
                                       return SizedBox(
-                                        height: 300,
+                                        height: 350,
                                         child: Column(
                                           children: [
                                             const Icon(Icons.minimize),
+                                            ListTile(
+                                              leading: const Icon(Icons.person),
+                                              title: const Text('About / Support'),
+                                              onTap: () async {
+                                                Get.to(() => const AboutScreen());
+                                              },
+                                            ),
+                                            ListTile(
+                                              leading: const Icon(Icons.nightlight_outlined),
+                                              title: const Text("Switch theme"),
+                                              trailing: ObxValue(
+                                                    (data) => Switch(
+                                                  inactiveThumbColor: Colors.blueAccent,
+                                                  activeColor: Colors.amber,
+                                                  value: authController.isLightTheme.value,
+                                                  onChanged: (val) {
+                                                    authController.isLightTheme.value = val;
+                                                    Get.changeThemeMode(
+                                                      authController.isLightTheme.value ? ThemeMode.light : ThemeMode.dark,
+                                                    );
+                                                    _saveThemeStatus();
+                                                  },
+                                                ),
+                                                false.obs,
+                                              ),
 
+                                            ),
                                             ListTile(
                                               onTap: () {
                                                 _launchUrl();
@@ -182,26 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 profileController.deleteCacheDir();
                                               },
                                             ),
-                                            ListTile(
-                                              leading: const Icon(Icons.nightlight_outlined),
-                                              title: const Text("Switch theme"),
-                                              trailing: ObxValue(
-                                                    (data) => Switch(
-                                                      inactiveThumbColor: Colors.blueAccent,
-                                                  activeColor: Colors.amber,
-                                                  value: authController.isLightTheme.value,
-                                                  onChanged: (val) {
-                                                    authController.isLightTheme.value = val;
-                                                    Get.changeThemeMode(
-                                                      authController.isLightTheme.value ? ThemeMode.light : ThemeMode.dark,
-                                                    );
-                                                   _saveThemeStatus();
-                                                  },
-                                                ),
-                                                false.obs,
-                                              ),
 
-                                            ),
                                             ListTile(
                                               leading: const Icon(Icons.logout),
                                               title: const Text("Logout"),
@@ -218,7 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                    TextButton(onPressed: () async{
                                                      Get.back();
                                                      Get.back();
-                                                     authController.signOut();
+                                                    authController.signOut();
                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No, you are not leaving us. Learn to control your actions.')));
                                                    }, child: const Text('Logout & exit')),
                                                  ],

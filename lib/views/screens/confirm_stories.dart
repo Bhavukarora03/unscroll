@@ -21,6 +21,7 @@ class _ConfirmStoryState extends State<ConfirmStory> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: StoriesEditor(
+
         isCustomFontList: false,
         middleBottomWidget: const Text(
           'Unscroll',

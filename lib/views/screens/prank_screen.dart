@@ -95,6 +95,7 @@ class _PrankScreenState extends State<PrankScreen>
                 ],
               ),
               BackButton(
+                color: Colors.white,
                 onPressed: () async {
                   TextPreferences.setTime(1800);
                   SystemNavigator.pop();

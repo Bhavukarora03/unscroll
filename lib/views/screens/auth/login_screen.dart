@@ -1,5 +1,8 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -7,8 +10,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/auth/sign_up_screen.dart';
-
-
+import 'package:unscroll/views/screens/screens.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -52,60 +55,69 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: 0,
-          backgroundColor: Colors.transparent,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+          ),
         ),
 
         //nice
         resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: OnBoardingSlider(
+            indicatorAbove: false,
             headerBackgroundColor: Colors.transparent,
             finishButtonText: 'Register',
             skipTextButton: const Text('Skip'),
             finishButtonColor: Colors.blueAccent,
-            
             onFinish: () {
               Get.to(() => SignUpScreen());
             },
             trailingFunction: () {
               onPressedLogin();
             },
-            
             trailing: const Text(
               'Login',
             ),
-            background: [
-              Image.asset('assets/images/landing.png',
-                  width: size.width, height: 400),
-              const SizedBox.shrink()
-            ],
+            background: const [Text(""), SizedBox.shrink()],
             totalPage: 2,
             speed: 1.8,
             pageBodies: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 8),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 450,
-                    ),
-                    const Text('Welcome to DoomScroll!',
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/walking-girl.png',
+                    height: size.height * 0.3,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 50.0, right: 50),
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Welcome \nto\n',
                         style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        )),
-                    height20,
-                    Center(
-                      child: Text(
-                        "OUR BRAIN ACTUALLY LOOKS FOR BAD NEWS, HOPING TO CONTROL IT, BUT IT'S NOT POSSIBLE. WE MAY READ BAD NEWS BUT IT'S A MATTER OF TRYING NOT TO LET"
-                                " IT AFFECT US. WE CAN'T STOP IT, BUT WE CAN TRY TO CONTROL IT. "
-                            .toLowerCase(),style: const TextStyle(
-                        fontSize: 15,
+                          color: authController.isLightTheme.value
+                              ? Colors.black87
+                              : Colors.white,
+                          fontSize: 45,
+                          fontWeight: FontWeight.w900,
+                          height: 1.2,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: 'Unscroll..\n',
+                            style: GoogleFonts.cedarvilleCursive(
+                                color: Colors.blueAccent,
+                                fontSize: 50,
+                                height: 1.5,
+                                fontWeight: FontWeight.w700),
+                          ),
+                        ],
                       ),
-                      ),
-                    )
-                  ],
-                ),
+                    ),
+                  ),
+                ],
               ),
               loginData(context)
             ],
@@ -144,7 +156,32 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               label: const Text("Continue with Google")),
           height50,
-          const Center(child: Text("Don't have an account with us?"))
+          RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                  text: "By continuing, you agree to our Terms of Service and ",
+                  style: TextStyle(
+                      color: authController.isLightTheme.value
+                          ? Colors.black87
+                          : Colors.white),
+                  children: [
+                    TextSpan(
+                        text: 'Privacy Policy. ',
+                        style: const TextStyle(color: Colors.blueAccent),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () async {
+                            final Uri _policyUrl = Uri.parse(
+                                'https://www.privacypolicygenerator.info/live.php?token=IlpPFFeTuVICmMdJSxXYqFYbv2fzW2QE');
+                            if (!await launchUrl(_policyUrl)) {
+                              throw 'Could not launch $_policyUrl';
+                            }
+                          }),
+                    const TextSpan(
+                      text: 'Learn how we process your data in our'
+                          ' Data Policy and how we use cookies and similar '
+                          'technology in our Cookies Policy.',
+                    )
+                  ])),
         ],
       ),
     );
@@ -164,9 +201,6 @@ class _LoginScreenState extends State<LoginScreen> {
         hintText: "Enter your email",
         prefixIcon: Icon(CupertinoIcons.mail),
         border: OutlineInputBorder(
-          borderSide: BorderSide(),
-        ),
-        focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(),
         ),
       ),
@@ -190,9 +224,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ]),
       decoration: InputDecoration(
         border: const OutlineInputBorder(
-          borderSide: BorderSide(),
-        ),
-        focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(),
         ),
         suffixIcon: IconButton(

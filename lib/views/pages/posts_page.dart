@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:like_button/like_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -177,12 +179,15 @@ class _PostsPageState extends State<PostsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      likePost(data),
-                      commentSection(data),
-                      sharePost(data),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Row(
+                      children: [
+                        likePost(data),
+                        commentSection(data),
+                        sharePost(data),
+                      ],
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 15.0),
@@ -278,7 +283,6 @@ class _PostsPageState extends State<PostsPage> {
                                 "Delete",
                               ),
                               onTap: () {
-
                                 showDialog(
                                   context: context,
                                   builder: (context) {
@@ -351,11 +355,6 @@ class _PostsPageState extends State<PostsPage> {
   Row likesCount(PostsModel data) {
     return Row(
       children: [
-        Text(
-          '${data.likes.length} likes    ',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        width10,
         GestureDetector(
           onTap: () {
             Get.to(() =>
@@ -379,18 +378,52 @@ class _PostsPageState extends State<PostsPage> {
     );
   }
 
+  Future<bool> onLikeButtonTapped(bool isLiked , PostsModel data) async{
+    if(isLiked){
+      !postController.likePost(data.id);
+    }else{
+      postController.likePost(data.id);
+    }
+
+
+    return !isLiked;
+  }
   /// Like Post
-  IconButton likePost(PostsModel data) {
-    return IconButton(
-        icon: Icon(data.likes.contains(authController.user.uid)
-            ? Icons.favorite
-            : Icons.favorite_border),
-        color: data.likes.contains(authController.user.uid)
-            ? Colors.red
-            : Colors.grey,
-        onPressed: () {
-          postController.likePost(data.id);
-        });
+  Widget likePost(PostsModel data) {
+    return LikeButton(
+      size: 25,
+      onTap: (isLiked) => onLikeButtonTapped(isLiked, data),
+      isLiked: data.likes.contains(authController.user.uid),
+      likeCount: data.likes.length,
+      likeBuilder: (bool isLiked) {
+        return isLiked
+            ? const Icon(
+                Icons.favorite,
+                color: Colors.red,
+              )
+            : const Icon(
+                Icons.favorite_border,
+                color: Colors.grey,
+              );
+      },
+
+      countBuilder: (int? count, bool isLiked, String text) {
+
+        Widget result;
+        if (count == 0) {
+          result = Text(
+            "love",
+            style: TextStyle(color: Colors.grey),
+          );
+        } else {
+          result = Text(
+            text,
+            style: TextStyle(color: Colors.grey),   );
+        }
+        return result;
+      },
+
+    );
   }
 
   ///Comment Editing Field
