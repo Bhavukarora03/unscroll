@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
+import 'package:unscroll/views/screens/navigation_screen.dart';
 
 import '../widgets/user_profileimg.dart';
 
@@ -33,7 +35,7 @@ class EditProfile extends StatelessWidget {
                 'bio': bioController.text,
               });
 
-              Get.back();
+              Get.offAll(() => const NavigationScreen());
             },
             icon: const Icon(Icons.done),
           )
@@ -61,6 +63,9 @@ class EditProfile extends StatelessWidget {
             ),
             TextField(
               controller: bioController,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(40),
+              ],
               decoration: const InputDecoration(
                 labelText: 'Add Bio',
               ),

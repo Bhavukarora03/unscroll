@@ -24,6 +24,7 @@ class SearchPage extends StatelessWidget {
       return Scaffold(
 
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
             toolbarHeight: 100,
             title: TextField(

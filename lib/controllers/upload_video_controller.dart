@@ -1,15 +1,15 @@
-
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/models/video_model.dart';
+import 'package:uuid/uuid.dart';
 import 'package:video_compress/video_compress.dart';
-
 
 class UploadVideoController extends GetxController {
   ///compress video and return the compressed video
@@ -53,42 +53,50 @@ class UploadVideoController extends GetxController {
   ///upload video to firebase firestore
   uploadVideo(String songName, String caption, String videoPath) async {
     try {
-      String uid = firebaseAuth.currentUser!.uid;
-      DocumentSnapshot doc =
-          await firebaseFirestore.collection('users').doc(uid).get();
-      var allDocs = await firebaseFirestore.collection('videos').get();
-      int docCount = allDocs.docs.length;
+      if (songName.isNotEmpty && caption.isNotEmpty && videoPath.isNotEmpty) {
+        String uid = firebaseAuth.currentUser!.uid;
+        DocumentSnapshot doc =
+            await firebaseFirestore.collection('users').doc(uid).get();
+        var allDocs = await firebaseFirestore.collection('videos').get();
+        int docCount = allDocs.docs.length;
+        var uuid = const Uuid().v4();
 
-      String videoUrl =
-          await _uploadVideoToStorage("Video $docCount", videoPath);
-      String thumbnail =
-          await _uploadImageThumbnailToStorage("Video $docCount", videoPath);
+        String videoUrl =
+            await _uploadVideoToStorage("Video $docCount", videoPath);
+        String thumbnail =
+            await _uploadImageThumbnailToStorage("Video $docCount", videoPath);
 
-      VideoModel video = VideoModel(
-        username: (doc.data()! as Map<String, dynamic>)['username'],
-        songName: songName,
-        caption: caption,
-        likes: [],
-        shareCount: 0,
-        commentCount: 0,
-        uid: uid,
-        id: "Video $docCount",
-        videoUrl: videoUrl,
-        thumbnail: thumbnail,
-        profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
-        createdAt: DateTime.now(),
-      );
+        VideoModel video = VideoModel(
+          username: (doc.data()! as Map<String, dynamic>)['username'],
+          songName: songName,
+          caption: caption,
+          likes: [],
+          shareCount: 0,
+          commentCount: 0,
+          uid: uid,
+          id: uuid,
+          videoUrl: videoUrl,
+          thumbnail: thumbnail,
+          profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
+          createdAt: DateTime.now(),
+        );
 
-      await firebaseFirestore
-          .collection('videos')
-          .doc("Video $docCount")
-          .set(video.toJson());
+        await firebaseFirestore
+            .collection('videos')
+            .doc(uuid)
+            .set(video.toJson());
 
-
-      Get.back();
-      await EasyLoading.showSuccess("Video Uploaded Successfully");
+        Get.back();
+        await EasyLoading.showSuccess("Video Uploaded Successfully");
+      } else {
+        EasyLoading.dismiss();
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+            const SnackBar(content: Text("Please fill all the fields")));
+      }
     } catch (e) {
-      Get.snackbar("error", e.toString());
+      EasyLoading.dismiss();
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+           SnackBar(content: Text("Something went wrong + $e")));
     }
   }
 
@@ -96,7 +104,7 @@ class UploadVideoController extends GetxController {
   saveVideo(String videoPath) async {
     try {
       Uint8List bytes = await File(videoPath).readAsBytes();
-   //   await FileSaver.instance.saveFile(videoPath, bytes, 'video.mp4');
+      //   await FileSaver.instance.saveFile(videoPath, bytes, 'video.mp4');
       Get.snackbar("success", "Video saved to phone storage");
     } catch (e) {
       Get.snackbar("error", e.toString());

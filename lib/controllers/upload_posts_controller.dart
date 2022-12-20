@@ -78,8 +78,9 @@ class UploadPostsController extends GetxController {
     return _pickedPostImage;
   }
 
-  Future<String> _uploadPostToStorage(String id, String postPath) async {
-    Reference ref = firebaseStorage.ref().child('posts/$id').child(id);
+  Future<String> _uploadPostToStorage(String postPath) async {
+    final uuid = const Uuid().v1();
+    Reference ref = firebaseStorage.ref().child('posts/$uuid');
     UploadTask uploadTask = ref.putFile(File(postPath));
     TaskSnapshot taskSnapshot = await uploadTask;
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
@@ -98,14 +99,14 @@ class UploadPostsController extends GetxController {
     try {
       if (caption.isNotEmpty && postImage.isNotEmpty && location.isNotEmpty) {
         String uid = firebaseAuth.currentUser!.uid;
-        String displayName = firebaseAuth.currentUser!.displayName!;
+
         DocumentSnapshot doc =
             await firebaseFirestore.collection('users').doc(uid).get();
         var allDocs = await firebaseFirestore.collection('posts').get();
         int docCount = allDocs.docs.length;
-        String id = docCount.toString();
+
         var uuid = const Uuid().v4();
-        String postUrl = await _uploadPostToStorage('posts $id', postImage);
+        String postUrl = await _uploadPostToStorage( postImage);
 
         PostsModel postsModel = PostsModel(
           username: (doc.data()! as Map<String, dynamic>)['username'],
@@ -125,13 +126,13 @@ class UploadPostsController extends GetxController {
             .doc(uuid)
             .set(postsModel.toJson());
 
-        var snapTokens = await firebaseFirestore.collection('usertokens').doc().get();
-        var tokens = snapTokens.data()!['tokens'];
-
-        if(authController.user.uid != uid){
-          sendPushMessage(tokens, "",
-              "$displayName posted a new unscroll, show them some love");
-        }
+        // var snapTokens = await firebaseFirestore.collection('usertokens').doc().get();
+        // var tokens = snapTokens.data()!['token'];
+        //
+        // if(authController.user.uid != uid){
+        //   sendPushMessage(tokens, "",
+        //       "$displayName posted a new unscroll, show them some love");
+        // }
 
 
         Navigator.of(Get.context!).pop();
@@ -139,12 +140,14 @@ class UploadPostsController extends GetxController {
 
 
       } else {
+        EasyLoading.dismiss();
         ScaffoldMessenger.of(Get.context!).showSnackBar(
             const SnackBar(content: Text("Please fill all the fields")));
       }
-    } catch (e) {
+    } on FirebaseException catch (e) {
       ScaffoldMessenger.of(Get.context!)
           .showSnackBar(SnackBar(content: Text("Error uploading post$e")));
+      EasyLoading.showError('Error uploading post');
     }
   }
 
@@ -159,12 +162,13 @@ class UploadPostsController extends GetxController {
         int docCount = (await docs).docs.length;
         String id = docCount.toString();
         String storyUrl = await _uploadStories("stories $id", imagePath);
+        var uuid = const Uuid().v4();
 
         StoriesModel storyModel = StoriesModel(
             createdAt: DateTime.now(),
             uid: uid,
             username: (doc.data()! as Map<String, dynamic>)['username'],
-            id: "stories $id",
+            id: uuid,
             profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
             likes: [],
             storyUrl: [storyUrl]);
@@ -173,7 +177,8 @@ class UploadPostsController extends GetxController {
           await firebaseFirestore.collection('stories').doc(uid).set({
             'storyUrl': FieldValue.arrayUnion([
               storyUrl,
-            ])
+            ]),
+            'createdAt': DateTime.now(),
           }, SetOptions(merge: true));
         } else {
           await firebaseFirestore

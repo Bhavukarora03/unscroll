@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/comment_controller.dart';
-import 'package:unscroll/controllers/upload_video_controller.dart';
 import 'package:unscroll/controllers/video_controller.dart';
 import 'package:unscroll/views/widgets/widgets.dart';
 import 'package:get/get.dart';
@@ -68,25 +67,26 @@ class HomePage extends StatelessWidget {
                                         Text(
                                           data.username,
                                           style: const TextStyle(
+                                            color: Colors.white,
 
                                               fontSize: 20),
                                         ),
                                         Text(
                                           data.caption,
                                           style: const TextStyle(
-
+                                              color: Colors.white,
                                               fontSize: 15),
                                         ),
                                         Row(
                                           children: [
                                             const Icon(
                                               Icons.music_note,
-
+                                              color: Colors.white,
                                             ),
                                             Text(
                                               data.songName,
                                               style: const TextStyle(
-
+                                                  color: Colors.white,
                                                   fontSize: 15),
                                             ),
                                           ],
@@ -125,7 +125,7 @@ class HomePage extends StatelessWidget {
                                       size: 30,
                                     ),
                                   ),
-                                  Text(data.likes.length.toString()),
+                                  Text(data.likes.length.toString() , style: TextStyle( color: Colors.white,),),
                                   InkWell(
                                     onTap: () {
                                       showMaterialModalBottomSheet(
@@ -142,10 +142,10 @@ class HomePage extends StatelessWidget {
                                     },
                                     child: const Icon(
                                       Icons.comment,
-
+                                      color: Colors.white,
                                     ),
                                   ),
-                                  Text(data.commentCount.toString()),
+                                  Text(data.commentCount.toString(), style: TextStyle( color: Colors.white,),),
                                   InkWell(
                                     onTap: () {
                                       Share.share(
@@ -153,17 +153,19 @@ class HomePage extends StatelessWidget {
                                     },
                                     child: const Icon(
                                       Icons.share,
-
+                                      color: Colors.white,
                                     ),
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      Get.find<UploadVideoController>()
-                                          .saveVideo(data.videoUrl);
+                                      EasyLoading.show(status: 'Saving...');
+                                      videoController.saveVideo(data.videoUrl);
+
+
                                     },
                                     child: const Icon(
                                       Icons.bookmark_border,
-
+                                      color: Colors.white,
                                     ),
                                   ),
                                   CircleAnimation(

@@ -3,10 +3,9 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 
 
-const SENDGRID_API_KEY = functions.config().sendgrid.key;
 const sgMail = require("@sendgrid/mail");
 // eslint-disable-next-line max-len
-sgMail.setApiKey(SENDGRID_API_KEY);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const toExactMinute = 1000 * 60 * 60 * 24;
 // eslint-disable-next-line require-jsdoc

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -265,14 +266,19 @@ class _PostsPageState extends State<PostsPage> {
                         title: const Text(
                           "Save",
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Get.back();
+                          postController.savePost(data.postURL);
+                        },
                       ),
                       data.uid == authController.user.uid
                           ? ListTile(
                               leading: const Icon(Icons.delete),
-                              title: const Text("Delete",
+                              title: const Text(
+                                "Delete",
                               ),
                               onTap: () {
+
                                 showDialog(
                                   context: context,
                                   builder: (context) {
@@ -283,6 +289,7 @@ class _PostsPageState extends State<PostsPage> {
                                         TextButton(
                                             onPressed: () {
                                               Navigator.pop(context);
+                                              Navigator.pop(context);
                                             },
                                             child: const Text('Cancel')),
                                         TextButton(
@@ -291,6 +298,7 @@ class _PostsPageState extends State<PostsPage> {
                                                   authController.user.uid) {
                                                 postController
                                                     .deletePost(data.id);
+                                                Navigator.pop(context);
                                                 Navigator.pop(context);
                                               }
                                             },
@@ -311,10 +319,13 @@ class _PostsPageState extends State<PostsPage> {
         icon: const Icon(Icons.more_horiz));
   }
 
-  ///Save Image to Gallery
+  /// comment section
   IconButton commentSection(PostsModel data) {
     return IconButton(
-      icon: const Icon(Icons.comment_outlined,  color: Colors.grey,),
+      icon: const Icon(
+        Icons.comment_outlined,
+        color: Colors.grey,
+      ),
       onPressed: () {
         Get.to(
             () => CommentsScreen(commentTextController: commentTextController),
@@ -326,7 +337,10 @@ class _PostsPageState extends State<PostsPage> {
   ///Share post
   IconButton sharePost(PostsModel data) {
     return IconButton(
-      icon: const Icon(Icons.send_outlined, color: Colors.grey,),
+      icon: const Icon(
+        Icons.share_outlined,
+        color: Colors.grey,
+      ),
       onPressed: () {
         Share.share('Check out this post on: ${data.postURL}');
       },
@@ -361,7 +375,6 @@ class _PostsPageState extends State<PostsPage> {
     return Row(
       children: [
         Text(timeago.format(data.createdAt.toLocal())),
-
       ],
     );
   }

@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:unscroll/constants.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/controllers/location_controller.dart';
 import 'package:unscroll/controllers/upload_posts_controller.dart';
+import 'package:unscroll/views/widgets/text_input_fields.dart';
 
 class ConfirmPost extends StatefulWidget {
   const ConfirmPost({Key? key, required this.postImage, required this.imgPath})
@@ -22,9 +24,9 @@ class _ConfirmPostState extends State<ConfirmPost> {
   final TextEditingController _captionController = TextEditingController();
   final location = Get.find<LocationController>();
   final TextEditingController _locationController = TextEditingController(
-    text:
-        "${locationController.placeMark[0].street!}, ${locationController.placeMark[0].locality!}, ${locationController.placeMark[0].country!}",
-  );
+      // text:
+      //     "${locationController.placeMark[0].street!}, ${locationController.placeMark[0].locality!}, ${locationController.placeMark[0].country!}",
+      );
 
   final UploadPostsController _postController =
       Get.put(UploadPostsController());
@@ -42,7 +44,7 @@ class _ConfirmPostState extends State<ConfirmPost> {
             onPressed: () async {
               EasyLoading.show(
                 dismissOnTap: false,
-                status: 'loading...',
+                status: 'Uploading...',
                 maskType: EasyLoadingMaskType.black,
               );
               KeyboardUnFocus(context).hideKeyboard();
@@ -51,7 +53,6 @@ class _ConfirmPostState extends State<ConfirmPost> {
                 widget.imgPath,
                 _locationController.text,
               );
-
             },
             child: const Text('Confirm Post'),
           ),
@@ -116,17 +117,18 @@ class _ConfirmPostState extends State<ConfirmPost> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              keyboardType: TextInputType.text,
-              autofillHints: const [AutofillHints.location],
+            child: TextField(
               controller: _locationController,
               decoration: InputDecoration(
-                prefixIcon: IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.location_on)),
                 border: InputBorder.none,
-                labelText: 'Add a location...',
-                // hintText:
-                //     "${locationController.placeMark[0].street!}, ${locationController.placeMark[0].locality!}, ${locationController.placeMark[0].country!}",
+                hintText: 'Add a location...',
+                prefixIcon: IconButton(
+                    onPressed: () {
+                      locationController.determinePosition();
+                      _locationController.text =
+                          "${location.placeMark[0].street!}, ${location.placeMark[0].locality!}, ${location.placeMark[0].country!}";
+                    },
+                    icon: const Icon(Icons.location_on)),
               ),
             ),
           ),

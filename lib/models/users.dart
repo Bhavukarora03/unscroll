@@ -7,13 +7,16 @@ class User {
   String uid;
   bool thirtyMinDone;
   String bio;
+  bool entitlementIsActive;
   User(
       {required this.username,
       required this.email,
       required this.profilePic,
       required this.uid,
       required this.thirtyMinDone,
-      required this.bio});
+      required this.bio,
+      required this.entitlementIsActive});
+
 
 
 
@@ -25,6 +28,7 @@ class User {
         'uid': uid,
         'thirtyMinDone': thirtyMinDone,
         'bio': bio,
+        'entitlementIsActive': entitlementIsActive,
       };
 
   static User fromSnap(DocumentSnapshot snapshot) {
@@ -36,6 +40,8 @@ class User {
       uid: data['uid'],
       thirtyMinDone: data['thirtyMinDone'],
       bio: data['bio'],
+      entitlementIsActive: data['entitlementIsActive'],
+
     );
   }
 }

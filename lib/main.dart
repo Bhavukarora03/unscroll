@@ -10,9 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/themes.dart';
 import 'package:unscroll/views/screens/splashScreen.dart';
-
-import 'package:unscroll/views/screens/navigation_screen.dart';
-import 'package:unscroll/views/widgets/sharedprefs.dart';
 import 'controllers/bindings/bindings.dart';
 import 'firebase_options.dart';
 
@@ -30,15 +27,13 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   _getThemeStatus() async {
     var _isLight = _prefs.then((SharedPreferences prefs) {
       return prefs.getBool('theme') ?? true;
     }).obs;
     authController.isLightTheme.value = await _isLight.value;
-    Get.changeThemeMode(
-        authController.isLightTheme.value ? ThemeMode.light : ThemeMode.dark);
+    Get.changeThemeMode(authController.isLightTheme.value ? ThemeMode.light : ThemeMode.dark);
   }
 
   MyApp() {
@@ -58,7 +53,6 @@ class MyApp extends StatelessWidget {
         themeMode: ThemeMode.system,
         theme: lightTheme,
         builder: EasyLoading.init(),
-        // scaffoldBackgroundColor: ),
         home: const SplashScreen());
   }
 }

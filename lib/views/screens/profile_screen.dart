@@ -1,17 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/profile_controller.dart';
-import 'package:unscroll/views/screens/followers_count.dart';
-import 'package:unscroll/views/screens/following_count.dart';
+import 'package:unscroll/views/screens/followings_count.dart';
 import 'package:unscroll/views/screens/post_view.dart';
 import 'package:unscroll/views/widgets/sharedprefs.dart';
 import 'package:unscroll/views/widgets/widgets.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'edit_profile.dart';
+
 
 
 class ProfileScreen extends StatefulWidget {
@@ -80,198 +83,230 @@ class _ProfileScreenState extends State<ProfileScreen>
           onRefresh: () async {
             await controller.updateUSerId(widget.uid);
           },
-          child: Scaffold(
-            body: Column(
-              children: [
-                height10,
+          child: SafeArea(
+            child: Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Column(
+                children: [
+                  height10,
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        UserProfileImage.medium(
-                            imageUrl: profileController.user['profilePic'],
-                            radius: 35),
-                        height10,
-                        Text(
-                          profileController.user['username'],
-                          style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        ),
-                        height10,
-                        Text(
-                          profileController.user['bio'],
-                          style: const TextStyle(
-                              color: Colors.grey, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          profileController.user['PostUrl'].length.toString(),
-                        ),
-                        const Text('posts')
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(() => FollowersCount(
-                              uid: widget.uid,
-                            ));
-                      },
-                      child: Column(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          UserProfileImage.medium(
+                              imageUrl: profileController.user['profilePic'],
+                              radius: 35),
+                          height10,
                           Text(
-                            profileController.user['followers'].toString(),
+                            profileController.user['username'],
+                            style: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold),
                           ),
-                          const Text('Followers')
+                          height10,
+
                         ],
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(() => FollowingCount());
-                      },
-                      child: Column(
+                      Column(
                         children: [
                           Text(
-                            profileController.user['following'],
+                            profileController.user['PostUrl'].length.toString(),
                           ),
-                          const Text('Following')
+                          const Text('posts')
                         ],
                       ),
-                    ),
-                    widget.uid == authController.user.uid
-                        ? IconButton(
-                            onPressed: () {
-                              showModalBottomSheet(
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      topRight: Radius.circular(20),
-                                    ),
-                                  ),
-                                  context: context,
-                                  builder: (context) {
-                                    return SizedBox(
-                                      height: 300,
-                                      child: Column(
-                                        children: [
-                                          const Icon(Icons.minimize),
 
-                                          ListTile(
-                                            onTap: () {
-                                              _launchUrl();
+                      GestureDetector(
+                        onTap: () {
 
-                                            },
-                                            leading: const Icon(Icons.privacy_tip),
-                                            title: const Text('Privacy and policy'),
-
-                                          ),
-                                          ListTile(
-                                            leading: const Icon(Icons.cached),
-                                            title: const Text('Clear cache'),
-                                            onTap: () async {
-                                              await DefaultCacheManager()
-                                                  .emptyCache();
-                                            },
-                                          ),
-                                          ListTile(
-                                            leading: const Icon(Icons.logout),
-                                            title: const Text("Logout"),
-                                            onTap: () {
-                                              authController.signOut();
-                                            },
-                                          ),
-                                          ListTile(
-                                            leading: const Icon(Icons.nightlight_outlined),
-                                            title: const Text("Switch theme"),
-                                            trailing: ObxValue(
-                                                  (data) => Switch(
-                                                value: authController.isLightTheme.value,
-                                                onChanged: (val) {
-                                                  authController.isLightTheme.value = val;
-                                                  Get.changeThemeMode(
-                                                    authController.isLightTheme.value ? ThemeMode.light : ThemeMode.dark,
-                                                  );
-                                                 _saveThemeStatus();
-                                                },
-                                              ),
-                                              false.obs,
-                                            ),
-
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  });
-                            },
-                            icon: const Icon(Icons.more_vert))
-                        : const SizedBox(),
-                  ],
-                ),
-                height20,
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 20),
-                        ),
-                        label: Text(
-                          widget.uid == authController.user.uid
-                              ? 'Edit Profile'
-                              : profileController.user['isFollowing']
-                                  ? 'Unfollow'
-                                  : 'Follow',
-                        ),
-                        icon: widget.uid == authController.user.uid
-                            ? const Icon(Icons.edit)
-                            : const Icon(Icons.person_add),
-                        onPressed: () {
-                          if (widget.uid == authController.user.uid) {
-                            Get.to(() => EditProfile(
-                                bio: profileController.user['bio'],
-                                uid: widget.uid,
-                                username:
-                                    profileController.user['username'],
-                                profilePic:
-                                    profileController.user['profilePic']));
-                          } else {
-                            profileController.followerUser();
-                          }
                         },
+                        child: Column(
+                          children: [
+                            Text(
+                              profileController.user['followers'].toString(),
+                            ),
+                            const Text('Followers')
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => FollowingsCount(uid: widget.uid));
+                        },
+                        child: Column(
+                          children: [
+                            Text(
+                              profileController.user['following'],
+                            ),
+                            const Text('Following')
+                          ],
+                        ),
+                      ),
+
+                      widget.uid == authController.user.uid
+                          ? IconButton(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
+                                      ),
+                                    ),
+                                    context: context,
+                                    builder: (context) {
+                                      return SizedBox(
+                                        height: 300,
+                                        child: Column(
+                                          children: [
+                                            const Icon(Icons.minimize),
+
+                                            ListTile(
+                                              onTap: () {
+                                                _launchUrl();
+
+                                              },
+                                              leading: const Icon(Icons.privacy_tip),
+                                              title: const Text('Privacy and policy'),
+
+                                            ),
+                                            ListTile(
+                                              leading: const Icon(Icons.cached),
+                                              title: const Text('Clear cache'),
+                                              onTap: () async {
+                                                Get.back();
+                                                EasyLoading.show(status: 'Clearing cache');
+                                                profileController.deleteCacheDir();
+                                              },
+                                            ),
+                                            ListTile(
+                                              leading: const Icon(Icons.nightlight_outlined),
+                                              title: const Text("Switch theme"),
+                                              trailing: ObxValue(
+                                                    (data) => Switch(
+                                                      inactiveThumbColor: Colors.blueAccent,
+                                                  activeColor: Colors.amber,
+                                                  value: authController.isLightTheme.value,
+                                                  onChanged: (val) {
+                                                    authController.isLightTheme.value = val;
+                                                    Get.changeThemeMode(
+                                                      authController.isLightTheme.value ? ThemeMode.light : ThemeMode.dark,
+                                                    );
+                                                   _saveThemeStatus();
+                                                  },
+                                                ),
+                                                false.obs,
+                                              ),
+
+                                            ),
+                                            ListTile(
+                                              leading: const Icon(Icons.logout),
+                                              title: const Text("Logout"),
+                                              onTap: () async{
+
+                                             showDialog(context: context, builder: (context){
+                                               return AlertDialog(
+                                                 title: const Text('Logout'),
+                                                 content: const Text('Are you sure you want to logout? We prefer you to stay with us, but if you want to leave, we will miss you. Also you can change your mind anytime.'),
+                                                 actions: [
+                                                   TextButton(onPressed: (){
+                                                     Get.back();
+                                                   }, child: const Text('Cancel')),
+                                                   TextButton(onPressed: () async{
+                                                     Get.back();
+                                                     Get.back();
+                                                     authController.signOut();
+                                                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No, you are not leaving us. Learn to control your actions.')));
+                                                   }, child: const Text('Logout & exit')),
+                                                 ],
+                                                );
+                                              });
+
+
+
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    });
+                              },
+                              icon: const Icon(Icons.more_vert))
+                          : const SizedBox(),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left:  25.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("${profileController.user['bio']}",
+                        style:  const TextStyle(
+                            color: Colors.grey, fontSize: 12),
                       ),
                     ),
-                  ],
-                ),
-                height20,
-                TabBar(
-                  indicatorColor: Colors.blueAccent.shade100,
-                  controller: _tabController,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  tabs: const [
-                    Tab(
-                      text: 'Posts',
-                    ),
-                    Tab(
-                      text: 'Unscrolls',
-                    ),
-                  ],
-                ),
-                TabBarLibrary(
-                  tabController: _tabController,
-                  uid: widget.uid,
-                ),
-              ],
+                  ),
+                  height20,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20),
+                          ),
+                          label: Text(
+                            widget.uid == authController.user.uid
+                                ? 'Edit Profile'
+                                : profileController.user['isFollowing']
+                                    ? 'Unfollow'
+                                    : 'Follow',
+                          ),
+                          icon: widget.uid == authController.user.uid
+                              ? const Icon(Icons.edit)
+                              : const Icon(Icons.person_add),
+                          onPressed: () {
+                            if (widget.uid == authController.user.uid) {
+                              Get.to(() => EditProfile(
+                                  bio: profileController.user['bio'],
+                                  uid: widget.uid,
+                                  username:
+                                      profileController.user['username'],
+                                  profilePic:
+                                      profileController.user['profilePic']));
+                            } else {
+                              profileController.followerUser();
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  height20,
+                  TabBar(
+                    indicatorColor: Colors.blueAccent.shade100,
+                    controller: _tabController,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    tabs: const [
+                      Tab(
+                        text: 'Posts',
+                      ),
+                      Tab(
+                        text: 'Unscrolls',
+                      ),
+                    ],
+                  ),
+                  TabBarLibrary(
+                    tabController: _tabController,
+                    uid: widget.uid,
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -311,7 +346,7 @@ class _TabBarLibraryState extends State<TabBarLibrary> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
                       Icon(Icons.camera_outlined,
-                          size: 100, color: Colors.white60),
+                          size: 100),
                       height50,
                       Center(
                         child: Text(

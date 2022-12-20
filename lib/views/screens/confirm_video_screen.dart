@@ -35,8 +35,6 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
     controller.initialize();
     controller.play();
     controller.setVolume(1);
-
-
     controller.setLooping(true);
 
     super.initState();
@@ -45,66 +43,95 @@ class _ConfirmVideoState extends State<ConfirmVideo> {
   @override
   void dispose() {
     controller.dispose();
+    EasyLoading.dismiss();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
-          actions: [
-            OutlinedButton(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+
+        title: const Text('Your Unscroll', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
               onPressed: () async {
                 EasyLoading.show(
                   dismissOnTap: false,
-                  status: 'loading...',
+                  status: 'Uploading...',
                   maskType: EasyLoadingMaskType.black,
                 );
                 KeyboardUnFocus(context).hideKeyboard();
+
                 await videoController.uploadVideo(songNameController.text,
                     captionController.text, widget.videoPath);
               },
-              child: const Text('Confirm Post'),
+              child: const Text('Confirm Upload'),
             ),
-          ],
-        ),
-        body: SafeArea(
-            child: SingleChildScrollView(
-          child: Column(children: [
-            Stack(children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.3,
-                width: MediaQuery.of(context).size.width * 0.3,
-                child: CachedVideoPlayer(controller),
-              ),
-            ]),
-            height20,
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.start,
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+
+            children: [
+              height50,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   height30,
-                  TextInputField(
-                    controller: songNameController,
-                    labelText: 'Song Name',
-                    prefixIcon: Icons.music_note,
-                    autofillHints: AutofillHints.name,
+                  Flexible(
+                    child: SizedBox(
+                      width: 200,
+                      child: TextInputField(
+                        controller: songNameController,
+                        labelText: 'Song Name',
+                        prefixIcon: Icons.music_note,
+                        autofillHints: AutofillHints.name,
+                      ),
+                    ),
                   ),
-                  height20,
-                  TextInputField(
-                    controller: captionController,
-                    labelText: "Add a caption",
-                    prefixIcon: Icons.closed_caption,
-                    autofillHints: 'caption',
+
+                  Flexible(
+                    child: SizedBox(
+                      width: 200,
+                      child: TextInputField(
+                        controller: captionController,
+                        labelText: "Add a caption",
+                        prefixIcon: Icons.closed_caption,
+                        autofillHints: 'caption',
+                      ),
+                    ),
                   ),
                 ],
               ),
-            ),
-          ]),
-        )));
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  height: 550,
+                  width: 300,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CachedVideoPlayer(controller),
+                  ),
+                ),
+              ),
+              height10,
+
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

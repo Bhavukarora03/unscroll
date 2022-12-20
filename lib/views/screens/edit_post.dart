@@ -64,7 +64,7 @@ class EditPostScreen extends StatelessWidget {
                   child: ListTile(
                     leading: const Icon(Icons.closed_caption_outlined),
                     title: TextField(
-                      style: const TextStyle(color: Colors.white),
+
                       controller: TextEditingController(text: editCaption),
                       decoration: const InputDecoration(
                         hintText: 'Write a caption...',

@@ -25,6 +25,7 @@ class StoriesController extends GetxController {
           for (var doc in querySnapshot.docs) {
             temp.add(StoriesModel.fromSnap(doc));
             temp.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
           }
           return temp;
         },
@@ -46,6 +47,8 @@ class StoriesController extends GetxController {
       });
     }
   }
+
+
 
   getUserStories(String uid) async {
     await firebaseFirestore

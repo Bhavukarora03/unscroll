@@ -2,11 +2,10 @@
 class Assets {
   Assets._();
 
-  static const String fontsGTWalsheimProBold = 'assets/fonts/GTWalsheimPro-Bold.ttf';
-  static const String fontsGTWalsheimProRegular = 'assets/fonts/GTWalsheimPro-Regular.ttf';
-  static const String iconLogo = 'assets/icon/logo.png';
-  static const String imagesLanding = 'assets/images/landing.gif';
+  static const String imagesLanding = 'assets/images/landing.png';
+  static const String imagesLoading = 'assets/images/loading.gif';
   static const String imagesLogo = 'assets/images/logo.png';
   static const String imagesStories = 'assets/images/stories.png';
+  static const String imagesUpload = 'assets/images/upload.png';
 
 }

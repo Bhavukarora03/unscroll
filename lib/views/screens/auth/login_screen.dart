@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
@@ -7,8 +9,6 @@ import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/screens/auth/sign_up_screen.dart';
 
 
-
-final _formKey = GlobalKey<FormState>();
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -19,7 +19,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
-
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
@@ -31,25 +31,30 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void onPressedLogin() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FocusScopeNode currentFocus = FocusScope.of(context);
-      if (!currentFocus.hasPrimaryFocus) {
-        currentFocus.unfocus();
-      }
-    });
+    EasyLoading.show(status: 'logging...');
+    KeyboardUnFocus(context).hideKeyboard();
     if (_formKey.currentState!.validate()) {
       authController.loginUser(_emailController.text, _passwordController.text);
+    } else {
+      EasyLoading.dismiss();
     }
   }
-@override
-  void dispose() {
 
+  @override
+  void dispose() {
+    EasyLoading.dismiss();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0,
+          backgroundColor: Colors.transparent,
+        ),
+
         //nice
         resizeToAvoidBottomInset: false,
         body: SafeArea(
@@ -57,39 +62,50 @@ class _LoginScreenState extends State<LoginScreen> {
             headerBackgroundColor: Colors.transparent,
             finishButtonText: 'Register',
             skipTextButton: const Text('Skip'),
-            finishButtonColor: const Color(0xff7FC0C2),
-
+            finishButtonColor: Colors.blueAccent,
+            
             onFinish: () {
-             Get.to(() => SignUpScreen());
+              Get.to(() => SignUpScreen());
             },
             trailingFunction: () {
               onPressedLogin();
             },
+            
             trailing: const Text(
               'Login',
-
             ),
             background: [
-              Image.asset('assets/images/landing.gif',
+              Image.asset('assets/images/landing.png',
                   width: size.width, height: 400),
               const SizedBox.shrink()
             ],
             totalPage: 2,
             speed: 1.8,
             pageBodies: [
-              Column(
-                children:  <Widget>[
-                  SizedBox(
-                    height: 480,
-                  ),
-                  Text('Welcome to DoomScroll',
-                      style: GoogleFonts.marckScript(
-                          color: Colors.white,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 8),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 450,
+                    ),
+                    const Text('Welcome to DoomScroll!',
+                        style: TextStyle(
                           fontSize: 30,
-                          fontWeight: FontWeight.w400
-
-                      ) ),
-                ],
+                          fontWeight: FontWeight.bold,
+                        )),
+                    height20,
+                    Center(
+                      child: Text(
+                        "OUR BRAIN ACTUALLY LOOKS FOR BAD NEWS, HOPING TO CONTROL IT, BUT IT'S NOT POSSIBLE. WE MAY READ BAD NEWS BUT IT'S A MATTER OF TRYING NOT TO LET"
+                                " IT AFFECT US. WE CAN'T STOP IT, BUT WE CAN TRY TO CONTROL IT. "
+                            .toLowerCase(),style: const TextStyle(
+                        fontSize: 15,
+                      ),
+                      ),
+                    )
+                  ],
+                ),
               ),
               loginData(context)
             ],
@@ -120,7 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
           height30,
           const Center(child: Text('Or')),
           height30,
-
           ElevatedButton.icon(
               onPressed: () => authController.loginWithGoogle(),
               icon: Image.asset(
@@ -146,9 +161,8 @@ class _LoginScreenState extends State<LoginScreen> {
       validator: EmailValidator(errorText: "Enter a valid email"),
       decoration: const InputDecoration(
         labelText: "Email",
-
         hintText: "Enter your email",
-        prefixIcon: Icon(Icons.email),
+        prefixIcon: Icon(CupertinoIcons.mail),
         border: OutlineInputBorder(
           borderSide: BorderSide(),
         ),
@@ -184,12 +198,12 @@ class _LoginScreenState extends State<LoginScreen> {
         suffixIcon: IconButton(
             onPressed: _toggle,
             icon: Icon(
-              _obscureText ? Icons.visibility : Icons.visibility_off,
+              _obscureText ? CupertinoIcons.eye : CupertinoIcons.eye_slash,
               // color: Colors.white,
             )),
         labelText: "Password",
         hintText: "Enter your password",
-        prefixIcon: const Icon(Icons.lock),
+        prefixIcon: const Icon(CupertinoIcons.lock),
       ),
     );
   }

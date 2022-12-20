@@ -50,16 +50,15 @@ class _UnscrollStoriesState extends State<UnscrollStories> {
                   UserProfileImage.small(
                       imageUrl:
                           storiesController.stories[pageIndex].profilePic),
-                  height10,
+                 SizedBox(
+                   width: 30
+                 ),
                   Text(
                     storiesController.stories[pageIndex].username,
-                    style: const TextStyle( fontSize: 20),
+                    style: const TextStyle( fontSize: 20, color: Colors.white),
                   ),
-                 Positioned(
-                   top: 60,
-                    right: 20,
-                   child: IconButton(onPressed: (){}, icon: const Icon(Icons.heart_broken)),
-                 )
+
+
                 ],
               ),
             ),

@@ -1,8 +1,7 @@
 import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:unscroll/constants.dart';
+
+
 
 
 class VideoPlayerItem extends StatefulWidget {
@@ -20,6 +19,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
     with TickerProviderStateMixin {
   late CachedVideoPlayerController videoController;
   late AnimationController animationController;
+
 
   bool _isPlaying = true;
   bool _isMuted = false;
@@ -71,38 +71,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
         resizeToAvoidBottomInset: false,
         body: Stack(children: [
           GestureDetector(
-            onLongPress: () {
-              isPlayingVideo();
-              HapticFeedback.heavyImpact();
-              showCupertinoModalBottomSheet(
-                barrierColor: Colors.black.withOpacity(0.5),
-                context: context,
-                builder: (context) => Material(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.linear_scale),
-                      ListTile(
-                        leading: const Icon(Icons.share),
-                        title: const Text("Share"),
-                        onTap: () {},
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.save),
-                        title: const Text("Save"),
-                        onTap: () {},
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.delete),
-                        title: const Text("Delete"),
-                        onTap: () {},
-                      ),
-                      height50
-                    ],
-                  ),
-                ),
-              );
-            },
+
             onTap: () {
               isMuteVideo();
             },
@@ -123,7 +92,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem>
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: Icon(
-                    _isPlaying ? Icons.volume_up : Icons.volume_off,
+                    _isPlaying ? Icons.volume_off : Icons.volume_up,
                     size: 35,
                   ),
                 ),

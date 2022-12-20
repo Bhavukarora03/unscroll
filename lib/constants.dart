@@ -58,12 +58,12 @@ var commentController = CommentController.instance;
 
 
 const kSpinKit = SpinKitSpinningLines(
-  color: Colors.teal,
+  color: Colors.blueAccent,
   size: 50.0,
 );
 
 
-const entitlement = "premium";
+const entitlementID = "premium";
 const revenueAppKey = "goog_WyftrZXbtjpamOLzcBGOFjJvxQT";
 
 

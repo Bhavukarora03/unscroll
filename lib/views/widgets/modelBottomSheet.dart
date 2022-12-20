@@ -1,6 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
-
 import '../../constants.dart';
 
 class ModelBottomSheetForCamera extends StatelessWidget {
@@ -49,7 +49,7 @@ class ModelBottomSheetForCamera extends StatelessWidget {
                         ),
                         height20,
                         ListTile(
-                            leading: const Icon(Icons.camera),
+                            leading: const Icon(CupertinoIcons.camera),
                             title: const Text("Camera"),
                             onTap: () {
                               onPressedCamera();
@@ -62,7 +62,7 @@ class ModelBottomSheetForCamera extends StatelessWidget {
                           endIndent: 20,
                         ),
                         ListTile(
-                          leading: const Icon(Icons.image),
+                          leading: const Icon(CupertinoIcons.photo),
                           title: const Text("Gallery"),
                           onTap: () {
                             onPressedGallery();

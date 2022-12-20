@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:unscroll/constants.dart';
 
 class ProfileController extends GetxController {
@@ -162,6 +164,7 @@ class ProfileController extends GetxController {
           .update('following', (value) => (int.parse(value) - 1).toString());
     }
     _user.value.update('isFollowing', (value) => !value);
+    update();
   }
 
   getFollowerCount() async {
@@ -177,8 +180,8 @@ class ProfileController extends GetxController {
         .get();
 
     _followers.value = followersSnapshot.docs;
-
     _following.value = followingSnapshot.docs.map((e) => e.id).toList();
+
     update();
   }
 
@@ -199,5 +202,19 @@ class ProfileController extends GetxController {
         .update('following', (value) => (int.parse(value) - 1).toString());
     _user.value.update('isFollowing', (value) => !value);
     update();
+  }
+
+  Future<void> deleteCacheDir() async {
+    final cacheDir = await getTemporaryDirectory();
+    if (cacheDir.existsSync()) {
+      cacheDir.deleteSync(recursive: true);
+    }
+    final appDir = await getApplicationSupportDirectory();
+    if (appDir.existsSync()) {
+      appDir.deleteSync(recursive: true);
+    }
+
+    EasyLoading.showSuccess('Cache Cleared');
+
   }
 }

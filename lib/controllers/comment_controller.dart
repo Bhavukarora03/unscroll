@@ -2,13 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/models/comment_model.dart' as com_model;
+import 'package:uuid/uuid.dart';
 
 class CommentController extends GetxController {
   static CommentController get instance => Get.find();
-  final Rx<List<com_model.Comment>> _unscrollComments = Rx<List<com_model.Comment>>([]);
+  final Rx<List<com_model.Comment>> _unscrollComments =
+      Rx<List<com_model.Comment>>([]);
   List<com_model.Comment> get unscrollComments => _unscrollComments.value;
 
-  final Rx<List<com_model.Comment>> _postsComment = Rx<List<com_model.Comment>>([]);
+  final Rx<List<com_model.Comment>> _postsComment =
+      Rx<List<com_model.Comment>>([]);
   List<com_model.Comment> get postsComment => _postsComment.value;
 
   String _postId = '';
@@ -46,7 +49,6 @@ class CommentController extends GetxController {
       }
       return temp;
     }));
-
   }
 
   postComment(String commentText, String collection) async {
@@ -64,9 +66,10 @@ class CommentController extends GetxController {
             .get();
 
         int length = allDocs.docs.length;
+        var uuid =  const Uuid().v4();
 
         com_model.Comment comments = com_model.Comment(
-          id: 'Comment $length',
+          id: uuid,
           username: (userDocs.data()! as dynamic)['username'],
           comment: commentText.trim(),
           userId: authController.user.uid,
@@ -92,8 +95,6 @@ class CommentController extends GetxController {
       Get.snackbar('error', e.toString());
     }
   }
-
-
 
   likeComment(String id, String collection) async {
     String uid = authController.user.uid;
@@ -125,4 +126,3 @@ class CommentController extends GetxController {
     }
   }
 }
-

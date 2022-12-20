@@ -4,9 +4,10 @@ import 'package:flutter/services.dart';
 
   ThemeData darkTheme = ThemeData.dark().copyWith(
     useMaterial3: true,
-    navigationBarTheme: NavigationBarThemeData(
-      indicatorColor: Colors.blue.shade700,
+    navigationBarTheme: const NavigationBarThemeData(
+      indicatorColor: Colors.blueAccent
     ),
+    focusColor:   Colors.blueAccent,
     appBarTheme: const AppBarTheme(
       elevation: 0,
     ),
@@ -25,11 +26,15 @@ import 'package:flutter/services.dart';
 
   ThemeData lightTheme = ThemeData.light().copyWith(
     useMaterial3: true,
+    iconTheme: const IconThemeData(
+      color: Colors.black54,
+    ),
 
 
-    navigationBarTheme: NavigationBarThemeData(
+
+    navigationBarTheme: const NavigationBarThemeData(
       backgroundColor: Colors.white,
-      indicatorColor: Colors.blue
+      indicatorColor: Colors.blueAccent,
     ),
 
     tabBarTheme: const TabBarTheme(

@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
             if (snapshot.hasError) {
               return errorView(snapshot);
             } else {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator.adaptive());
             }
           }
         });

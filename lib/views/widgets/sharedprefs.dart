@@ -10,6 +10,16 @@ class TextPreferences {
     prefs.setInt(_text, text);
   }
 
+  static Future<int> getTime() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_text) ?? 0;
+  }
+
+  static Future<void> removeTime() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(_text);
+  }
+
   static Future<void> setTheme(bool theme) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('theme', theme);

@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:unscroll/models/posts_model.dart';
 import '../constants.dart';
 
 class PostController extends GetxController {
   final Rx<List<PostsModel>> _posts = Rx<List<PostsModel>>([]);
+
   List<PostsModel> get postsLists => _posts.value;
 
   @override
@@ -16,12 +19,11 @@ class PostController extends GetxController {
     super.onInit();
     _posts.bindStream(
       firebaseFirestore.collection('posts').snapshots().map(
-        (QuerySnapshot querySnapshot) {
+            (QuerySnapshot querySnapshot) {
           List<PostsModel> temp = [];
           for (var doc in querySnapshot.docs) {
             temp.add(PostsModel.fromSnap(doc));
             temp.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-
           }
 
           return temp;
@@ -32,7 +34,7 @@ class PostController extends GetxController {
 
   likePost(String id) async {
     DocumentSnapshot documentSnapshot =
-        await firebaseFirestore.collection('posts').doc(id).get();
+    await firebaseFirestore.collection('posts').doc(id).get();
     var uid = authController.user.uid;
     if ((documentSnapshot.data() as dynamic)['likes'].contains(uid)) {
       await firebaseFirestore.collection('posts').doc(id).update({
@@ -56,22 +58,21 @@ class PostController extends GetxController {
     if (Get.isDialogOpen!) Get.back();
   }
 
-  void saveNetworkImage(String pathProvided) async {
-    try {
-      // Saved with this method.
-      var file = DefaultCacheManager().downloadFile(pathProvided);
-      if (file != null) {
-        ScaffoldMessenger.of(Get.context!).showSnackBar(
-          const SnackBar(
-            content: Text('Image Saved'),
-          ),
-        );
-      }
-      Get.back();
-    } on PlatformException catch (error) {
-      ScaffoldMessenger.of(Get.context!)
-          .showSnackBar(SnackBar(content: Text('Download Failed $error')));
+  savePost(String path) async {
+    var appDocDir = await getTemporaryDirectory();
+    String savePath = "${appDocDir.path}/temp.jpeg";
+    await Dio().download(
+        path, savePath);
+    final result = await ImageGallerySaver.saveFile(savePath);
+    if (result['isSuccess'] == true) {
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+          const SnackBar(content: Text('Post Saved Successfully')));
+      print(result);
+    }
+
+    Future<void> copyToClipboard(String text) async {
+      await Clipboard.setData(ClipboardData(text: text));
+      Get.snackbar('Success', 'Copied to Clipboard');
     }
   }
-
 }
