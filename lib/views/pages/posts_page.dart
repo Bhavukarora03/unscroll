@@ -33,16 +33,15 @@ class _PostsPageState extends State<PostsPage> {
 
   @override
   void initState() {
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Obx(
-        () {
-          return RefreshIndicator(
+    return Obx(
+      () {
+        return Scaffold(
+          body: RefreshIndicator(
             semanticsLabel: 'Loading',
             onRefresh: () async {
               await Future.delayed(const Duration(seconds: 1));
@@ -66,9 +65,9 @@ class _PostsPageState extends State<PostsPage> {
                       ),
                     ],
                   ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -127,7 +126,6 @@ class _PostsPageState extends State<PostsPage> {
         final commentID = data.id;
         commentController.updatePostID(commentID);
         return Container(
-          key: ValueKey(data.id),
           margin: const EdgeInsets.all(10),
           child: Column(
             children: [
@@ -335,9 +333,16 @@ class _PostsPageState extends State<PostsPage> {
         color: Colors.grey,
       ),
       onPressed: () {
-        Get.to(
-            () => CommentsScreen(commentTextController: commentTextController),
-            transition: Transition.cupertino);
+        showMaterialModalBottomSheet(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            bounce: true,
+            context: context,
+            builder: (context) => buildCommentSection(context));
       },
     );
   }
@@ -360,10 +365,7 @@ class _PostsPageState extends State<PostsPage> {
     return Row(
       children: [
         GestureDetector(
-          onTap: () {
-            Get.to(() =>
-                CommentsScreen(commentTextController: commentTextController));
-          },
+          onTap: () {},
           child: Text('View all ${data.commentCount.toString()} comments',
               style: const TextStyle(
                 color: Colors.grey,
@@ -382,16 +384,16 @@ class _PostsPageState extends State<PostsPage> {
     );
   }
 
-  Future<bool> onLikeButtonTapped(bool isLiked , PostsModel data) async{
-    if(isLiked){
+  Future<bool> onLikeButtonTapped(bool isLiked, PostsModel data) async {
+    if (isLiked) {
       !postController.likePost(data.id);
-    }else{
+    } else {
       postController.likePost(data.id);
     }
 
-
     return !isLiked;
   }
+
   /// Like Post
   Widget likePost(PostsModel data) {
     return LikeButton(
@@ -410,9 +412,7 @@ class _PostsPageState extends State<PostsPage> {
                 color: Colors.grey,
               );
       },
-
       countBuilder: (int? count, bool isLiked, String text) {
-
         Widget result;
         if (count == 0) {
           result = const Text(
@@ -422,11 +422,126 @@ class _PostsPageState extends State<PostsPage> {
         } else {
           result = Text(
             text,
-            style: const TextStyle(color: Colors.grey),   );
+            style: const TextStyle(color: Colors.grey),
+          );
         }
         return result;
       },
+    );
+  }
 
+  buildCommentSection(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.remove,
+              color: Colors.grey[600],
+              size: 50,
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
+              child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Comments",
+                    style: TextStyle(fontSize: 15),
+                  )),
+            ),
+            Expanded(
+              child: Obx(
+                () => ListView.builder(
+                  itemCount: commentController.postsComment.length,
+                  itemBuilder: (context, index) {
+                    final comment = commentController.postsComment[index];
+                    return ListTile(
+                      isThreeLine: true,
+                      leading:
+                          UserProfileImage.small(imageUrl: comment.profilePic),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                              onPressed: () => commentController.likeComment(
+                                  comment.id, 'posts'),
+                              icon: comment.likes
+                                      .contains(authController.user.uid)
+                                  ? const Icon(
+                                      Icons.favorite,
+                                      color: Colors.redAccent,
+                                      size: 20,
+                                    )
+                                  : const Icon(
+                                      Icons.favorite_border,
+                                      size: 18,
+                                    )),
+                          Expanded(
+                              child: Text(
+                            comment.likes.length.toString(),
+                            style: const TextStyle(fontSize: 8),
+                          ))
+                        ],
+                      ),
+                      subtitle: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            comment.comment,
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                      title: Row(
+                        children: [
+                          Text(
+                            '${comment.username}    •',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w400, fontSize: 12),
+                          ),
+                          const Divider(indent: 10),
+                          Text(
+                            timeago.format(comment.createdAt.toLocal()),
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 9),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Card(
+                child: ListTile(
+                  title: TextFormField(
+                    controller: commentTextController,
+                    decoration: const InputDecoration(
+                      hintText: "Add a comment...",
+                      border: InputBorder.none,
+                    ),
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      commentController.postComment(
+                          commentTextController.text, 'posts');
+                      commentTextController.clear();
+                    },
+                    icon: const Icon(Icons.send),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

@@ -68,9 +68,8 @@ class VideoController extends GetxController {
         path, savePath);
     final result = await ImageGallerySaver.saveFile(savePath);
     if (result['isSuccess'] == true) {
-      EasyLoading.showSuccess('Video Saved Successfully');
-      ScaffoldMessenger.of(Get.context!).showSnackBar(
-          const SnackBar(content: Text('Check your Gallery')));
+      EasyLoading.showSuccess('Video Saved Successfully in gallery');
+
       print(result);
     }
   }

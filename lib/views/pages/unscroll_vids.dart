@@ -163,9 +163,12 @@ class HomePage extends StatelessWidget {
 
 
                                     },
-                                    child: const Icon(
-                                      Icons.bookmark_border,
-                                      color: Colors.white,
+                                    child:  IconButton(onPressed: () {
+                                      EasyLoading.show(status: 'Saving...');
+                                      videoController.saveVideo(data.videoUrl);
+
+                                    }, icon: Icon(Icons.download_sharp, color: Colors.white,),
+
                                     ),
                                   ),
                                   CircleAnimation(

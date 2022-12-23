@@ -71,9 +71,6 @@ class PostController extends GetxController {
       print(result);
     }
 
-    Future<void> copyToClipboard(String text) async {
-      await Clipboard.setData(ClipboardData(text: text));
-      Get.snackbar('Success', 'Copied to Clipboard');
-    }
+
   }
 }

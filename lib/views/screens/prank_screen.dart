@@ -45,8 +45,7 @@ class _PrankScreenState extends State<PrankScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(children: [
+    return  Stack(children: [
         Positioned.fill(child: CachedVideoPlayer(videoController)),
         Positioned(
           child: Container(
@@ -59,40 +58,35 @@ class _PrankScreenState extends State<PrankScreen>
           padding: const EdgeInsets.all(25.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    'Unscroll',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold),
+              const Text(
+                'Unscroll',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold),
+              ),
+              height10,
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
-                  height10,
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    onPressed: () {
-                      authController.addingInAppPurchases();
-                    },
-                    child: const Flexible(child: Text('Remove ads?')),
+                ),
+                onPressed: () {
+                  authController.addingInAppPurchases();
+                },
+                child: Text('Remove ads?'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    onPressed: _launchUrl,
-                    child: const Flexible(child: Text('Watch the video')),
-                  ),
-                ],
+                ),
+                onPressed: _launchUrl,
+                child: Text('Watch the video'),
               ),
               BackButton(
                 color: Colors.white,
@@ -104,7 +98,7 @@ class _PrankScreenState extends State<PrankScreen>
             ],
           ),
         ),
-      ]),
-    );
+      ]);
+
   }
 }
