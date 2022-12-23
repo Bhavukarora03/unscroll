@@ -34,7 +34,7 @@ class SearchPage extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(15.0)),
                   borderSide: BorderSide.none,
                 ),
-                hintText: 'Search',
+                hintText: 'Search for users',
                 prefixIcon: Icon(Icons.search),
                 prefixIconColor: Colors.white,
               ),
@@ -68,7 +68,7 @@ class SearchPage extends StatelessWidget {
                   posts(),
                 ])
               : SizedBox(
-                  height: 300,
+                  height: 800,
                   child: searchUsers(),
                 ));
     });
@@ -87,7 +87,7 @@ class SearchPage extends StatelessWidget {
           },
           leading: UserProfileImage(
             imageUrl: data.profilePic,
-            radius: 30,
+            radius: 20,
           ),
           trailing: IconButton(
             onPressed: () {

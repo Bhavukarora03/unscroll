@@ -402,7 +402,7 @@ class AuthController extends GetxController with CacheManager {
           .set(googleUser.toJson());
       EasyLoading.showSuccess('Logged in');
 
-       sendmail(user.email!, "Welcome to Unscroll", "Testing");
+       //sendmail(user.email!, "Welcome to Unscroll", "Testing");
 
       return;
     } catch (e) {

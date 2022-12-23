@@ -1,7 +1,7 @@
 name: unscroll
 description: Minor project
 publish_to: none
-version: 1.0.1+1
+version: 1.0.2+1
 environment: {sdk: '>=2.18.2 <3.0.0'}
 dependencies:
   flutter: {sdk: flutter}
@@ -29,7 +29,6 @@ dependencies:
   get_storage: ^2.0.3
   flutter_local_notifications: ^12.0.3+1
   firebase_messaging: ^14.1.4
-  http: ^0.13.5
   connectivity_plus: ^3.0.2
   google_fonts: ^3.0.1
   uuid: ^3.0.7
@@ -40,26 +39,18 @@ dependencies:
   story: ^0.8.0
   cloud_functions: ^4.0.6
   flutter_onboarding_slider: ^1.0.8
-  flutter_spinkit: ^5.1.0
   shared_preferences: ^2.0.15
-  android_alarm_manager_plus: ^2.1.0
   palette_generator: ^0.3.3+2
   purchases_flutter: ^4.4.2
   url_launcher: ^6.1.7
   circular_countdown_timer: ^0.2.3
   flutter_easyloading: ^3.0.5
-  firebase_core_platform_interface: 4.5.2
-  gallery_saver: ^2.3.2
   permission_handler: ^10.2.0
   path_provider: ^2.0.11
-  image_gallery_saver: ^1.7.1
   dio: ^4.0.6
-  flutter_typeahead: ^4.1.1
-  photo_view: ^0.14.0
   stories_editor: ^0.2.2
   like_button: ^2.0.5
-  animated_text_kit: ^4.2.2
-  upi_india: ^3.0.1
+
 
 
 

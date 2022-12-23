@@ -103,7 +103,7 @@ class UploadPostsController extends GetxController {
         DocumentSnapshot doc =
             await firebaseFirestore.collection('users').doc(uid).get();
         var allDocs = await firebaseFirestore.collection('posts').get();
-        int docCount = allDocs.docs.length;
+
 
         var uuid = const Uuid().v4();
         String postUrl = await _uploadPostToStorage( postImage);

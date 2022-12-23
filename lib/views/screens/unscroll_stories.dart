@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:story/story_page_view/story_page_view.dart';
-import 'package:unscroll/constants.dart';
 import 'package:unscroll/views/widgets/widgets.dart';
 
 import '../../controllers/profile_controller.dart';

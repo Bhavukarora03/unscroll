@@ -59,13 +59,12 @@ class CommentController extends GetxController {
             .doc(authController.user.uid)
             .get();
 
-        var allDocs = await firebaseFirestore
+       await firebaseFirestore
             .collection(collection)
             .doc(_postId)
             .collection('comments')
             .get();
 
-        int length = allDocs.docs.length;
         var uuid =  const Uuid().v4();
 
         com_model.Comment comments = com_model.Comment(
@@ -82,7 +81,7 @@ class CommentController extends GetxController {
             .collection(collection)
             .doc(_postId)
             .collection('comments')
-            .doc('comment $length')
+            .doc(uuid)
             .set(comments.toJson());
 
         DocumentSnapshot snapshot =

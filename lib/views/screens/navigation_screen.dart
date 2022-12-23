@@ -148,7 +148,7 @@ class _NavigationScreenState extends State<NavigationScreen>
           children: [
             const Flexible(
               child: Text(
-                "Easy there, you have 30 minutes to doomsday",
+                "Your daily 30 mins of doomsday",
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,

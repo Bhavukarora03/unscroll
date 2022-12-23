@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gallery_saver/gallery_saver.dart';
 import 'package:like_button/like_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
-
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/post_controller.dart';
 import 'package:unscroll/models/posts_model.dart';
@@ -32,6 +30,12 @@ class _PostsPageState extends State<PostsPage> {
   final TextEditingController commentTextController = TextEditingController();
 
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +135,7 @@ class _PostsPageState extends State<PostsPage> {
                 child: ListTile(
                     leading: GestureDetector(
                       onTap: () {
-                        Get.to(() => ProfileScreen(
+                        Get.off(() => ProfileScreen(
                               uid: data.uid,
                             ));
                       },
@@ -360,7 +364,7 @@ class _PostsPageState extends State<PostsPage> {
             Get.to(() =>
                 CommentsScreen(commentTextController: commentTextController));
           },
-          child: Text('View all ${data.commentCount} comments',
+          child: Text('View all ${data.commentCount.toString()} comments',
               style: const TextStyle(
                 color: Colors.grey,
               )),
@@ -411,14 +415,14 @@ class _PostsPageState extends State<PostsPage> {
 
         Widget result;
         if (count == 0) {
-          result = Text(
+          result = const Text(
             "love",
             style: TextStyle(color: Colors.grey),
           );
         } else {
           result = Text(
             text,
-            style: TextStyle(color: Colors.grey),   );
+            style: const TextStyle(color: Colors.grey),   );
         }
         return result;
       },

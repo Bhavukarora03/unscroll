@@ -110,10 +110,7 @@ class UploadPage extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-               showDialog(context: context, builder: (context) => const AlertDialog(
-                 title: Text("Coming Soon"),
-                 content: Text("This feature is coming soon"),
-               ));
+                Get.to(() => const ConfirmStory());
               },
               label: const Text("Story"),
               icon: const Icon(Icons.upload))

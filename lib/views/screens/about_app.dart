@@ -16,11 +16,11 @@ class AboutScreen extends StatelessWidget {
         floatingActionButton: FloatingActionButton.extended(
           backgroundColor: Colors.amber,
           onPressed: () async {
-            final Uri _url =
+            final Uri url =
                 Uri.parse('https://www.buymeacoffee.com/bhavukarora');
 
-            if (!await launchUrl(_url)) {
-              throw 'Could not launch $_url';
+            if (!await launchUrl(url)) {
+              throw 'Could not launch $url';
             }
           },
           icon: const Icon(Icons.coffee),
@@ -82,6 +82,7 @@ class AboutScreen extends StatelessWidget {
                 textAlign: TextAlign.start,
               ),
             ),
+            height50
           ],
         )));
   }

@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
         initialBinding: GetBindings(),
         debugShowCheckedModeBanner: false,
         darkTheme: darkTheme,
-        themeMode: ThemeMode.system,
+        themeMode: ThemeMode.dark,
         theme: lightTheme,
         builder: EasyLoading.init(),
         home: const SplashScreen());

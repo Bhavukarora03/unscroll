@@ -1,13 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
-
 import 'package:unscroll/constants.dart';
 import 'package:get/get.dart';
 import 'package:unscroll/controllers/location_controller.dart';
 import 'package:unscroll/controllers/upload_posts_controller.dart';
-import 'package:unscroll/views/widgets/text_input_fields.dart';
 
 class ConfirmPost extends StatefulWidget {
   const ConfirmPost({Key? key, required this.postImage, required this.imgPath})
@@ -59,7 +56,7 @@ class _ConfirmPostState extends State<ConfirmPost> {
                   _locationController.text,
                 );
               },
-              child: const Text('Confirm ppload'),
+              child: const Text('Confirm upload'),
             ),
           ),
         ],

@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stories_editor/stories_editor.dart';
 import 'package:get/get.dart';
-import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/upload_posts_controller.dart';
 
 class ConfirmStory extends StatefulWidget {

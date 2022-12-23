@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unscroll/constants.dart';
@@ -87,6 +86,9 @@ class _ProfileScreenState extends State<ProfileScreen>
           },
           child: SafeArea(
             child: Scaffold(
+              appBar: widget.uid == authController.user.uid ? null: AppBar(
+                backgroundColor: Colors.transparent,
+              ),
               resizeToAvoidBottomInset: true,
               body: Column(
                 children: [
@@ -227,7 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                    TextButton(onPressed: () async{
                                                      Get.back();
                                                      Get.back();
-                                                    authController.signOut();
+
                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No, you are not leaving us. Learn to control your actions.')));
                                                    }, child: const Text('Logout & exit')),
                                                  ],
@@ -354,7 +356,7 @@ class _TabBarLibraryState extends State<TabBarLibrary> {
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Icon(Icons.camera_outlined,
+                      Icon(CupertinoIcons.photo_fill_on_rectangle_fill,
                           size: 100),
                       height50,
                       Center(
