@@ -4,6 +4,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:unscroll/constants.dart';
 import 'package:unscroll/controllers/comment_controller.dart';
 import 'package:unscroll/controllers/video_controller.dart';
+import 'package:unscroll/models/video_model.dart';
+import 'package:unscroll/views/screens/profile_screen.dart';
 import 'package:unscroll/views/widgets/widgets.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -25,7 +27,6 @@ class HomePage extends StatelessWidget {
 
     return Obx(
       () => Scaffold(
-
           body: videoController.videoList.isNotEmpty
               ? RefreshIndicator(
                   onRefresh: () async {
@@ -67,8 +68,7 @@ class HomePage extends StatelessWidget {
                                         Text(
                                           data.username,
                                           style: const TextStyle(
-                                            color: Colors.white,
-
+                                              color: Colors.white,
                                               fontSize: 20),
                                         ),
                                         Text(
@@ -107,9 +107,7 @@ class HomePage extends StatelessWidget {
                                     MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  buildProfileImage(
-                                    data.profilePic,
-                                  ),
+                                  BuildUserProfileImage(data: data),
                                   InkWell(
                                     onTap: () =>
                                         videoController.likeVideo(data.id),
@@ -125,7 +123,12 @@ class HomePage extends StatelessWidget {
                                       size: 30,
                                     ),
                                   ),
-                                  Text(data.likes.length.toString() , style: TextStyle( color: Colors.white,),),
+                                  Text(
+                                    data.likes.length.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                   InkWell(
                                     onTap: () {
                                       showMaterialModalBottomSheet(
@@ -145,7 +148,12 @@ class HomePage extends StatelessWidget {
                                       color: Colors.white,
                                     ),
                                   ),
-                                  Text(data.commentCount.toString(), style: TextStyle( color: Colors.white,),),
+                                  Text(
+                                    data.commentCount.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                   InkWell(
                                     onTap: () {
                                       Share.share(
@@ -160,15 +168,17 @@ class HomePage extends StatelessWidget {
                                     onTap: () {
                                       EasyLoading.show(status: 'Saving...');
                                       videoController.saveVideo(data.videoUrl);
-
-
                                     },
-                                    child:  IconButton(onPressed: () {
-                                      EasyLoading.show(status: 'Saving...');
-                                      videoController.saveVideo(data.videoUrl);
-
-                                    }, icon: Icon(Icons.download_sharp, color: Colors.white,),
-
+                                    child: IconButton(
+                                      onPressed: () {
+                                        EasyLoading.show(status: 'Saving...');
+                                        videoController
+                                            .saveVideo(data.videoUrl);
+                                      },
+                                      icon: Icon(
+                                        Icons.download_sharp,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                   CircleAnimation(
@@ -190,8 +200,7 @@ class HomePage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
                     ),
-                  ))
-      ),
+                  ))),
     );
   }
 
@@ -342,5 +351,40 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class BuildUserProfileImage extends StatelessWidget {
+  const BuildUserProfileImage({
+    Key? key,
+    required this.data,
+  }) : super(key: key);
+
+  final VideoModel data;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          Get.to(() => ProfileScreen(
+                uid: data.uid,
+              ));
+        },
+        child: Stack(
+          children: [
+            CircleAvatar(
+                radius: 25,
+                backgroundColor: Colors.white,
+                child: UserProfileImage.medium(imageUrl: data.profilePic)),
+            const Positioned(
+                bottom: 0,
+                left: 30,
+                child: CircleAvatar(
+                  radius: 10,
+                  backgroundColor: Colors.redAccent,
+                  child: Icon(Icons.add, color: Colors.white, size: 15),
+                )),
+          ],
+        ));
   }
 }

@@ -34,6 +34,7 @@ ThemeData lightTheme = ThemeData.light().copyWith(
     labelColor: Colors.black,
     unselectedLabelColor: Colors.black,
   ),
+
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
       padding: MaterialStateProperty.all(

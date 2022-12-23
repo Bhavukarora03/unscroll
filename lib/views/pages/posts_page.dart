@@ -133,7 +133,7 @@ class _PostsPageState extends State<PostsPage> {
                 child: ListTile(
                     leading: GestureDetector(
                       onTap: () {
-                        Get.off(() => ProfileScreen(
+                        Get.to(() => ProfileScreen(
                               uid: data.uid,
                             ));
                       },

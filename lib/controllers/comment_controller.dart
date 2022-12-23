@@ -18,12 +18,11 @@ class CommentController extends GetxController {
 
   updatePostID(String commentID) {
     _postId = commentID;
-    getComment();
+    getVideoComment();
+    getPostComment();
   }
 
-
-
-  getComment() async {
+  getVideoComment() async {
     _unscrollComments.bindStream(firebaseFirestore
         .collection('videos')
         .doc(_postId)
@@ -37,6 +36,10 @@ class CommentController extends GetxController {
       return temp;
     }));
 
+    update();
+  }
+
+  getPostComment() async {
     _postsComment.bindStream(firebaseFirestore
         .collection('posts')
         .doc(_postId)
@@ -49,6 +52,7 @@ class CommentController extends GetxController {
       }
       return temp;
     }));
+    update();
   }
 
   postComment(String commentText, String collection) async {
@@ -59,13 +63,13 @@ class CommentController extends GetxController {
             .doc(authController.user.uid)
             .get();
 
-       await firebaseFirestore
+        await firebaseFirestore
             .collection(collection)
             .doc(_postId)
             .collection('comments')
             .get();
 
-        var uuid =  const Uuid().v4();
+        var uuid = const Uuid().v4();
 
         com_model.Comment comments = com_model.Comment(
           id: uuid,
