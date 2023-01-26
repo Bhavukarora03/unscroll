@@ -23,6 +23,11 @@ class PostsPage extends StatefulWidget {
 class _PostsPageState extends State<PostsPage> {
   final postController = Get.put(PostController());
 
+  bool _isSpam = false;
+  bool _isViolence = false;
+  bool _isSexual = false;
+  bool _isHateSpeech = false;
+
   bool readOnly = true;
 
   final storiesController = Get.put(StoriesController());
@@ -278,6 +283,7 @@ class _PostsPageState extends State<PostsPage> {
                           postController.savePost(data.postURL);
                         },
                       ),
+                      reportPost(context, data),
                       data.uid == authController.user.uid
                           ? ListTile(
                               leading: const Icon(Icons.delete),
@@ -323,6 +329,94 @@ class _PostsPageState extends State<PostsPage> {
               });
         },
         icon: const Icon(Icons.more_horiz));
+  }
+
+  ListTile reportPost(BuildContext context, PostsModel data) {
+    return ListTile(
+      leading: const Icon(Icons.report),
+      title: const Text(
+        "Report",
+      ),
+      onTap: () {
+        Get.back();
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Report Post'),
+                content: StatefulBuilder(
+                  builder: (context, setState) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CheckboxListTile(
+                          activeColor: Colors.blueAccent,
+
+                          value: _isSpam,
+                          onChanged: (value) {
+                            setState(() {
+                              _isSpam = value!;
+                            });
+                          },
+                          title: const Text('Inappropriate'),
+                        ),
+                        CheckboxListTile(
+                          activeColor: Colors.blueAccent,
+                          value: _isSexual,
+                          onChanged: (value) {
+                            setState(() {
+                              _isSexual = value!;
+                            });
+                          },
+                          title: const Text('Sexual Explicit'),
+                        ),
+                        CheckboxListTile(
+                          activeColor: Colors.blueAccent,
+                          value: _isViolence,
+                          onChanged: (value) {
+                            setState(() {
+                              _isViolence = value!;
+                            });
+                          },
+                          title: const Text('Violence'),
+                        ),
+                        CheckboxListTile(
+                          activeColor: Colors.blueAccent,
+                          value: _isHateSpeech,
+                          onChanged: (value) {
+                            setState(() {
+                              _isHateSpeech = value!;
+                            });
+                          },
+                          title: const Text('Hate Speech'),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: const Text('Cancel')),
+                 ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                        postController.reportPost(data.id);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                'The post has been reported, Our team will look into it.'),
+                          ),
+                        );
+                      },
+                      child: const Text('Report')),
+                ],
+              );
+            });
+      },
+    );
   }
 
   /// comment section

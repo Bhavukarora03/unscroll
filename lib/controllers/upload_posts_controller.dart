@@ -99,15 +99,9 @@ class UploadPostsController extends GetxController {
     try {
       if (caption.isNotEmpty && postImage.isNotEmpty && location.isNotEmpty) {
         String uid = firebaseAuth.currentUser!.uid;
-
-        DocumentSnapshot doc =
-            await firebaseFirestore.collection('users').doc(uid).get();
-        var allDocs = await firebaseFirestore.collection('posts').get();
-
-
+        DocumentSnapshot doc = await firebaseFirestore.collection('users').doc(uid).get();
         var uuid = const Uuid().v4();
         String postUrl = await _uploadPostToStorage( postImage);
-
         PostsModel postsModel = PostsModel(
           username: (doc.data()! as Map<String, dynamic>)['username'],
           profilePic: (doc.data()! as Map<String, dynamic>)['profilePic'],
@@ -120,25 +114,13 @@ class UploadPostsController extends GetxController {
           createdAt: DateTime.now(),
           location: location,
         );
-
         await firebaseFirestore
             .collection('posts')
             .doc(uuid)
             .set(postsModel.toJson());
-
-        // var snapTokens = await firebaseFirestore.collection('usertokens').doc().get();
-        // var tokens = snapTokens.data()!['token'];
-        //
-        // if(authController.user.uid != uid){
-        //   sendPushMessage(tokens, "",
-        //       "$displayName posted a new unscroll, show them some love");
-        // }
-
-
+        var snapTokens = await firebaseFirestore.collection('usertokens').doc().get();
         Navigator.of(Get.context!).pop();
         EasyLoading.showSuccess('Success!');
-
-
       } else {
         EasyLoading.dismiss();
         ScaffoldMessenger.of(Get.context!).showSnackBar(

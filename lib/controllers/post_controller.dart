@@ -10,9 +10,7 @@ import '../constants.dart';
 
 class PostController extends GetxController {
   final Rx<List<PostsModel>> _posts = Rx<List<PostsModel>>([]);
-
   List<PostsModel> get postsLists => _posts.value;
-
   @override
   void onInit() {
     // TODO: implement onInit
@@ -31,7 +29,6 @@ class PostController extends GetxController {
       ),
     );
   }
-
   likePost(String id) async {
     DocumentSnapshot documentSnapshot =
     await firebaseFirestore.collection('posts').doc(id).get();
@@ -46,12 +43,9 @@ class PostController extends GetxController {
       });
     }
   }
-
-
   deletePost(String id) async {
     await firebaseFirestore.collection('posts').doc(id).delete();
   }
-
   updatePost(String id, String caption) async {
     await firebaseFirestore.collection('posts').doc(id).update({
       'caption': caption,
@@ -72,5 +66,12 @@ class PostController extends GetxController {
     }
 
 
+  }
+
+  reportPost(String id) async {
+    await firebaseFirestore.collection('posts').doc(id).update({
+      'reported': true,
+    });
+    if (Get.isDialogOpen!) Get.back();
   }
 }

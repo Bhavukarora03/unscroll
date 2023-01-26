@@ -16,11 +16,6 @@ class User {
       required this.thirtyMinDone,
       required this.bio,
       required this.entitlementIsActive});
-
-
-
-
-
   Map<String, dynamic> toJson() => {
         'username': username,
         'email': email,
@@ -30,7 +25,6 @@ class User {
         'bio': bio,
         'entitlementIsActive': entitlementIsActive,
       };
-
   static User fromSnap(DocumentSnapshot snapshot) {
     var data = snapshot.data() as Map<String, dynamic>;
     return User(
@@ -41,7 +35,6 @@ class User {
       thirtyMinDone: data['thirtyMinDone'],
       bio: data['bio'],
       entitlementIsActive: data['entitlementIsActive'],
-
     );
   }
 }

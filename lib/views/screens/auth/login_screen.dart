@@ -176,11 +176,20 @@ class _LoginScreenState extends State<LoginScreen> {
                               throw 'Could not launch $_policyUrl';
                             }
                           }),
-                    const TextSpan(
-                      text: 'Learn how we process your data in our'
-                          ' Data Policy and how we use cookies and similar '
-                          'technology in our Cookies Policy.',
-                    )
+                    TextSpan(text: 'and '),
+                    TextSpan(
+                        text: 'terms and conditions',
+                        style: const TextStyle(color: Colors.blueAccent),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () async {
+                            final Uri _policyUrl = Uri.parse(
+                                'https://www.termsandconditionsgenerator.com/live.php?token=MZk1iVmk0JX0C8IaGQIFQYgTEyT5YkmU');
+                            if (!await launchUrl(_policyUrl)) {
+                              throw 'Could not launch $_policyUrl';
+                            }
+                          }),
+
+
                   ])),
         ],
       ),
